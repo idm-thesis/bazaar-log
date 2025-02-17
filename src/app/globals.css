@@ -11,6 +11,10 @@ h1 {
   font-weight: 400;
 }
 
+h1, h2, h3, h4, h5, h6, p {  
+  @apply pointer-events-none select-none;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -75,3 +79,7 @@ h1 {
     @apply bg-background text-foreground;
   }
 }
+
+/* .nonSelectable {
+  @apply pointer-events-none select-none;
+} */

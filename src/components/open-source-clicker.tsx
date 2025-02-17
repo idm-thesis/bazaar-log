@@ -1,80 +1,95 @@
 "use client";
-
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useGameStore } from "@/store/gameStore";
+import { useCodeGenerationMechanics } from "@/hooks/useCodeGenerationMechanics";
+import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
+import { SlBadge } from "react-icons/sl";
+import { FaCode } from "react-icons/fa6";
+import { useGameEffects } from "@/hooks/useGameEffects";
+import { useTimeBasedUpdates } from "@/hooks/useTimeBasedUpdates";
+import { useState, useEffect } from "react";
 
 export default function OpenSourceGalaxyUI() {
-  const [influence, setInfluence] = useState(90000);
-  const [organizations, setOrganizations] = useState(16);
-  const [productivity, setProductivity] = useState(20);
-  const [valueGenerated, setValueGenerated] = useState(5000000);
+  const {
+    name,
+    role,
+    show_personal_influence,
+    personal_influence,
+    information_transmission_speed,
+    show_number_of_users,
+    number_of_users,
+    show_next_tool,
+    next_tool_numerator,
+    next_tool_denominator,
+    show_number_of_tools,
+    number_of_tools,
+    show_value_generated,
+    value_generated,
+    show_tool_productivity,
+    tool_productivity,
+    show_value_generation_speed,
+    value_generation_speed,
+    show_number_of_organizations,
+    number_of_organizations,
+  } = useGameStore();
 
-  return (
-    <div className="grid grid-cols-3 gap-2 min-h-screen">
-      {/* Left Panel: All Text Information */}
-      <div className="space-y-6 m-2 col-span-1">
-        <Card>
-          <CardContent>
-            <h2 className="text-lg font-bold">Personal Information</h2>
-            <p><strong>Name:</strong> Macaroni</p>
-            <p><strong>Role:</strong> Open-source Organization Founder</p>
-            <p><strong>Personal Influence:</strong> {influence.toLocaleString()}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent>
-            <h2 className="text-lg font-bold">Environment</h2>
-            <p><strong>Era:</strong> Artificial Intelligence</p>
-            <p><strong>Information Transmission Speed:</strong> 1,000</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent>
-            <h2 className="text-lg font-bold">Contribution</h2>
-            <p><strong>Total Productivity:</strong> {productivity} tools/sec</p>
-            <p><strong>Number of Organizations:</strong> {organizations}</p>
-            <p><strong>Value Generated:</strong> {valueGenerated.toLocaleString()}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent>
-            <h2 className="text-lg font-bold">News</h2>
-            <p className="italic">“AGI projects have become a new target of capital support.”</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent>
-            <h2 className="text-lg font-bold">Decisions</h2>
-            <div className="flex gap-2 mt-2">
-              <Button onClick={() => setInfluence(influence + 5000)}>Invest in AGI</Button>
-              <Button variant="outline" onClick={() => setOrganizations(organizations + 1)}>Support Open-Source AI</Button>
-              <Button variant="destructive" onClick={() => setInfluence(influence - 5000)}>Ban AI Contributions</Button>
+  const { writeCode } = useCodeGenerationMechanics();
+  const {era} = useTimeBasedUpdates();
+
+  useGameEffects(); // Runs all effect logic
+
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => setIsClient(true), []);
+
+  return isClient ? (
+    <div className="grid grid-cols-3 gap-6 min-h-screen">
+      <div className="col-span-1 m-2 space-y-3">
+        <div>
+          <h2 className="text-lg font-bold">Personal Information</h2>
+          <p><strong>Name:</strong> {name}</p>
+          <p><strong>Role:</strong> {role}</p>
+          {show_personal_influence && <p><strong>Personal Influence:</strong> {typeof personal_influence === "number" ? personal_influence.toLocaleString() : ""}
+          </p>}
+        </div>
+        <div className="border-t-2 pt-2">
+          <h2 className="text-lg font-bold">Environment</h2>
+          <p><strong>Era:</strong> {era}</p>
+          <p><strong>Information Transmission Speed:</strong> {information_transmission_speed.toLocaleString()}</p>
+          {show_number_of_users && <p><strong>Number of Users:</strong> {typeof number_of_users === "number" ? number_of_users.toLocaleString() : ""}</p>}
+        </div>
+        <div className="border-t-2 pt-2">
+          <h2 className="text-lg font-bold">Contribution</h2>
+          {show_next_tool && (
+            <div>
+              <p><strong>Next Tool:</strong> {typeof next_tool_numerator === "number" ? next_tool_numerator.toLocaleString() : ""} / {typeof next_tool_denominator === "number" ? next_tool_denominator.toLocaleString() : ""} lines of code</p>
+              <Progress value={(next_tool_numerator / next_tool_denominator) * 100} className="my-2" />
             </div>
-          </CardContent>
-        </Card>
-      </div>
-      
-      {/* Center & Right Panel: Visualization Fully Centered */}
-      <div className="col-span-2 flex justify-center items-center min-h-screen">
-        <div className="p-6 border bg-gray-100 flex flex-col items-center w-full min-h-screen">
-          <h2 className="text-lg font-bold mb-4">Open-Source Ecosystem</h2>
-          <div className="grid grid-cols-4 gap-4">
-            {[...Array(12)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="w-14 h-14 border-4 border-yellow-500 bg-white flex items-center justify-center"
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              >
-                <div className="w-5 h-5 bg-blue-500"></div>
-              </motion.div>
-            ))}
-          </div>
+          )}
+          {show_number_of_tools && <p><strong>Number of Tools Developed:</strong> {number_of_tools.toLocaleString()}</p>}
+          {show_tool_productivity && <p><strong>Productivity:</strong> {tool_productivity.toLocaleString()} lines/second</p>}
+          {show_value_generation_speed && <p><strong>Value Generation Speed:</strong> {value_generation_speed.toLocaleString()} /second</p>}
+          {show_value_generated && <p><strong>Total Value Generated:</strong> {value_generated.toLocaleString()}</p>}
+          {show_number_of_organizations && <p><strong>Number of Organizations:</strong> {number_of_organizations.toLocaleString()}</p>}
+        </div>
+        <div className="border-t-2 pt-2">
+          <h2 className="text-lg font-bold">News</h2>
+          <p className="italic">“Welcome to Open-Source Clicker.”</p>
         </div>
       </div>
+      <div className="flex items-center justify-center col-span-2 min-h-full bg-slate-300">
+        <div className="m-2">
+          <motion.div
+            whileTap={{ scale: 0.8 }}
+            className="bg-gray-800 text-white p-3 rounded-lg cursor-pointer"
+            onClick={() => writeCode(1)}
+          >
+            <FaCode/>
+          </motion.div>
+        </div>
+      </div>
+      <div className="fixed bottom-4 left-4 bg-white bg-opacity-80 p-2 m-2 hover:text-orange-400 duration-300 transition text-3xl text-primary">
+        <SlBadge/>
+      </div>
     </div>
-  );
+  ) : null;
 }
-
