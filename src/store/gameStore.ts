@@ -1,10 +1,18 @@
 "use client";
 import { create } from "zustand";
 
+type Decision = {
+  id: string;
+  text: string;
+  choices: { label: string; effect: () => void }[];
+};
+
+
 interface GameState {
   // Personal Information
   name: string;
   role: string;
+  setRole: (newRole: string) => void;
   show_personal_influence: boolean;
   setShowPersonalInfluence: (visible: boolean) => void;
   personal_influence: number;
@@ -64,15 +72,16 @@ interface GameState {
   number_of_organizations: number;
   setNumberOfOrganization: (count: number) => void;
 
-  // Functions
-  hireCollaborator: () => void;
-  communityManagementCost: () => void;
+  // Decisions
+  decisions: Decision[],
+  setDecisions: (newDecisions: Decision[]) => void,
 }
 
 export const useGameStore = create<GameState>((set) => ({
   // Personal Information
   name: "Macaroni",
   role: "Coding Enthusiast",
+  setRole: (newRole: string) => set({role: newRole}),
   show_personal_influence: false,
   personal_influence: 0,
   setShowPersonalInfluence: (visible: boolean) => set({ show_personal_influence: visible }),
@@ -132,6 +141,7 @@ export const useGameStore = create<GameState>((set) => ({
   number_of_organizations: 0,
   setNumberOfOrganization: (count: number) => set({ number_of_organizations: count }),
 
-  hireCollaborator: () => set((state) => ({ number_of_users: state.number_of_users + 10 })),
-  communityManagementCost: () => {},
+  // Decisions
+  decisions: [],
+  setDecisions: (newDecisions) => set({ decisions: newDecisions }),
 }));
