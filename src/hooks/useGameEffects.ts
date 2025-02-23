@@ -3,6 +3,9 @@
 "use client";
 import { useCallback, useEffect } from "react";
 import { useGameStore } from "@/store/gameStore";
+import rolesList from "@/data/roles.json";
+import baseDecisions from "@/data/baseDecisions.json";
+import { useDecisionSystem } from "./useDecisionSystem";
 
 export function useGameEffects() {
   const {
@@ -22,27 +25,64 @@ export function useGameEffects() {
     setRole,
     setShowNumberOfCollaborators,
     setShowNumberOfContributors,
-    value_generated,
-    // setValueGenerated,    
+    number_of_organizations,
+    setShowNumberOfOrganizations,
+    // value_generated,
+    // setValueGenerated,
+    decisions,
+    setDecisions,
   } = useGameStore();
+  const {formOrganization} = useDecisionSystem();
 
-  // Update role based on number_of_tools, personal_influence, and value_generated
-  const updateRole = useCallback(() => {
-    const rolesList = [
-      "Coding Enthusiast",
-      "Independent Developer",
-      "Open-source Collaborator",
-      "Open-source Organization Founder",
-    ];
+  // Update role from "Coding Enthusiast" to "Independent Developer", and then to "Open-source Collaborator", based on number_of_tools
+  const updateRole0to1 = useCallback(() => {
     const rolesIdx = rolesList.indexOf(role);
-    if ((rolesIdx == 0 && number_of_tools > 10) || (rolesIdx == 1 && number_of_collaborators > 0) || (rolesIdx == 2 && value_generated > 100000)) {
+    if ((rolesIdx == 0 && number_of_tools > 10)) {
       setRole(rolesList[rolesIdx + 1]);
     }
-  },[number_of_tools, number_of_collaborators, role, setRole, value_generated]);
+  },[number_of_tools, role, setRole]);
 
   useEffect(() => {
-    updateRole();
-  },[number_of_tools, number_of_collaborators, role, value_generated, updateRole]);
+    updateRole0to1();
+  },[number_of_tools, updateRole0to1]);
+
+  // Update role from "Independent Developer" to "Open-source Collaborator", based on number_of_collaborators
+  const updateRole1to2 = useCallback(() => {
+    const rolesIdx = rolesList.indexOf(role);
+    if ((rolesIdx == 1 && number_of_collaborators > 0)) {
+      setRole(rolesList[rolesIdx + 1]);
+    }
+  },[role, setRole, number_of_collaborators]);
+
+  useEffect(() => {
+    updateRole1to2();
+  },[number_of_collaborators, updateRole1to2]);
+
+  // Add the form organization option to the decision list, based on number_of_collaborators >= 3
+  const addOrganizationOption = useCallback(() => {
+    const rolesIdx = rolesList.indexOf(role);
+    const newDecision = baseDecisions.find((decision) => decision.id === "formOrganization");
+    if (rolesIdx == 2 && number_of_collaborators >= 3 && !decisions.some((decision) => decision.id === "formOrganization")) {
+      if (newDecision) {
+        const mappedChoices = newDecision.choices.map((choice) => ({
+          ...choice,
+          effect: () => {
+            if (choice.effect === "formOrganization") {
+              formOrganization();
+            }
+          },
+        }));  
+        setDecisions([
+          ...decisions,
+          { ...newDecision, choices: mappedChoices },
+        ]);
+      }
+    }
+  },[decisions, formOrganization, number_of_collaborators, role, setDecisions]);
+
+  useEffect(() => {
+    addOrganizationOption();
+  },[number_of_collaborators, addOrganizationOption]);
 
   // Update personal influence
   const updatePersonalInfluence = useCallback(() => {
@@ -116,6 +156,15 @@ export function useGameEffects() {
   useEffect(() => {
     updateShowNumberOfContributors();
   },[number_of_contributors, updateShowNumberOfContributors]);
+
+  // Update number of organizations
+  const updateNumberOfOrganizations = useCallback(() => {
+    setShowNumberOfOrganizations(number_of_organizations > 0);
+  },[number_of_organizations,setShowNumberOfOrganizations]);
+
+  useEffect(() => {
+    updateNumberOfOrganizations();
+  },[updateNumberOfOrganizations,number_of_organizations])
 
   // Update tool productivity
   const updateToolProductivity = useCallback(() => {

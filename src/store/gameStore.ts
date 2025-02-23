@@ -68,9 +68,9 @@ interface GameState {
   setValueGenerationSpeed: (count: number) => void;
 
   show_number_of_organizations: boolean;
-  setShowNumberOfOrganization: (visible: boolean) => void;
+  setShowNumberOfOrganizations: (visible: boolean) => void;
   number_of_organizations: number;
-  setNumberOfOrganization: (count: number) => void;
+  setNumberOfOrganizations: (count: number) => void;
 
   // Decisions
   decisions: Decision[],
@@ -137,9 +137,9 @@ export const useGameStore = create<GameState>((set) => ({
   setValueGenerationSpeed: (count: number) => set({ value_generation_speed: count }),
 
   show_number_of_organizations: false,
-  setShowNumberOfOrganization: (visible: boolean) => set({ show_number_of_organizations: visible }),
+  setShowNumberOfOrganizations: (visible: boolean) => set({ show_number_of_organizations: visible }),
   number_of_organizations: 0,
-  setNumberOfOrganization: (count: number) => set({ number_of_organizations: count }),
+  setNumberOfOrganizations: (count: number) => set({ number_of_organizations: count }),
 
   // Decisions
   decisions: [],

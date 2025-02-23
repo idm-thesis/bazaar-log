@@ -1,0 +1,26 @@
+[
+    {
+        "id": "addCollaborator",
+        "text": "A developer kindly asks if you are open to collaboration.",
+        "choices": [
+            {
+                "label": "Yes, let's collaborate!",
+                "effect": "addCollaborator"
+            },
+            {
+                "label": "No, content with the status quo.",
+                "effect": "removeDecision_addCollaborator"
+            }
+        ]
+    },
+    {
+        "id": "formOrganization",
+        "text": "You may now form an organization.",
+        "choices": [
+            {
+                "label": "Form an organization",
+                "effect": "formOrganization"
+            }
+        ]
+    }
+]

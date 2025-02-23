@@ -1,7 +1,27 @@
 [
-    "Pre-Internet",
-    "Web 1.0",
-    "Web 2.0",
-    "Web 3.0",
-    "Artificial Intelligence"
+    {
+        "era": "Pre-Internet",
+        "info_speed": 1,
+        "eraDuration": 60000
+    },
+    {
+        "era": "Web 1.0",
+        "info_speed": 10,
+        "eraDuration": 60000
+    },
+    {
+        "era": "Web 2.0",
+        "info_speed": 30,
+        "eraDuration": 60000
+    },
+    {
+        "era": "Web 3.0",
+        "info_speed": 60,
+        "eraDuration": 60000
+    },
+    {
+        "era": "Artificial Intelligence",
+        "info_speed": 100,
+        "eraDuration": 60000
+    }
 ]
