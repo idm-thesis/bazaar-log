@@ -47,6 +47,10 @@ export default function OpenSourceGalaxyUI() {
   const [isClient, setIsClient] = useState(false);
   useEffect(() => setIsClient(true), []);
 
+  const formatNumber = (value: number | undefined | null) => {
+    return typeof value === "number" ? value.toLocaleString() : "";
+  };
+
   return isClient ? (
     <div className="grid grid-cols-3 gap-6 min-h-screen">
       <div className="col-span-1 m-2 space-y-3">
@@ -58,12 +62,10 @@ export default function OpenSourceGalaxyUI() {
           <p>
             <strong>Role:</strong> {role}
           </p>
-          {show_personal_influence && (
+          {show_personal_influence && personal_influence !== undefined && (
             <p>
               <strong>Personal Influence:</strong>{" "}
-              {typeof personal_influence === "number"
-                ? personal_influence.toLocaleString()
-                : ""}
+              {formatNumber(personal_influence)}
             </p>
           )}
         </div>
@@ -74,47 +76,33 @@ export default function OpenSourceGalaxyUI() {
           </p>
           <p>
             <strong>Information Transmission Speed:</strong>{" "}
-            {information_transmission_speed.toLocaleString()}
+            {formatNumber(information_transmission_speed)}
           </p>
-          {show_number_of_users && (
+          {show_number_of_users && number_of_users !== undefined && (
             <p>
-              <strong>Number of Users:</strong>{" "}
-              {typeof number_of_users === "number"
-                ? number_of_users.toLocaleString()
-                : ""}
+              <strong>Number of Users:</strong> {formatNumber(number_of_users)}
             </p>
           )}
-          {show_number_of_contributors && (
+          {show_number_of_contributors && number_of_contributors !== undefined && (
             <p>
               <strong>Number of Contributors:</strong>{" "}
-              {typeof number_of_contributors === "number"
-                ? number_of_contributors.toLocaleString()
-                : ""}
+              {formatNumber(number_of_contributors)}
             </p>
           )}
-          {show_number_of_collaborators && (
+          {show_number_of_collaborators && number_of_contributors !== undefined && (
             <p>
               <strong>Number of Collaborators:</strong>{" "}
-              {typeof number_of_collaborators === "number"
-                ? number_of_collaborators.toLocaleString()
-                : ""}
+              {formatNumber(number_of_collaborators)}
             </p>
           )}
         </div>
         <div className="border-t-2 pt-2">
           <h2 className="text-lg font-bold">Contribution</h2>
-          {show_next_tool && (
+          {show_next_tool && next_tool_numerator !== undefined && next_tool_denominator !== undefined && (
             <div>
               <p>
-                <strong>Next Tool:</strong>{" "}
-                {typeof next_tool_numerator === "number"
-                  ? next_tool_numerator.toLocaleString()
-                  : ""}{" "}
-                /{" "}
-                {typeof next_tool_denominator === "number"
-                  ? next_tool_denominator.toLocaleString()
-                  : ""}{" "}
-                lines of code
+                <strong>Next Tool:</strong> {formatNumber(next_tool_numerator)}{" "}
+                / {formatNumber(next_tool_denominator)} lines of code
               </p>
               <Progress
                 value={(next_tool_numerator / next_tool_denominator) * 100}
@@ -122,34 +110,34 @@ export default function OpenSourceGalaxyUI() {
               />
             </div>
           )}
-          {show_number_of_tools && (
+          {show_number_of_tools && number_of_tools !== undefined && (
             <p>
               <strong>Number of Tools Developed:</strong>{" "}
-              {number_of_tools.toLocaleString()}
+              {formatNumber(number_of_tools)}
             </p>
           )}
-          {show_tool_productivity && (
+          {show_tool_productivity && tool_productivity !== undefined && (
             <p>
-              <strong>Productivity:</strong>{" "}
-              {tool_productivity.toLocaleString()} lines/second
+              <strong>Productivity:</strong> {formatNumber(tool_productivity)}{" "}
+              lines/second
             </p>
           )}
-          {show_value_generation_speed && (
+          {show_value_generation_speed && value_generation_speed !== undefined && (
             <p>
               <strong>Value Generation Speed:</strong>{" "}
-              {value_generation_speed.toLocaleString()} /second
+              {formatNumber(value_generation_speed)} $/second
             </p>
           )}
-          {show_value_generated && (
+          {show_value_generated && value_generated !== undefined && (
             <p>
               <strong>Total Value Generated:</strong>{" "}
-              {value_generated.toLocaleString()}
+              {formatNumber(value_generated)}
             </p>
           )}
-          {show_number_of_organizations && (
+          {show_number_of_organizations && number_of_organizations !== undefined && (
             <p>
               <strong>Number of Organizations:</strong>{" "}
-              {number_of_organizations.toLocaleString()}
+              {formatNumber(number_of_organizations)}
             </p>
           )}
         </div>
@@ -177,6 +165,7 @@ export default function OpenSourceGalaxyUI() {
       </div>
       <div className="flex items-center justify-center col-span-2 min-h-full bg-slate-300">
         <div className="m-2">
+          {isClient ? (
           <motion.div
             whileTap={{ scale: 0.8 }}
             className="bg-gray-800 text-white p-3 rounded-lg cursor-pointer"
@@ -184,6 +173,7 @@ export default function OpenSourceGalaxyUI() {
           >
             <FaCode />
           </motion.div>
+          ) : null}
         </div>
       </div>
       {/* <div className="fixed bottom-4 left-4 bg-white bg-opacity-80 p-2 m-2 hover:text-orange-400 duration-300 transition text-3xl text-primary">

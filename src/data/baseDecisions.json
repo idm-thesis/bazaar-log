@@ -9,7 +9,7 @@
             },
             {
                 "label": "No, content with the status quo.",
-                "effect": "removeDecision_addCollaborator"
+                "effect": "removeDecision"
             }
         ]
     },

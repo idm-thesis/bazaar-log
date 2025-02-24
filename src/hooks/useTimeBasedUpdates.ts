@@ -7,6 +7,8 @@ import baseDecisions from "@/data/baseDecisions.json";
 import rolesList from "@/data/roles.json";
 
 export function useTimeBasedUpdates() {
+  const addCollaboratorProbability = 0.8;
+  const addCollaboratorInterval = 5000;
   const {
     personal_influence,
     era,
@@ -19,8 +21,9 @@ export function useTimeBasedUpdates() {
   const { addCollaborator, removeDecision } = useDecisionSystem();
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const personalInfluenceRef = useRef(personal_influence);
+
   // Track personal_influence separately to avoid unnecessary effect re-runs
+  const personalInfluenceRef = useRef(personal_influence);
   useEffect(() => {
     personalInfluenceRef.current = personal_influence;
   }, [personal_influence]);
@@ -45,66 +48,59 @@ export function useTimeBasedUpdates() {
   useEffect(() => {
     const eraObj = eras.find((e) => e.era === era);
     const eraIdx = eraObj ? eras.indexOf(eraObj) : -1;
-
-    if (personalInfluenceRef.current > 20 && eraIdx > 0 && rolesList.indexOf(role) < 3) {
-      if (!intervalRef.current) {
-        intervalRef.current = setInterval(() => {
-          if (!decisions.some((decision) => decision.id === "addCollaborator")) {
-            if (Math.random() < 0.8) {
-              // 80% probability
-              const newDecision = baseDecisions.find(
-                (decision) => decision.id === "addCollaborator"
-              );
-              if (newDecision) {
-                // Map effect strings to actual functions
-                const mappedChoices = newDecision.choices.map((choice) => ({
-                  ...choice,
-                  effect: () => {
-                    if (choice.effect === "addCollaborator") {
-                      addCollaborator();
-                    } else if (choice.effect.startsWith("removeDecision_")) {
-                      const decisionId = choice.effect.replace(
-                        "removeDecision_",
-                        ""
-                      );
-                      removeDecision(decisionId);
-                    }
-                  },
-                }));
   
-                setDecisions([
-                  ...decisions,
-                  { ...newDecision, choices: mappedChoices },
-                ]);
-              }
-            }
-          }
-        }, 5000);
-      } 
-      else {
-        // If the condition is no longer met, clear the interval
+    if (
+      personalInfluenceRef.current > 20 &&
+      eraIdx > 0 &&
+      rolesList.indexOf(role) < 3
+    ) {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
-      }
-        
-
-      return () => {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = null;
+  
+      intervalRef.current = setInterval(() => {
+        if (!decisions.some((decision) => decision.id === "addCollaborator")) {
+          if (Math.random() < addCollaboratorProbability) {
+            const newDecision = baseDecisions.find(
+              (decision) => decision.id === "addCollaborator"
+            );
+            if (newDecision) {
+              setDecisions((prev) => [
+                ...prev,
+                {
+                  ...newDecision,
+                  choices: newDecision.choices.map((choice) => ({
+                    ...choice,
+                    effect: () => {
+                      if (choice.effect === "addCollaborator") {
+                        addCollaborator();
+                      } else {
+                        removeDecision("addCollaborator");
+                      }
+                    },
+                  })),
+                },
+              ]);
+            }
+          }
         }
-      };
+      }, addCollaboratorInterval);
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     }
-  }, [
-    era,
-    setDecisions,
-    addCollaborator,
-    removeDecision,
-    decisions,
-    role,
-  ]);
+  
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [era, role, decisions, setDecisions, addCollaborator, removeDecision]);
+  
 
   return { era };
 }

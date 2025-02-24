@@ -74,7 +74,7 @@ interface GameState {
 
   // Decisions
   decisions: Decision[],
-  setDecisions: (newDecisions: Decision[]) => void,
+  setDecisions: (update: (prev: Decision[]) => Decision[]) => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -143,5 +143,5 @@ export const useGameStore = create<GameState>((set) => ({
 
   // Decisions
   decisions: [],
-  setDecisions: (newDecisions) => set({ decisions: newDecisions }),
+  setDecisions: (update) => set((state) => ({ decisions: update(state.decisions) })),
 }));

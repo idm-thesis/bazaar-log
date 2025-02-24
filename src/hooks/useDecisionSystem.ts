@@ -16,8 +16,8 @@ export function useDecisionSystem() {
 
   // Remove decision by ID
   const removeDecision = useCallback((decisionId: string) => {
-    setDecisions(decisions.filter((decision) => decision.id !== decisionId));
-  }, [setDecisions, decisions]);
+    setDecisions(prevDecisions => prevDecisions.filter(decision => decision.id !== decisionId));
+  }, [setDecisions]);
 
   // Add collaborator and remove the decision
   const addCollaborator = useCallback(() => {
@@ -31,6 +31,7 @@ export function useDecisionSystem() {
     setRole(roles[3]);
     setNumberOfOrganizations(number_of_organizations + 1);
     removeDecision("formOrganization");
+    removeDecision("addCollaborator");
   },[setRole, removeDecision, number_of_organizations, setNumberOfOrganizations]);
 
   return { decisions, addCollaborator, removeDecision, formOrganization };
