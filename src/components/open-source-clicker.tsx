@@ -117,7 +117,7 @@ export default function OpenSourceGalaxyUI() {
               </p>
               <Progress
                 value={(next_tool_numerator / next_tool_denominator) * 100}
-                className="my-2"
+                className="my-2 bg-accent/20 [&>div]:bg-foreground"
               />
             </div>
           )}
