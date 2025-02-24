@@ -10,6 +10,7 @@ import { useTimeBasedUpdates } from "@/hooks/useTimeBasedUpdates";
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { useDecisionSystem } from "@/hooks/useDecisionSystem";
+// import { useStyleChange } from "@/hooks/useStyleChange";
 
 export default function OpenSourceGalaxyUI() {
   const {
@@ -42,7 +43,7 @@ export default function OpenSourceGalaxyUI() {
   const { writeCode } = useCodeGenerationMechanics();
   const { decisions } = useDecisionSystem();
   const { era } = useTimeBasedUpdates();
-  useGameEffects(); // Runs all effect logic
+  useGameEffects(); // Runs all effect logic 
 
   const [isClient, setIsClient] = useState(false);
   useEffect(() => setIsClient(true), []);
@@ -51,8 +52,18 @@ export default function OpenSourceGalaxyUI() {
     return typeof value === "number" ? value.toLocaleString() : "";
   };
 
+  const eraToClass: Record<string, string> = {
+    "Pre-Internet": "preInternet",
+    "Web 1.0": "web1",
+    "Web 2.0": "web2",
+    "Web 3.0": "web3",
+    "Artificial Intelligence": "ai",
+  };
+
+  const classToAdd = eraToClass[era] || "preInternet";
+
   return isClient ? (
-    <div className="grid grid-cols-3 gap-6 min-h-screen">
+    <div className={`grid grid-cols-3 gap-6 min-h-screen bg-background text-foreground ${classToAdd}`}>
       <div className="col-span-1 m-2 space-y-3">
         <div>
           <h2 className="text-lg font-bold">Personal Information</h2>
@@ -163,12 +174,12 @@ export default function OpenSourceGalaxyUI() {
           ))}
         </div>
       </div>
-      <div className="flex items-center justify-center col-span-2 min-h-full bg-slate-300">
+      <div className={`flex items-center justify-center col-span-2 min-h-full`}>
         <div className="m-2">
           {isClient ? (
           <motion.div
             whileTap={{ scale: 0.8 }}
-            className="bg-gray-800 text-white p-3 rounded-lg cursor-pointer"
+            className="bg-accent text-foreground p-3 rounded-lg cursor-pointer"
             onClick={() => writeCode(1)}
           >
             <FaCode />
