@@ -10,7 +10,7 @@ import { useTimeBasedUpdates } from "@/hooks/useTimeBasedUpdates";
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { useDecisionSystem } from "@/hooks/useDecisionSystem";
-// import { useStyleChange } from "@/hooks/useStyleChange";
+import RetroWindow from "@/components/RetroWindow";
 
 export default function OpenSourceGalaxyUI() {
   const {
@@ -62,8 +62,11 @@ export default function OpenSourceGalaxyUI() {
 
   const classToAdd = eraToClass[era] || "preInternet";
 
+  // const [showWinBox, setShowWinBox] = useState(false);
+
   return isClient ? (
     <div className={`grid grid-cols-3 gap-6 min-h-screen bg-background text-foreground ${classToAdd}`}>
+      <RetroWindow />
       <div className="col-span-1 m-2 space-y-3">
         <div>
           <h2 className="text-lg font-bold">Personal Information</h2>
