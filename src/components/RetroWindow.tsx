@@ -4,9 +4,38 @@ import { useEffect, useState } from "react";
 
 declare global {
   interface Window {
-    WinBox: any;
+    WinBox?:new (options: {
+      title?: string;
+      width?: string | number;
+      height?: string | number;
+      x?: string | number;
+      y?: string | number;
+      top?: number;
+      right?: number;
+      bottom?: number;
+      left?: number;
+      index?: number;
+      mount?: HTMLElement;
+      html?: string;
+      modal?: boolean;
+      hidden?: boolean;
+      fullscreen?: boolean;
+      noHeader?: boolean;
+      noMin?: boolean;
+      noMax?: boolean;
+      noClose?: boolean;
+      onclose?: () => boolean | void;
+      onresize?: (width: number, height: number) => void;
+      onmove?: (x: number, y: number) => void;
+    }) => WinBoxInstance;
   }
 }
+interface WinBoxInstance {
+  close(): void;
+  focus(): void;
+  setTitle(title: string): void;
+}
+
 
 export default function RetroWindow() {
   const [winboxLoaded, setWinboxLoaded] = useState(false);

@@ -36,3 +36,9 @@ declare module "winbox" {
     resize(width: string | number, height: string | number): void;
   }
 }
+
+declare global {
+  interface Window {
+    WinBox: typeof WinBox;
+  }
+}
