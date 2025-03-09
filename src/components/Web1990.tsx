@@ -11,6 +11,8 @@ import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { useDecisionSystem } from "@/hooks/useDecisionSystem";
 import WinBox from "@/components/WinBox";
+// import { useCalendarStore } from "@/store/useCalendarStore";
+import CalendarWindow from "./windows/calendar";
 
 export default function Web1990() {
   const {
@@ -66,8 +68,11 @@ export default function Web1990() {
   // const [showWinBox, setShowWinBox] = useState(false);
 
   return isClient ? (
-    <div className="grid grid-cols-6 gap-4" style={{background: '#555555'}}>
-      <div className="absolute top-4 right-4 justify-items-center space-y-2" style={{background: '#D9D9D9', color: '#000'}}>
+    <div className="grid grid-cols-6 gap-4" style={{ background: "#555555" }}>
+      <div
+        className="absolute top-4 right-4 justify-items-center space-y-2"
+        style={{ background: "#D9D9D9", color: "#000" }}
+      >
         <WinBox id="dashboard" title="Dashboard" width="600px" height="400px">
           <div className="p-4">
             <div
@@ -207,9 +212,7 @@ export default function Web1990() {
         <WinBox id="news" title="News" width="600px" height="400px">
           <div className="p-4">
             <h2 className="text-lg font-bold">Open Source Daily</h2>
-            <p>
-              Welcome to Open Source Daily news.
-            </p>
+            <p>Welcome to Open Source Daily news.</p>
           </div>
         </WinBox>
         <WinBox id="notebook" title="Notebook" width="600px" height="400px">
@@ -227,16 +230,11 @@ export default function Web1990() {
           height="400px"
         >
           <div className="p-4">
-            <h2 className="text-lg font-bold">Open Source</h2>
+            <h2 className="text-lg font-bold">Local Area Network</h2>
             <p>Discover how open-source communities revolutionized software.</p>
           </div>
         </WinBox>
-        <WinBox id="calendar" title="Calendar" width="600px" height="400px">
-          <div className="p-4">
-            <h2 className="text-lg font-bold">Open Source</h2>
-            <p>Discover how open-source communities revolutionized software.</p>
-          </div>
-        </WinBox>
+        <CalendarWindow />
       </div>
     </div>
   ) : null;
