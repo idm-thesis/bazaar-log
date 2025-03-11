@@ -1,7 +1,7 @@
 "use client";
 import { useGameStore } from "@/store/gameStore";
 import { useEffect, useRef } from "react";
-import eras from "@/data/eras.json";
+// import eras from "@/data/eras.json";
 import { useDecisionSystem } from "./useDecisionSystem";
 import baseDecisions from "@/data/baseDecisions.json";
 import rolesList from "@/data/roles.json";
@@ -12,10 +12,10 @@ export function useTimeBasedUpdates() {
   const {
     personal_influence,
     era,
-    setEra,
+    // setEra,
     decisions,
     setDecisions,
-    setInformationTransmissionSpeed,
+    // setInformationTransmissionSpeed,
     role,
   } = useGameStore();
   const { addCollaborator, removeDecision } = useDecisionSystem();
@@ -29,29 +29,29 @@ export function useTimeBasedUpdates() {
   }, [personal_influence]);
 
   // Update era based on time passed
-  useEffect(() => {
-    let eraIndex = eras.findIndex((e) => e.era === era);
-    if (eraIndex === -1 || eraIndex >= eras.length - 1) return;
-    const interval = setInterval(() => {
-      eraIndex++;
-      if (eraIndex < eras.length) {
-        const nextEra = eras[eraIndex];
-        setEra(nextEra.era);
-        setInformationTransmissionSpeed(nextEra.info_speed);
-      }
-    }, eras[eraIndex].eraDuration);
+  // useEffect(() => {
+  //   let eraIndex = eras.findIndex((e) => e.era === era);
+  //   if (eraIndex === -1 || eraIndex >= eras.length - 1) return;
+  //   const interval = setInterval(() => {
+  //     eraIndex++;
+  //     if (eraIndex < eras.length) {
+  //       const nextEra = eras[eraIndex];
+  //       setEra(nextEra.era);
+  //       setInformationTransmissionSpeed(nextEra.info_speed);
+  //     }
+  //   }, eras[eraIndex].eraDuration);
 
-    return () => clearInterval(interval);
-  }, [era, setEra, setInformationTransmissionSpeed]);
+  //   return () => clearInterval(interval);
+  // }, [era, setEra, setInformationTransmissionSpeed]);
 
   // Randomly add collaboration decision every 5 seconds
   useEffect(() => {
-    const eraObj = eras.find((e) => e.era === era);
-    const eraIdx = eraObj ? eras.indexOf(eraObj) : -1;
+    // const eraObj = eras.find((e) => e.era === era);
+    // const eraIdx = eraObj ? eras.indexOf(eraObj) : -1;
   
     if (
       personalInfluenceRef.current > 20 &&
-      eraIdx > 0 &&
+      // eraIdx > 0 &&
       rolesList.indexOf(role) < 3
     ) {
       if (intervalRef.current) {
@@ -100,7 +100,4 @@ export function useTimeBasedUpdates() {
       }
     };
   }, [era, role, decisions, setDecisions, addCollaborator, removeDecision]);
-  
-
-  return { era };
 }
