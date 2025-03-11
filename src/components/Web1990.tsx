@@ -1,6 +1,5 @@
 "use client";
 import { useGameEffects } from "@/hooks/useGameEffects";
-import { useTimeBasedUpdates } from "@/hooks/useTimeBasedUpdates";
 import { useState, useEffect } from "react";
 import CalendarWindow from "./windows/calendar";
 import DashboardWindow from "./windows/dashboard";
@@ -13,7 +12,6 @@ export default function Web1990() {
 
   const [isClient, setIsClient] = useState(false);
   useEffect(() => setIsClient(true), []);
-  useTimeBasedUpdates();
 
   return isClient ? (
     <div className="grid grid-cols-6 gap-4">

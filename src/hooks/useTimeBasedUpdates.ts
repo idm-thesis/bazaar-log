@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 // import eras from "@/data/eras.json";
 import { useDecisionSystem } from "./useDecisionSystem";
 import baseDecisions from "@/data/baseDecisions.json";
-import rolesList from "@/data/roles.json";
+// import rolesList from "@/data/roles.json";
 
 export function useTimeBasedUpdates() {
   const addCollaboratorProbability = 0.8;
@@ -50,9 +50,10 @@ export function useTimeBasedUpdates() {
     // const eraIdx = eraObj ? eras.indexOf(eraObj) : -1;
   
     if (
-      personalInfluenceRef.current > 20 &&
-      // eraIdx > 0 &&
-      rolesList.indexOf(role) < 3
+      // personalInfluenceRef.current > 20 &&
+      // // eraIdx > 0 &&
+      // rolesList.indexOf(role) < 3
+      true
     ) {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -86,12 +87,13 @@ export function useTimeBasedUpdates() {
           }
         }
       }, addCollaboratorInterval);
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    }
+    } 
+    // else {
+    //   if (intervalRef.current) {
+    //     clearInterval(intervalRef.current);
+    //     intervalRef.current = null;
+    //   }
+    // }
   
     return () => {
       if (intervalRef.current) {

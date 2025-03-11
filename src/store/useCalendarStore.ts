@@ -7,11 +7,19 @@ interface CalendarState {
     setYear: (year: number) => void;
 }
 
-const startingYear = 1990; // Starting year in the game, 
+export const startingYear = 1970; // Starting year in the game,
+export const minYear = 1970;
+export const maxYear = 2025;
 
 export const useCalendarStore = create<CalendarState>((set) => ({
     currentYear: startingYear,
-    nextYear: () => set((state) => ({currentYear: state.currentYear + 1})),
-    prevYear: () => set((state) => ({currentYear: state.currentYear - 1})),
-    setYear: (year) => set({currentYear: year}),
+    nextYear: () => 
+        set((state) => ({currentYear: state.currentYear < maxYear ? state.currentYear + 1 : state.currentYear,})),
+    prevYear: () => set((state) => ({currentYear: 
+        state.currentYear > minYear ? state.currentYear - 1 : state.currentYear
+    })),
+    setYear: (year) => 
+        set(() => ({
+            currentYear: year >= minYear && year <= maxYear ? year: startingYear,
+        })),
 }));
