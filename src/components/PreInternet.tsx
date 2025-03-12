@@ -1,6 +1,10 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useCalendarStore, minYear, maxYear } from "@/store/useCalendarStore";
+import { useGameStore } from "@/store/gameStore";// Get the state type from your store
+type GameState = ReturnType<typeof useGameStore.getState>;
+import { useCodeGenerationMechanics } from "@/hooks/useCodeGenerationMechanics";
+import { useGameEffects } from "@/hooks/useGameEffects";
 
 export default function PreInternet() {
   const [terminalLines, setTerminalLines] = useState<string[]>([]);
@@ -9,12 +13,92 @@ export default function PreInternet() {
 
   const textRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const typingSpeed = 30;
+  const typingSpeed = 10;
   const typingLineDelay = 200;
 
   const { currentYear, prevYear, nextYear } = useCalendarStore();
   const [bootYear] = useState(currentYear);
   const [calendarMode, setCalendarMode] = useState(false);
+  const [dashboardMode, setDashboardMode] = useState(false);
+
+  const {
+    name,
+    role,
+    personal_influence,
+    information_transmission_speed,
+    number_of_users,
+    next_tool_numerator,
+    next_tool_denominator,
+    number_of_tools,
+    value_generated,
+  } = useGameStore();
+  const prevDashboardState = useRef<GameState>({} as GameState);
+  const { writeCode } = useCodeGenerationMechanics();
+  const showDashboardUpdates = () => {
+    const currentState = useGameStore.getState(); // get latest values
+    
+    const diffs: string[] = [];
+    
+    // Helper: Compare each key and add to diffs if different
+    const compareAndPush = (key: keyof GameState, label: string) => {
+      const prevValue = prevDashboardState.current[key];
+      const currentValue = currentState[key];
+    
+      if (prevValue !== currentValue) {
+        diffs.push(`${label.padEnd(28)}: ${currentValue}`);
+      }
+    };
+    
+  
+    // PERSONAL INFORMATION SECTION
+  compareAndPush("name", "Name");
+  compareAndPush("role", "Role");
+  compareAndPush("personal_influence", "Personal Influence");
+  // ENVIRONMENT SECTION
+  compareAndPush("information_transmission_speed", "Information Transfer Speed");
+  compareAndPush("number_of_users", "Number of Users");
+
+  // WORKING PROGRESS SECTION
+  // WORKING PROGRESS SECTION (special case for numerator/denominator)
+  const prevNumerator = prevDashboardState.current.next_tool_numerator;
+  const prevDenominator = prevDashboardState.current.next_tool_denominator;
+  const currentNumerator = currentState.next_tool_numerator;
+  const currentDenominator = currentState.next_tool_denominator;
+
+  const numeratorChanged = prevNumerator !== currentNumerator;
+  const denominatorChanged = prevDenominator !== currentDenominator;
+
+  if (numeratorChanged) {
+    diffs.push(`Progress to Next Tool   : ${currentNumerator} / ${currentDenominator}`);
+  } else if (denominatorChanged) {
+    // Show denominator if it changed and numerator didn't
+    diffs.push(`Progress to Next Tool   : ${currentNumerator} / ${currentDenominator}`);
+  }
+  compareAndPush("number_of_tools", "Number of Tools");
+
+  // IMPACT AND VALUE SECTION
+  compareAndPush("value_generated", "Value Generated");
+
+  // Update previous dashboard snapshot
+  prevDashboardState.current = { ...currentState };
+  
+    // Update previous state for next comparison
+    prevDashboardState.current = { ...currentState };
+  
+    if (diffs.length === 0) {
+      diffs.push("No changes detected.");
+    }
+  
+    setTerminalLines((prev) => [
+      ...prev,
+      `[Dashboard Update]`,
+      ...diffs,
+      "────────────────────────────────────────────",
+    ]);
+  };
+  
+  // const era = "Web 1.0";
+  useGameEffects(); // Runs all effect logic
 
   const typeText = async (
     text: string,
@@ -85,8 +169,8 @@ export default function PreInternet() {
     setIsTyping(true);
     // await typeLine(`> ${input}`);
 
-    // Calendar navigation logic
     if (calendarMode) {
+      // Calendar navigation logic
       await typeLine(`${input}`);
       if (input === "p") {
         if (currentYear <= minYear) {
@@ -94,9 +178,9 @@ export default function PreInternet() {
             ...prev,
             `[Calendar]`,
             `- Year: ${currentYear}`,
-            `Already at the minimum year (${minYear})`,
-            "Go to next year: type 'N' + Enter",
-            "Or, press Enter to exit Calendar",
+            `Already at the earliest calendar year (${minYear})`,
+            "Go to next year [N]",
+            "Exit Calendar [Q]: ",
           ]);
         } else {
           prevYear();
@@ -111,9 +195,9 @@ export default function PreInternet() {
             ...prev,
             `[Calendar]`,
             `- Year: ${currentYear}`,
-            `Already at the maximum year (${maxYear})`,
-            "Go to previous year: type 'P' + Enter",
-            "Or, press Enter to exit Calendar",
+            `Already at the latest calendar year (${maxYear})`,
+            "Go to previous year [P]",
+            "Exit Calendar [Q]: ",
           ]);
         } else {
           nextYear();
@@ -122,16 +206,39 @@ export default function PreInternet() {
             updateCalendarDisplay(updatedYear);
           }, 0);
         }
-      } else if (input === "") {
+      } else if (input === "q") {
         exitCalendarMode();
       } else {
         setTerminalLines((prev) => [
           ...prev,
           `[Calendar] Invalid input: "${input}"`,
-          "Press 'P' for previous year, 'N' for next year, or Enter to exit.",
+          "Go to previous year [P]",
+          "Go to next year [N]",
+          "Exit Calendar [Q]: ",
         ]);
       }
-
+      // Reset input after handling command
+      setUserInput("");
+      setInputDisplay("");
+      setIsTyping(false);
+      return; // Don't run normal command handling
+    } 
+    else if (dashboardMode) 
+      {
+      await typeLine(`${input}`);
+      if (input === "q") {
+        exitDashboardMode();
+      } else if (input === "") {
+        setTerminalLines((prev) => [
+          ...prev,
+          `[Dashboard] Invalid empty input`,
+          `Enter anything and then press [Enter] to commit a line of code to your next tool`,
+          `Exit Dashboard [Q]`,
+        ]);
+      } else {
+        writeCode(1);
+        showDashboardUpdates(); 
+      }
       // Reset input after handling command
       setUserInput("");
       setInputDisplay("");
@@ -150,21 +257,30 @@ export default function PreInternet() {
         "    Bazaar.log",
         "",
         "SHORT DESCRIPTION",
-        "    Short description of game Bazaar.log.",
+        "    Bazaar.log is a browser-based game to introduce the past, present, and future of the Internet and the open-source ecosystem.",
         "",
         "LONG DESCRIPTION",
-        "    Long description of game Bazaar.log.",
+        "    Bazaar.log is a browser-based game to introduce the past, present, and future of the Internet and the open-source ecosystem. In this game, you are a developer working at a university's computer lab.",
+        "    There are two things you can do in Bazaar.log: 1) explore the history of the Internet and the open-source ecosystem, and 2) work on your open-source career, starting from a developer. You will be making some decisions along the way to help progress the game story.",
+        "    You have 5 functions to play with: news, dashboard, notebook, local area network, and calendar:",
+        "    News: read news of the year about technology and more.",
+        "    Dashboard: place to develop and view your open-source career. Write code, publish software, and view statistics available about your career.",
+        "    Notebook: read your To-dos of the year.",
+        "    Local Area Network (LAN): browse online community discussions about news, communications among your colleages at lab, and more.",
+        "    Calendar: By turning the calendar, you can drive the game forward or backward in time.",
         "",
       ];
     } else if (input === "list") {
       responseLines = [
         "",
-        "AVAILABLE ACTIONS",
+        "AVAILABLE COMMANDS",
         "    news        View the latest news articles",
         "    dashboard   Display work progress dashboard",
         "    notebook    View TODO list",
         "    calendar    View the yearly calendar",
         "    lan         Check Local Area Network messages",
+        "    list        List all available commands",
+        "    help        Get detailed information about Bazaar.log",
         "",
       ];
     } else if (input === "calendar") {
@@ -173,14 +289,43 @@ export default function PreInternet() {
         "[Loading...]",
         "[Calendar]",
         `- Year: ${currentYear}`,
-        "Go to previous year: press 'P'",
-        "Go to next year: press 'N'",
-        "Or, press Enter to exit Calendar: ",
+        "Go to previous year [P]",
+        "Go to next year [N]",
+        "Exit Calendar [Q]: ",
       ];
     } else if (input === "notebook") {
       responseLines = ["Notebook: TODO - This section is under construction."];
     } else if (input === "dashboard") {
-      responseLines = ["Dashboard: TODO - Dashboard stats will appear here."];
+      setDashboardMode(true);
+      prevDashboardState.current = useGameStore.getState(); // Capture baseline
+      responseLines = [
+        "[Loading...]",
+        "[Dashboard - Open-Source Career Status Report]",
+        "────────────────────────────────────────────",
+        "Personal Information",
+        `Name                    : ${name}`,
+        `Role                    : ${role}`,
+        `Personal Influence      : ${personal_influence}`,
+        "────────────────────────────────────────────",
+
+        "Environment",
+        `Year                    : ${currentYear}`,
+        `Information Transfer Speed : ${information_transmission_speed}`,
+        `Number of Users         : ${number_of_users}`,
+        "────────────────────────────────────────────",
+
+        "Working Progress",
+        `Progress to Next Tool   : ${next_tool_numerator} / ${next_tool_denominator}`,
+        `Number of Tools         : ${number_of_tools}`,
+        "────────────────────────────────────────────",
+
+        "Impact and Value",
+        `Value Generated         : ${value_generated}`,
+        "────────────────────────────────────────────",
+
+        "Enter any command and press [Enter] to commit a line of code to your next tool.",
+        "Exit dashboard [Q]: ",
+      ];
     } else if (input === "news") {
       responseLines = ["News: TODO - Latest articles will be displayed here."];
     } else if (input === "lan") {
@@ -215,6 +360,11 @@ export default function PreInternet() {
     setTerminalLines((prev) => [...prev, "[Exiting Calendar]"]);
   };
 
+  const exitDashboardMode = () => {
+    setDashboardMode(false);
+    setTerminalLines((prev) => [...prev, "[Exiting Dashboard]"]);
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const upperInput = e.target.value.toUpperCase();
     setUserInput(upperInput);
@@ -237,13 +387,13 @@ export default function PreInternet() {
         "Welcome to the Bazaar.log. We are in " + bootYear + " now.",
         "-----------------------------------------------------",
         "Available Commands:",
-        "- news      : View the latest news articles",
-        "- dashboard : Display work progress dashboard",
-        "- notebook  : View TODO list",
-        "- calendar  : View the yearly calendar",
-        "- lan       : Access LAN communications",
-        "- list      : List all available commands",
-        "- help      : Get detailed information about Bazaar.log",
+        "    news        View the latest news articles",
+        "    dashboard   Display work progress dashboard",
+        "    notebook    View TODO list",
+        "    calendar    View the yearly calendar",
+        "    lan         Check Local Area Network messages",
+        "    list        List all available commands",
+        "    help        Get detailed information about Bazaar.log",
         "",
         "Type 'list' to see all commands or 'help' for game details.",
         "-----------------------------------------------------",
@@ -273,9 +423,9 @@ export default function PreInternet() {
     const lines = [
       "[Calendar]",
       `- Year: ${year}`,
-      "Go to previous year: press 'P'",
-      "Go to next year: press 'N'",
-      "Or, press Enter to exit Calendar",
+      "Go to previous year [P]",
+      "Go to next year [N]",
+      "Exit Calendar [Q]: ",
     ];
 
     setTerminalLines((prev) => [...prev, ...lines]);
