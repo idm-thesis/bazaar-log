@@ -11,11 +11,11 @@ export default function Home() {
     return value >= min && value < max;
   }
   const {currentYear} = useCalendarStore();
-  if (isInRange(currentYear, 1970, 1990)) {
+  if (isInRange(currentYear, 1970, 1991)) {
     return (<div id="screen" className="min-h-screen" style={{background: '#000'}}>
       <PreInternet />
     </div>);
-  } else if (isInRange(currentYear, 1990, 2010)) {
+  } else if (isInRange(currentYear, 1991, 2010)) {
     return (
     <div className="min-h-screen" style={{background: '#555555'}}>
       <Web1990 />
