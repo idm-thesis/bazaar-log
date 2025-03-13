@@ -1,10 +1,13 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { useCalendarStore } from "@/store/useCalendarStore";
+import { useCalendarStore, calendarInterval } from "@/store/useCalendarStore";
 import { useGameStore } from "@/store/gameStore"; // Get the state type from your store
 type GameState = ReturnType<typeof useGameStore.getState>;
+type GameContentItem = typeof gameContent[number];
+
 import { useCodeGenerationMechanics } from "@/hooks/useCodeGenerationMechanics";
 import { useGameEffects } from "@/hooks/useGameEffects";
+import gameContent from "@/data/Bazaar_log_game_content.json";
 
 export default function PreInternet() {
   const [terminalLines, setTerminalLines] = useState<string[]>([]);
@@ -34,6 +37,10 @@ export default function PreInternet() {
   } = useGameStore();
   const prevDashboardState = useRef<GameState>({} as GameState);
   const { writeCode } = useCodeGenerationMechanics();
+
+  const softLine = "--------------------------------------------";
+  const hardLine = "────────────────────────────────────────────";
+
   const showDashboardUpdates = () => {
     const currentState = useGameStore.getState(); // get latest values
 
@@ -99,12 +106,22 @@ export default function PreInternet() {
       ...prev,
       `[Dashboard Update]`,
       ...diffs,
-      "--------------------------------------------",
+      `${softLine}`,
     ]);
   };
 
-  // const era = "Web 1.0";
   useGameEffects(); // Runs all effect logic
+
+  const [currentContentList, setCurrentContentList] = useState<GameContentItem[]>([]);
+
+  useEffect(() => {
+    const startYear = currentYear - (calendarInterval - 1);
+    const filteredContent = gameContent.filter((item) => {
+      return item.year >= startYear && item.year <= currentYear;
+    });
+    filteredContent.sort((a, b) => a.year - b.year);
+    setCurrentContentList(filteredContent);
+  },[currentYear]);
 
   const typeText = async (
     text: string,
@@ -189,6 +206,7 @@ export default function PreInternet() {
       } else {
         setTerminalLines((prev) => [
           ...prev,
+          `${softLine}`,
           "[Calendar]",
           `Invalid input: "${input}"`,
           `Current Year: ${currentYear}`,
@@ -209,7 +227,9 @@ export default function PreInternet() {
       } else if (input === "") {
         setTerminalLines((prev) => [
           ...prev,
-          `[Dashboard] Invalid empty input`,
+          `${softLine}`,
+          "[Dashboard]",
+          "Invalid empty input",
           "Actions:",
           `- Enter anything and press [Enter] to commit a line of code to your next tool`,
           `- [Q] Exit Dashboard Mode`,
@@ -273,42 +293,120 @@ export default function PreInternet() {
         "- [Q] Exit Calendar Mode",
       ];
     } else if (input === "notebook") {
-      responseLines = ["Notebook: TODO - This section is under construction."];
+      responseLines = [
+        "[Loading...]",
+        "[Notebook]",
+        `To-do's (${currentYear - (calendarInterval - 1)} - ${currentYear}) :`
+      ];
+      if (currentContentList.length === 0) {
+        responseLines.push(
+          "You didn't record any to-dos in the past 5 years.",
+        )
+      } else {
+        currentContentList.forEach((item) => {
+          responseLines.push(
+            `${softLine}`,
+            `Year        : ${item.year}`,
+            "\n"
+          );
+          item.notebook.forEach((note) => {
+            responseLines.push(`- ${note}`);
+          });
+          responseLines.push("\n");
+        });
+      }
+      responseLines.push(
+        "[Exiting Notebook]", 
+        `${hardLine}`
+      )
     } else if (input === "dashboard") {
       setDashboardMode(true);
       prevDashboardState.current = useGameStore.getState(); // Capture baseline
       responseLines = [
         "[Loading...]",
         "[Dashboard - Open-Source Career Status Report]",
-        "--------------------------------------------",
+        `${softLine}`,
         "Personal Information",
         `Name                    : ${name}`,
         `Role                    : ${role}`,
         `Personal Influence      : ${personal_influence}`,
-        "--------------------------------------------",
+        `${softLine}`,
 
         "Environment",
         `Year                    : ${currentYear}`,
         `Information Transfer Speed : ${information_transmission_speed}`,
         `Number of Users         : ${number_of_users}`,
-        "--------------------------------------------",
+        `${softLine}`,
 
         "Working Progress",
         `Progress to Next Tool   : ${next_tool_numerator} / ${next_tool_denominator}`,
         `Number of Tools         : ${number_of_tools}`,
-        "--------------------------------------------",
+        `${softLine}`,
 
         "Impact and Value",
         `Value Generated         : ${value_generated}`,
-        "--------------------------------------------",
+        `${softLine}`,
 
         "Enter anything and press [Enter] to commit a line of code to your next tool.",
         "Exit dashboard [Q]: ",
       ];
     } else if (input === "news") {
-      responseLines = ["News: TODO - Latest articles will be displayed here."];
+      responseLines = [
+        "[Loading...]",
+        "[News]",
+        `News from ${currentYear - (calendarInterval - 1)} to ${currentYear}:`
+      ];
+      if (currentContentList.length === 0) {
+        responseLines.push("No news available for the past 5 year.");
+      } else {
+        currentContentList.forEach((item) => {
+          responseLines.push(
+            `${softLine}`,
+            `Year        : ${item.year}`,
+            "\n"
+          );
+          item.news.forEach((news) => {
+            responseLines.push(
+            `Headline    : ${news.headline}`,
+            `Summary     : ${news.summary}`,
+            "\n"
+            );
+          })
+        });
+      }
+      responseLines.push(
+        "[Exiting News]", 
+        `${hardLine}`
+      )
     } else if (input === "lan") {
-      responseLines = ["LAN: TODO - No messages found on the network."];
+      responseLines = [
+        "[Loading...]",
+        "[Local Area Network]",
+        `Local Area Network communications from ${currentYear - (calendarInterval - 1)} to ${currentYear}:`
+      ];
+      if (currentContentList.length === 0) {
+        responseLines.push("No LAN communication for the past 5 year.");
+      } else {
+        currentContentList.forEach((item) => {
+          responseLines.push(
+            `${softLine}`,
+            `Year        : ${item.year}`,
+            "\n"
+          );
+          item.lan_posts.forEach((post) => {
+            responseLines.push(
+            `Title       : ${post.title}`,
+            `Author      : ${post.author}`,
+            `Content     : ${post.content}`,
+            "\n"
+            );
+          })
+        });
+      }
+      responseLines.push(
+        "[Exiting LAN]", 
+        `${hardLine}`
+      )
     } else {
       responseLines = [
         `Unknown command: "${input}"`,
@@ -336,12 +434,16 @@ export default function PreInternet() {
 
   const exitCalendarMode = () => {
     setCalendarMode(false);
-    setTerminalLines((prev) => [...prev, "[Exiting Calendar]", "────────────────────────────────────────────"]);
+    setTerminalLines((prev) => [
+      ...prev, 
+      "[Exiting Calendar]", 
+      `${hardLine}`
+    ]);
   };
 
   const exitDashboardMode = () => {
     setDashboardMode(false);
-    setTerminalLines((prev) => [...prev, "[Exiting Dashboard]", "────────────────────────────────────────────"]);
+    setTerminalLines((prev) => [...prev, "[Exiting Dashboard]", `${hardLine}`]);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -363,8 +465,8 @@ export default function PreInternet() {
         "[Loading Modules... OK]",
         "[Establishing Network Connection... OK]",
         "",
-        "Welcome to the Bazaar.log. Current year " + bootYear + ".",
-        "--------------------------------------------",
+        "Welcome to the Bazaar.log. Current year: " + bootYear + ".",
+        `${softLine}`,
         "Available Commands:",
         "    news        View the latest news articles",
         "    dashboard   Display work progress dashboard",
@@ -375,7 +477,7 @@ export default function PreInternet() {
         "    help        Get detailed information about Bazaar.log",
         "",
         "Type 'list' to see all commands or 'help' for game details.",
-        "────────────────────────────────────────────",
+        `${hardLine}`,
         "",
       ];
 
@@ -400,9 +502,11 @@ export default function PreInternet() {
   // Function: update calendar year
   const updateCalendarDisplay = (year: number) => {
     const lines = [
+      `${softLine}`,
       "[Calendar]",
       "Success! Year advanced by 5 years.",
       `Current Year: ${year}`,
+      "Check out the latest news, local area network communications, and notebook in the past 5 years.",
       "Actions:",
         "- [N] Move forward 5 years",
         "- [Q] Exit Calendar Mode",

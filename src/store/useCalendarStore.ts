@@ -10,7 +10,7 @@ interface CalendarState {
 export const startingYear = 1970; // Starting year in the game,
 export const minYear = 1970;
 export const maxYear = 2025;
-const calendarInterval = 5;
+export const calendarInterval = 5;
 
 export const useCalendarStore = create<CalendarState>((set) => ({
     currentYear: startingYear,

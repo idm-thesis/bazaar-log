@@ -1,0 +1,612 @@
+[
+    {
+        "year": 1969,
+        "news": [
+            {
+                "headline": "ARPANET Sends First Message: 'LO'",
+                "summary": "UCLA researchers successfully transmit the first message over ARPANET, marking the birth of modern computer networking."
+            }
+        ],
+        "notebook": [
+            "Coordinate with Stanford team for ARPANET connection tests.",
+            "Draft report on potential applications for wide-area networking.",
+            "Prepare demo for department on ARPANET communication success."
+        ],
+        "lan_posts": [
+            {
+                "title": "Historic Moment: First ARPANET Message Sent!",
+                "author": "alice",
+                "content": "We just sent 'LO' to Stanford. System crashed after that, but hey, it's a start!"
+            },
+            {
+                "title": "What’s next for ARPANET?",
+                "author": "bob",
+                "content": "Remote logins are cool, but imagine distributed computing over this network!"
+            }
+        ]
+    },
+    {
+        "year": 1971,
+        "news": [
+            {
+                "headline": "UNIX Version 1 Released by Bell Labs",
+                "summary": "Ken Thompson and Dennis Ritchie release the first version of UNIX, a simple and elegant operating system that will influence generations."
+            },
+            {
+                "headline": "Email Debuts on ARPANET",
+                "summary": "Electronic mail becomes the latest innovation on ARPANET, offering a faster way to exchange messages between users."
+            }
+        ],
+        "notebook": [
+            "Request UNIX source code access from Bell Labs.",
+            "Explore UNIX filesystem structure and process handling.",
+            "Test ARPANET email with our partner lab in Stanford.",
+            "Write a memo on potential for email as a new communication method."
+        ],
+        "lan_posts": [
+            {
+                "title": "UNIX Source Code Access",
+                "author": "dave",
+                "content": "Just got the UNIX code from Bell Labs. Simple, powerful... this could be a game changer!"
+            },
+            {
+                "title": "First Email Test Completed",
+                "author": "carol",
+                "content": "Sent a test message over ARPANET email. Delivered in seconds! We need to use this for lab coordination."
+            },
+            {
+                "title": "Could Email Replace Memos?",
+                "author": "bob",
+                "content": "This email thing might save a ton of time on paper memos and meetings. Thoughts?"
+            }
+        ]
+    },
+    {
+        "year": 1973,
+        "news": [
+            {
+                "headline": "Ethernet Invented at Xerox PARC",
+                "summary": "Robert Metcalfe develops Ethernet, enabling fast and reliable local area networking in computer labs and offices."
+            }
+        ],
+        "notebook": [
+            "Review Ethernet paper from Xerox PARC.",
+            "Discuss local networking upgrades with lab director.",
+            "Plan a test setup for Ethernet in the lab once equipment arrives."
+        ],
+        "lan_posts": [
+            {
+                "title": "Ethernet: Local Networking Game-Changer?",
+                "author": "emma",
+                "content": "Reading the specs from PARC. 3 Mbps over coax cable! Imagine how fast our terminals could communicate."
+            },
+            {
+                "title": "LAN vs ARPANET",
+                "author": "ken",
+                "content": "If Ethernet makes LANs blazing fast, should we prioritize internal networking before focusing on ARPANET projects?"
+            }
+        ]
+    },
+    {
+        "year": 1974,
+        "news": [
+            {
+                "headline": "AT&T Turns UNIX into a Commercial Product",
+                "summary": "After licensing UNIX to universities, AT&T begins to commercialize the operating system, restricting its distribution and modification."
+            }
+        ],
+        "notebook": [
+            "Investigate alternatives to UNIX due to licensing restrictions.",
+            "Propose development of an in-house UNIX-like operating system.",
+            "Reach out to university contacts about software sharing."
+        ],
+        "lan_posts": [
+            {
+                "title": "UNIX License Restrictions Announced",
+                "author": "dave",
+                "content": "AT&T just clamped down on UNIX. This could hurt collaboration. Time to consider alternatives?"
+            },
+            {
+                "title": "UNIX Alternatives?",
+                "author": "emma",
+                "content": "Anyone interested in developing a UNIX clone for internal lab use? We can't keep paying for licenses!"
+            }
+        ]
+    },
+    {
+        "year": 1975,
+        "news": [
+            {
+                "headline": "Homebrew Computer Club Sparks DIY Computing Revolution",
+                "summary": "A gathering of hobbyists in Silicon Valley starts a movement that will lead to the rise of personal computing and open collaboration."
+            }
+        ],
+        "notebook": [
+            "Attend next Homebrew Computer Club meeting.",
+            "Network with fellow hobbyists about microcomputer designs.",
+            "Explore possibilities for sharing lab projects with the Club."
+        ],
+        "lan_posts": [
+            {
+                "title": "Who's Going to Homebrew?",
+                "author": "ken",
+                "content": "Heard about the new Altair 8800 demo at Homebrew. We should check it out!"
+            }
+        ]
+    },
+    {
+        "year": 1976,
+        "news": [
+            {
+                "headline": "Bill Gates Publishes 'An Open Letter to Hobbyists'",
+                "summary": "In an open letter, Microsoft co-founder Bill Gates criticizes software sharing, arguing it undermines commercial software development."
+            },
+            {
+                "headline": "Blockade: The Birth of Snake Games",
+                "summary": "Gremlin releases Blockade, the original 'snake' game, laying groundwork for future casual gaming."
+            }
+        ],
+        "notebook": [
+            "Debate implications of Gates' letter at lab meeting.",
+            "Draft a response article on software sharing ethics.",
+            "Playtest Blockade on lab hardware during downtime."
+        ],
+        "lan_posts": [
+            {
+                "title": "Bill Gates' Open Letter: Fair or Greedy?",
+                "author": "bob",
+                "content": "Just read Gates' piece. He calls hobbyists thieves for sharing code! Isn’t knowledge meant to be shared?"
+            },
+            {
+                "title": "The Future of Software: Commercial or Free?",
+                "author": "ken",
+                "content": "I get where Gates is coming from. If no one pays for software, how do we fund development? Thoughts?"
+            },
+            {
+                "title": "Open-Source vs Proprietary Debate Heats Up",
+                "author": "carol",
+                "content": "Some say we need a middle ground. What if we share non-commercial tools, but charge for business apps?"
+            },
+            {
+                "title": "Poll: Should We Share Our Code Publicly?",
+                "author": "emma",
+                "content": "Vote yes/no: Do we release our lab’s toolset to Homebrew and other communities? Why or why not?"
+            },
+            {
+                "title": "How Do You Define 'Stealing' Code?",
+                "author": "dave",
+                "content": "Gates claims copying his BASIC interpreter is theft. But isn’t it innovation if we improve it?"
+            },
+            {
+                "title": "License Ideas: Any Proposals?",
+                "author": "patricia",
+                "content": "We need a license that encourages sharing but gives creators recognition. Anyone heard of ‘copyleft’?"
+            },
+            {
+                "title": "A Visit to Homebrew Post-Gates Letter",
+                "author": "alice",
+                "content": "Met folks at Homebrew yesterday. Some furious about Gates; others thinking of starting software co-ops!"
+            },
+            {
+                "title": "The Commercialization of Software: A Necessary Evil?",
+                "author": "bob",
+                "content": "Maybe commercialization will push quality. But how do we avoid gatekeeping knowledge behind paywalls?"
+            },
+            {
+                "title": "Gates' Letter Discussion Tomorrow at Lunch",
+                "author": "ken",
+                "content": "Lab lunch debate: Where should we stand on Gates’ position? Open floor!"
+            }
+        ]
+    },
+    {
+        "year": 1979,
+        "news": [
+            {
+                "headline": "CompuServe Launches MicroNET: First Consumer Online Service",
+                "summary": "CompuServe opens access to e-mail, news, and forums to the public via MicroNET, renamed later to CompuServe Information Service (CIS)."
+            }
+        ],
+        "notebook": [
+            "Sign up for MicroNET trial account to explore its services.",
+            "Evaluate potential for online collaboration with remote researchers via CIS."
+        ],
+        "lan_posts": [
+            {
+                "title": "MicroNET Trial Experience",
+                "author": "carol",
+                "content": "Got my MicroNET account. Email for regular folks! This changes everything."
+            }
+        ]
+    },
+    {
+        "year": 1981,
+        "news": [
+            {
+                "headline": "Xerox Star 8010 Debuts: GUI, Mouse, and More",
+                "summary": "The Xerox Star introduces a graphical user interface, mouse input, and networking features, shaping the future of personal computing."
+            }
+        ],
+        "notebook": [
+            "Research Xerox Star's GUI features and potential for lab adoption.",
+            "Consider integrating a mouse interface in our workstation prototypes."
+        ],
+        "lan_posts": [
+            {
+                "title": "Xerox Star Demo Impressions",
+                "author": "emma",
+                "content": "Icons, windows, and a mouse? Feels futuristic, but expensive. Could be worth it!"
+            }
+        ]
+    },
+    {
+        "year": 1982,
+        "news": [
+            {
+                "headline": "TCP/IP Becomes the Standard for Network Protocols",
+                "summary": "TCP/IP wins the protocol wars, becoming the networking standard that connects disparate systems and forms the backbone of the Internet."
+            }
+        ],
+        "notebook": [
+            "Implement TCP/IP stack on lab network.",
+            "Draft proposal for inter-lab communications using standardized protocols."
+        ],
+        "lan_posts": [
+            {
+                "title": "TCP/IP Implementation Status?",
+                "author": "ken",
+                "content": "Our team is testing TCP/IP today. Should be fully operational by next month!"
+            }
+        ]
+    },
+    {
+        "year": 1983,
+        "news": [
+            {
+                "headline": "Richard Stallman Launches GNU Project",
+                "summary": "Frustrated by proprietary software restrictions, Stallman announces the GNU Project to develop a free UNIX-compatible operating system."
+            }
+        ],
+        "notebook": [
+            "Download and review the GNU Manifesto.",
+            "Discuss lab support for the GNU Project at next strategy meeting."
+        ],
+        "lan_posts": [
+            {
+                "title": "GNU Project Announced!",
+                "author": "dave",
+                "content": "Stallman’s on a mission for software freedom. Thinking of contributing—anyone else interested?"
+            }
+        ]
+    },
+    {
+        "year": 1985,
+        "news": [
+            {
+                "headline": "Tetris: The Game that Took the USSR by Storm",
+                "summary": "Alexey Pajitnov creates Tetris, a puzzle game that captivates users worldwide and kicks off a global phenomenon."
+            },
+            {
+                "headline": "Free Software Foundation Established",
+                "summary": "Richard Stallman formalizes his efforts for software freedom by creating the FSF, supporting GNU and defending user rights."
+            }
+        ],
+        "notebook": [
+            "Install Tetris on lab workstations (during breaks!).",
+            "Review FSF mission and determine lab alignment with its goals."
+        ],
+        "lan_posts": [
+            {
+                "title": "Tetris High Score Challenge",
+                "author": "emma",
+                "content": "I’m at 50,000 points on Tetris—top that!"
+            },
+            {
+                "title": "FSF Membership Anyone?",
+                "author": "carol",
+                "content": "Thinking of signing up for FSF. Stallman’s ideas are radical but important!"
+            }
+        ]
+    },
+    {
+        "year": 1987,
+        "news": [
+            {
+                "headline": "GIF Image Format Introduced by CompuServe",
+                "summary": "CompuServe introduces the GIF format, enabling efficient compression and display of color images, revolutionizing digital media."
+            }
+        ],
+        "notebook": [
+            "Explore using GIF format for lab data visualization.",
+            "Prepare demo on GIF compression for team meeting."
+        ],
+        "lan_posts": [
+            {
+                "title": "GIF Support in Our Viewer?",
+                "author": "ken",
+                "content": "If we add GIF support, we could share complex images with the remote team more easily."
+            }
+        ]
+    },
+    {
+        "year": 1990,
+        "news": [
+            {
+                "headline": "Nexus: The First Web Browser and Editor Released",
+                "summary": "Tim Berners-Lee introduces Nexus, the world's first web browser and editor, marking the beginning of the World Wide Web."
+            }
+        ],
+        "notebook": [
+            "Test Nexus browser on lab machines.",
+            "Draft proposal: Potential applications for a universal hypertext system."
+        ],
+        "lan_posts": [
+            {
+                "title": "Nexus Browser - The Web Begins",
+                "author": "emma",
+                "content": "Tried Nexus today. Hyperlinks everywhere! This could revolutionize how we share knowledge."
+            }
+        ]
+    },
+    {
+        "year": 1991,
+        "news": [
+            {
+                "headline": "Linus Torvalds Releases the Linux Kernel",
+                "summary": "A 21-year-old Finnish student releases a free, open-source UNIX-like kernel, igniting a collaborative development revolution."
+            },
+            {
+                "headline": "HTTP Protocol Introduced for the World Wide Web",
+                "summary": "HTTP simplifies information retrieval across the nascent web, making it easier for people to access and share resources online."
+            }
+        ],
+        "notebook": [
+            "Download and compile Linux 0.01.",
+            "Test HTTP requests with our internal servers.",
+            "Explore combining Linux with TCP/IP stack for a low-cost web server."
+        ],
+        "lan_posts": [
+            {
+                "title": "Linux Kernel First Impressions",
+                "author": "ken",
+                "content": "Compiled without a hitch! Could we use this instead of expensive UNIX licenses?"
+            },
+            {
+                "title": "HTTP: A Simpler Way to Access Information?",
+                "author": "bob",
+                "content": "Tested HTTP on the lab network. Super intuitive compared to FTP!"
+            }
+        ]
+    },
+    {
+        "year": 1993,
+        "news": [
+            {
+                "headline": "World Wide Web and HTML Introduced to the Public",
+                "summary": "HTML and the World Wide Web become publicly available, offering a simple way to create and navigate hyperlinked documents across the Internet."
+            }
+        ],
+        "notebook": [
+            "Design the lab's first HTML webpage.",
+            "Research web servers compatible with TCP/IP and HTTP."
+        ],
+        "lan_posts": [
+            {
+                "title": "Our First Lab Website!",
+                "author": "carol",
+                "content": "Launched our lab’s homepage using HTML. Clean, functional... but we need better graphics!"
+            }
+        ]
+    },
+    {
+        "year": 1994,
+        "news": [
+            {
+                "headline": "URL Standard Introduced: Simplifying the Web",
+                "summary": "Uniform Resource Locators (URLs) make accessing resources on the World Wide Web easier and more standardized."
+            },
+            {
+                "headline": "W3C Formed to Standardize Web Technologies",
+                "summary": "Tim Berners-Lee founds the World Wide Web Consortium (W3C) to develop protocols and standards for the growth of the Web."
+            },
+            {
+                "headline": "Netscape Navigator Launches, Making the Web User-Friendly",
+                "summary": "Netscape Communications releases Navigator, a user-friendly web browser that brings the internet to the masses."
+            }
+        ],
+        "notebook": [
+            "Submit proposal for joining W3C working groups.",
+            "Test Netscape Navigator across lab workstations for compatibility."
+        ],
+        "lan_posts": [
+            {
+                "title": "Netscape: The Browser We've Been Waiting For",
+                "author": "emma",
+                "content": "Installed Netscape today. Fast, clean UI—this could take the Web mainstream."
+            }
+        ]
+    },
+    {
+        "year": 1995,
+        "news": [
+            {
+                "headline": "Microsoft Launches Internet Explorer",
+                "summary": "Microsoft enters the browser market with Internet Explorer, setting the stage for fierce competition in the Browser Wars."
+            }
+        ],
+        "notebook": [
+            "Compare Internet Explorer with Netscape Navigator.",
+            "Evaluate browser compatibility for lab's internal website."
+        ],
+        "lan_posts": [
+            {
+                "title": "Browser Wars Incoming?",
+                "author": "bob",
+                "content": "IE seems solid, but Netscape has the lead. Will Microsoft’s dominance tip the scales?"
+            }
+        ]
+    },
+    {
+        "year": 1996,
+        "news": [
+            {
+                "headline": "Flash Technology Introduced for Interactive Web Content",
+                "summary": "Macromedia releases Flash, allowing designers to create rich animations and interactive experiences on websites."
+            }
+        ],
+        "notebook": [
+            "Experiment with Flash animations for lab website homepage.",
+            "Assess performance impact of Flash on low-end terminals."
+        ],
+        "lan_posts": [
+            {
+                "title": "Flash: Gimmick or Game Changer?",
+                "author": "carol",
+                "content": "Tried embedding a Flash animation on our homepage. Slick, but sluggish on older machines."
+            }
+        ]
+    },
+    {
+        "year": 1998,
+        "news": [
+            {
+                "headline": "Netscape Open-Sources Its Browser, Founding Mozilla",
+                "summary": "Facing stiff competition, Netscape releases its browser source code to the community, giving birth to the Mozilla Project."
+            },
+            {
+                "headline": "Open Source Initiative Formed to Promote Collaborative Development",
+                "summary": "The OSI rebrands the free software movement to attract businesses and encourages wider adoption of open-source practices."
+            },
+            {
+                "headline": "First Open Source Summit Draws Developers and Business Leaders",
+                "summary": "The Open Source Summit unites developers and executives to discuss the future of open software collaboration."
+            }
+        ],
+        "notebook": [
+            "Download and review Mozilla source code.",
+            "Register for Open Source Summit and prepare notes on lab contributions.",
+            "Evaluate OSI licensing for our lab's upcoming project."
+        ],
+        "lan_posts": [
+            {
+                "title": "Mozilla: Code Dive Anyone?",
+                "author": "emma",
+                "content": "Just downloaded the Mozilla source. Huge codebase, but lots of potential!"
+            },
+            {
+                "title": "OSI: Business-Friendly Open Source?",
+                "author": "dave",
+                "content": "OSI’s pitch sounds corporate. Do we gain wider adoption or lose hacker cred?"
+            }
+        ]
+    },
+    {
+        "year": 1999,
+        "news": [
+            {
+                "headline": "Collaborative Development Platforms on the Rise",
+                "summary": "Platforms like SourceForge emerge, enabling developers to host, manage, and collaborate on open-source projects worldwide."
+            }
+        ],
+        "notebook": [
+            "Create an account on SourceForge and upload our open-source tools.",
+            "Draft documentation guidelines for community contributors."
+        ],
+        "lan_posts": [
+            {
+                "title": "SourceForge: Anyone Joined Yet?",
+                "author": "carol",
+                "content": "Created a project on SourceForge! Now we need volunteers for documentation."
+            }
+        ]
+    },
+    {
+        "year": 2000,
+        "news": [
+            {
+                "headline": "Y2K Bug Passes with Minimal Disruption",
+                "summary": "Despite widespread fears, the transition to the year 2000 causes few system failures, thanks to extensive preparation."
+            },
+            {
+                "headline": "Gnutella P2P File Sharing Network Launched",
+                "summary": "The decentralized Gnutella network empowers users to share files peer-to-peer without a central server, igniting debates on copyright."
+            },
+            {
+                "headline": "Apache Subversion Released: CVS Replacement",
+                "summary": "Apache Subversion offers version control improvements over CVS, supporting more efficient collaboration in software development."
+            },
+            {
+                "headline": "Microsoft Unveils .NET Framework at Professional Developers Conference",
+                "summary": "At PDC 2000, Microsoft reveals the .NET platform, marking a new era for Windows development and web services integration."
+            }
+        ],
+        "notebook": [
+            "Finalize post-mortem report on Y2K lab fixes.",
+            "Test Gnutella client and assess bandwidth impact.",
+            "Migrate lab projects from CVS to Subversion.",
+            "Review .NET framework specs and evaluate potential integration with lab systems."
+        ],
+        "lan_posts": [
+            {
+                "title": "Y2K: Crisis Averted",
+                "author": "ken",
+                "content": "Midnight rolled over with no major issues. Guess we can all sleep now!"
+            },
+            {
+                "title": "Gnutella Testing Results",
+                "author": "emma",
+                "content": "Peer-to-peer file sharing works, but bandwidth spikes might cause trouble."
+            },
+            {
+                "title": "Subversion: Goodbye CVS?",
+                "author": "bob",
+                "content": "Subversion’s atomic commits are a huge relief. Who’s on board for migration?"
+            },
+            {
+                "title": ".NET - Microsoft’s Web Future?",
+                "author": "dave",
+                "content": "Read through the PDC slides. If MS pulls this off, they might dominate web services too."
+            }
+        ]
+    },
+    {
+        "year": 2008,
+        "news": [
+            {
+                "headline": "GitHub Launches to Revolutionize Code Collaboration",
+                "summary": "GitHub makes it easy for developers to host, share, and collaborate on software projects."
+            }
+        ],
+        "notebook": [
+            "Create GitHub account and upload lab projects.",
+            "Draft community guidelines for project contributions."
+        ],
+        "lan_posts": [
+            {
+                "title": "GitHub is Live!",
+                "author": "greg",
+                "content": "Tested out GitHub today. Forking and pull requests are slick. Should we move our codebase there?"
+            }
+        ]
+    },
+    {
+        "year": 2018,
+        "news": [
+            {
+                "headline": "Microsoft Acquires GitHub for $7.5 Billion",
+                "summary": "Microsoft’s acquisition of GitHub raises concerns over corporate influence in the open-source community."
+            }
+        ],
+        "notebook": [
+            "Discuss potential migration from GitHub with the team.",
+            "Prepare FAQ for contributors worried about Microsoft’s role."
+        ],
+        "lan_posts": [
+            {
+                "title": "GitHub Buyout Thoughts?",
+                "author": "linda",
+                "content": "Not sure how to feel about this. MS loves Linux now? Who knew."
+            }
+        ]
+    }
+]
