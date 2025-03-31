@@ -13,17 +13,30 @@ export default function Web1990() {
   const [isClient, setIsClient] = useState(false);
   useEffect(() => setIsClient(true), []);
 
+  const eraStr = "1990s";
+
   return isClient ? (
     <div className="grid grid-cols-6 gap-4">
       <div
-        className="absolute top-4 right-4 justify-items-center space-y-2"
-        style={{ background: "#D9D9D9", color: "#000" }}
+        className="absolute top-4 right-4 justify-items-center border border-black"
+        style={{ background: "#D9D9D9", color: "#000", fontFamily: "Ohlfs" }}
       >
-        <DashboardWindow era="1990s-2000s"/>
-        <NewsWindow />
-        <NotebookWindow />
-        <LANWindow />
-        <CalendarWindow />
+        <div className="border border-black w-full">
+          <DashboardWindow era={eraStr} />
+        </div>
+
+        <div className="border border-black w-full">
+          <NewsWindow era={eraStr} />
+        </div>
+        <div className="border border-black w-full">
+          <NotebookWindow era={eraStr} />
+        </div>
+        <div className="border border-black w-full">
+          <LANWindow era={eraStr} />
+        </div>
+        <div className="border border-black w-full">
+          <CalendarWindow era={eraStr} />
+        </div>
       </div>
     </div>
   ) : null;

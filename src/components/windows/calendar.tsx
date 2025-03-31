@@ -2,10 +2,10 @@
 import WinBox from "@/components/WinBox";
 import { useCalendarStore } from "@/store/useCalendarStore";
 
-export default function CalendarWindow() {
+export default function CalendarWindow({era}: {era: string}) {
   const { currentYear, nextYear } = useCalendarStore();
   return (
-    <WinBox id="calendar" title="Calendar" width="600px" height="400px">
+    <WinBox id="calendar" title="Calendar" width="600px" height="400px" era={era}>
       <div className="p-4 grid grid-cols-1 justify-center">
         {/* <div className="flex justify-center mt-4">
           <button

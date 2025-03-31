@@ -8,6 +8,7 @@ import React, {
   CSSProperties,
 } from "react";
 import { createPortal } from "react-dom";
+import loadEraStyles from "@/hooks/useCurrentWinboxStyle";
 
 declare global {
   interface Window {
@@ -53,6 +54,7 @@ interface WinBoxProps {
   content?: ReactNode;
   style?: CSSProperties;
   className?: string;
+  era?: string;
 }
 
 export default function Window({
@@ -63,6 +65,7 @@ export default function Window({
   y = "center",
   children,
   className = "",
+  era = "",
 }: WinBoxProps) {
   const [isOpen, setIsOpen] = useState(false);
   const winboxRef = useRef<WinBoxInstance | null>(null);
@@ -79,6 +82,12 @@ export default function Window({
       document.body.appendChild(script);
     }
   }, []);
+
+  useEffect(()=>{
+    if(era) {
+      loadEraStyles(era);
+    }
+  }, [era]);
 
   const openWindow = () => {
     if (!window.WinBox) {

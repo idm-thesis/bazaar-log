@@ -517,7 +517,7 @@ export default function PreInternet() {
 
   return (
     <div
-      id="monitor"
+      id="screen"
       className="flex items-center justify-center w-screen h-screen"
     >
       <div

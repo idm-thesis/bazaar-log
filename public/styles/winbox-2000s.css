@@ -1,0 +1,17 @@
+.winbox {
+    background: linear-gradient(90deg, #ff4500, #00ff00);
+    border-radius: 6px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+  }
+  
+  .wb-body {
+    color: #ddd;
+    background: #222;
+  }
+  
+  .wb-title {
+    font-size: 14px;
+    text-transform: none;
+    font-weight: bold;
+  }
+  

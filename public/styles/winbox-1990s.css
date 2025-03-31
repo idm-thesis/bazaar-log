@@ -1,0 +1,61 @@
+.winbox {
+  background: black;
+  border-radius: 0 0 0 0;
+  box-shadow: none;
+  font-family: "Ohlfs";
+  min-width: 400px;
+  min-height: 400px;
+}
+/* Body */
+.wb-body {
+  color: #000;
+  background: #fff;
+}
+
+.wb-body .accent {
+  background: #00ff00;
+}
+
+.wb-body a,
+button {
+  color: hsl(var(--accent));
+  transition: color 0.3s ease-in-out;
+}
+
+.wb-n {
+  position: relative;
+}
+
+.wb-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: nowrap;
+}
+
+
+/* Scrollbar */
+.wb-body::-webkit-scrollbar {
+  width: 12px;
+}
+.wb-body::-webkit-scrollbar-track {
+  background: grey;
+}
+.wb-body::-webkit-scrollbar-thumb {
+  border-radius: 0;
+  background: #263040;
+}
+.wb-body::-webkit-scrollbar-thumb:window-inactive {
+  background: #181f2a;
+}
+.wb-body::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Buttons */
+.wb-min {
+  background-color: grey;
+  border-style: solid;
+  border-color: #000 5px;
+}

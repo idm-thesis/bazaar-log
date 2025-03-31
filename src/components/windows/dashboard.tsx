@@ -10,7 +10,6 @@ import { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { useDecisionSystem } from "@/hooks/useDecisionSystem";
 import { useTimeBasedUpdates } from "@/hooks/useTimeBasedUpdates";
-// import { useCalendarStore } from "@/store/useCalendarStore";
 
 export default function DashboardWindow({ era }: { era: string }) {
     const {
@@ -53,7 +52,7 @@ export default function DashboardWindow({ era }: { era: string }) {
         return typeof value === "number" ? value.toLocaleString() : "";
       };
     return (
-        <WinBox id="dashboard" title="Dashboard" width="600px" height="400px">
+        <WinBox id="dashboard" title="Dashboard" width="800px" height="600px" era={era}>
           <div className="p-4">
             <div
               className={`flex items-center justify-center col-span-2 min-h-full`}
@@ -65,7 +64,7 @@ export default function DashboardWindow({ era }: { era: string }) {
                 {isClient ? (
                   <motion.div
                     whileTap={{ scale: 0.8 }}
-                    className="bg-accent text-foreground p-3 rounded-lg cursor-pointer"
+                    className="p-3 cursor-pointer accent"
                     onClick={() => writeCode(1)}
                   >
                     <FaCode />

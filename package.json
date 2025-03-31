@@ -24,6 +24,7 @@
     "tailwind-variants": "^0.3.1",
     "tailwindcss-animate": "^1.0.7",
     "winbox": "^0.2.82",
+    "xp.css": "^0.2.6",
     "zustand": "^5.0.3"
   },
   "devDependencies": {

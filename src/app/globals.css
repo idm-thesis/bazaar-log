@@ -10,6 +10,23 @@
   font-weight: normal;
   font-style: normal;
 }
+
+@font-face {
+  font-family: "IBMPlexMono";
+  src: url("/fonts/IBMPlexMono-Regular.woff2") format("woff2"),
+  url("/fonts/IBMPlexMono-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Ohlfs";
+  src: url("/fonts/CERN-www-regular.woff2") format("woff2"),
+  url("/fonts/CERN-www-regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
 @font-face {
   font-family: "Inconsolata", serif;
   src: url("/fonts/Inconsolata-Regular.woff2") format("woff2"),
@@ -34,46 +51,6 @@
     --accent: 45 100% 50%;
     --font: "Fixedsys", "Inconsolata";
   }
-
-  /* 📟 Pre-Internet Era (CRT Monitors, DOS) */
-  .preInternet {
-    --background: 120 30% 10%; /* Deep Green Background */
-    --foreground: 120 60% 75%; /* Bright Green Text */
-    --accent: 60 100% 50%; /* Yellow for highlights */
-    --font: "Fixedsys";
-  }
-
-  /* 🌐 Web 1.0 (Netscape, Early HTML) */
-  .web1 {
-    --background: 220 100% 90%; /* Light Blue Background */
-    --foreground: 220 60% 20%; /* Dark Blue Text */
-    --accent: 0 100% 50%; /* Bright Red for links */
-    --font: "Times New Roman, serif";
-  }
-
-  /* 📱 Web 2.0 (Minimalist, Social Media) */
-  .web2 {
-    --background: 210 100% 95%; /* Soft White-Blue */
-    --foreground: 210 40% 30%; /* Dark Navy */
-    --accent: 45 100% 50%; /* Bright Orange */
-    --font: "Arial, sans-serif";
-  }
-
-  /* 🌌 Web 3.0 (Dark UI, Neon, Blockchain) */
-  .web3 {
-    --background: 280 70% 15%; /* Deep Purple */
-    --foreground: 280 80% 80%; /* Neon Violet */
-    --accent: 180 100% 50%; /* Cyan */
-    --font: "Roboto, sans-serif";
-  }
-
-  /* 🤖 Artificial Intelligence (Cyberpunk, Futuristic UI) */
-  .ai {
-    --background: 200 100% 10%; /* Deep Blue-Black */
-    --foreground: 150 100% 80%; /* Bright Neon Green */
-    --accent: 300 100% 50%; /* Magenta */
-    --font: "Open Sans, monospace";
-  }
 }
 
 /* Apply global styles based on selected theme */
@@ -97,7 +74,6 @@
   /* Make headings and paragraphs non-selectable */
   h1, h2, h3, h4, h5, h6, p, a, button {
     @apply select-none;
-    font-family: var(--font), sans-serif;
   }
 }
 
@@ -147,7 +123,7 @@
 #screen {
   position: relative;
   width: 100%;
-  height: 67.5vmin;
+  height: 100%;
   border: 30px solid transparent;
   border-image-source: url(/imgs/bezel.png);
   border-image-slice: 30 fill;
@@ -157,7 +133,7 @@
 
 #monitor {
   width: 100%;
-  height: 100%;
+  height: 67.5vmin;
 }
 
 #bezel {
