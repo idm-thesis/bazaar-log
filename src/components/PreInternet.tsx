@@ -9,7 +9,6 @@ import { useGameEffects } from "@/hooks/useGameEffects";
 import gameContent from "@/data/Bazaar_log_game_content.json";
 
 export default function PreInternet() {
-  // First, enter tutorial
   const [freePlayMode, setFreePlayMode] = useState(false);
 
   const [terminalLines, setTerminalLines] = useState<string[]>([]);
@@ -22,11 +21,43 @@ export default function PreInternet() {
   const typingLineDelay = 200;
 
   const { currentYear, nextYear } = useCalendarStore();
-  // const [bootYear] = useState(currentYear);
   const [calendarMode, setCalendarMode] = useState(false);
 
   const softLine = "--------------------------------------------";
   const hardLine = "────────────────────────────────────────────";
+
+  const listResponse = [
+    "",
+    "AVAILABLE COMMANDS",
+    "    calendar      View the yearly calendar",
+    "    news          View the latest news articles",
+    "    workstation   Develop tools at your free time, build your community for code sharing",
+    "    notebook      View TODO list",
+    "    lan           Check Local Area Network messages",
+    "    list          List all available commands",
+    "    help          Get detailed information about Bazaar.log",
+    "",
+  ];
+
+  const helpResponse = [
+    "",
+    "GAME NAME",
+    "    Bazaar.log",
+    "",
+    "SHORT DESCRIPTION",
+    "    Bazaar.log is a browser-based game to introduce the past, present, and future of the Internet and the open-source ecosystem.",
+    "",
+    "LONG DESCRIPTION",
+    "    Bazaar.log is a browser-based game to introduce the past, present, and future of the Internet and the open-source ecosystem. In this game, you are a developer working at a university's computer lab.",
+    "    There are two things you can do in Bazaar.log: 1) explore the history of the Internet and the open-source ecosystem, and 2) work on your open-source career, starting from a developer. You will be making some decisions along the way to help progress the game story.",
+    "    The game has 5 functions: notebook, news, local area network, calendar, and workstation:",
+    "    Notebook: read your To-dos of the year.",
+    "    News: read news of the year about technology and more.",
+    "    Local Area Network (LAN): browse online community discussions about news, communications among your colleages at lab, and more.",
+    "    Calendar: By turning the calendar, you can drive the game forward or backward in time.",
+    "    Workstation: place to develop your tools and build your open-source community. Write code, publish tools, and view real-time statistics of your open-source career.",
+    "",
+  ]
 
   useGameEffects(); // Runs all effect logic
 
@@ -107,7 +138,7 @@ export default function PreInternet() {
 
   // Initial welcome message when the component mounts
   const bootedRef = useRef(false);
-  const [tutorialActive, setTutorialActive] = useState(true);
+  // const [tutorialActive, setTutorialActive] = useState(true);
   useEffect(() => {
     if (bootedRef.current) return; // Already booted, skip
     bootedRef.current = true; // Mark as booted
@@ -128,7 +159,8 @@ export default function PreInternet() {
       await typeLinesWithCharacters(bootLines, typingSpeed);
 
       setIsTyping(false);
-      setTutorialActive(true);
+      // setTutorialActive(true);
+      setFreePlayMode(false);
       setTimeout(() => {
         inputRef.current?.focus();
       }, 100);
@@ -141,39 +173,10 @@ export default function PreInternet() {
     let responseLines: string[] = [];
 
     if (input === "help") {
-      responseLines = [
-        "",
-        "GAME NAME",
-        "    Bazaar.log",
-        "",
-        "SHORT DESCRIPTION",
-        "    Bazaar.log is a browser-based game to introduce the past, present, and future of the Internet and the open-source ecosystem.",
-        "",
-        "LONG DESCRIPTION",
-        "    Bazaar.log is a browser-based game to introduce the past, present, and future of the Internet and the open-source ecosystem. In this game, you are a developer working at a university's computer lab.",
-        "    There are two things you can do in Bazaar.log: 1) explore the history of the Internet and the open-source ecosystem, and 2) work on your open-source career, starting from a developer. You will be making some decisions along the way to help progress the game story.",
-        "    The game has 5 functions: notebook, news, local area network, calendar, and workstation:",
-        "    Notebook: read your To-dos of the year.",
-        "    News: read news of the year about technology and more.",
-        "    Local Area Network (LAN): browse online community discussions about news, communications among your colleages at lab, and more.",
-        "    Calendar: By turning the calendar, you can drive the game forward or backward in time.",
-        "    Workstation: place to develop your tools and build your open-source community. Write code, publish tools, and view real-time statistics of your open-source career.",
-        "",
-      ];
+      responseLines = helpResponse;
       responseLines.push(`${hardLine}`);
     } else if (input === "list") {
-      responseLines = [
-        "",
-        "AVAILABLE COMMANDS",
-        "    news          View the latest news articles",
-        "    workstation   Develop tools at your free time, build your community for code sharing",
-        "    notebook      View TODO list",
-        "    calendar      View the yearly calendar",
-        "    lan           Check Local Area Network messages",
-        "    list          List all available commands",
-        "    help          Get detailed information about Bazaar.log",
-        "",
-      ];
+      responseLines = listResponse;
       responseLines.push(`${hardLine}`);
     } else if (input === "calendar") {
       setCalendarMode(true);
@@ -213,7 +216,6 @@ export default function PreInternet() {
       responseLines = [
         "[Loading...]",
         "[News]",
-        `News from ${currentYear - (calendarInterval - 1)} to ${currentYear}:`,
       ];
       if (currentContentList.length === 0) {
         responseLines.push("No news available for the past 5 year.");
@@ -240,9 +242,7 @@ export default function PreInternet() {
       responseLines = [
         "[Loading...]",
         "[Local Area Network]",
-        `Local Area Network communications from ${
-          currentYear - (calendarInterval - 1)
-        } to ${currentYear}:`,
+        "Local Area Network communications",
       ];
       if (currentContentList.length === 0) {
         responseLines.push("No LAN communication for the past 5 year.");
@@ -271,22 +271,25 @@ export default function PreInternet() {
         "Workstation under construction. Expected year to complete: 1990.",
       ];
       responseLines.push(`${hardLine}`);
-    }else {
+    } else {
       responseLines = [
         `Unknown command: "${input}"`,
         `Type 'help' to get detailed information.`,
       ];
-    }    
+    }
 
     if (calendarMode) {
       // Calendar navigation logic
       await typeLine(`> ${input}`);
       if (input === "n") {
         nextYear();
-        setTimeout(() => {
-          const updatedYear = useCalendarStore.getState().currentYear;
-          updateCalendarDisplay(updatedYear);
-        }, 0);
+        await new Promise<void>((resolve) => {
+          setTimeout(async () => {
+            const updatedYear = useCalendarStore.getState().currentYear;
+            await updateCalendarDisplay(updatedYear);
+            resolve();
+          }, 0)
+        });
       } else if (input === "q") {
         exitCalendarMode();
       } else {
@@ -314,11 +317,15 @@ export default function PreInternet() {
   };
 
   const tutorial = Tutorial({
-    onComplete: () => setFreePlayMode(true),
+    onComplete: async () => {
+      await typeLine(
+        "** Tutorial **: Tutorial completed! Now you may want to exit the calendar mode to explore news, LAN communications, and notebook content updated to 1975. And remember, you can always check list of avaiable command by entering [LIST]."
+      );
+      setFreePlayMode(true);
+    },
     typeLine,
     handleCommand,
   });
-  
 
   const handleUserInput = async () => {
     const input = userInput.trim().toLowerCase();
@@ -328,14 +335,8 @@ export default function PreInternet() {
     setIsTyping(true);
 
     // Handle tutorial before entering free play
-    if (tutorialActive && !freePlayMode) {
-      // await typeLine(`> ${input}`);
+    if (!freePlayMode) {
       await tutorial.handleTutorialInput(input);
-      if (tutorial.tutorialCompleted) {
-        // Tutorial is completed, enter free play
-        setTutorialActive(false);
-        setFreePlayMode(true);
-      }
       setIsTyping(false);
       return;
     }
@@ -377,7 +378,7 @@ export default function PreInternet() {
   }, [terminalLines]);
 
   // Function: update calendar year
-  const updateCalendarDisplay = (year: number) => {
+  const updateCalendarDisplay = async (year: number) => {
     const lines = [
       `${softLine}`,
       "[Calendar]",
@@ -389,7 +390,11 @@ export default function PreInternet() {
       "- [Q] Exit Calendar Mode",
     ];
 
-    setTerminalLines((prev) => [...prev, ...lines]);
+    // setTerminalLines((prev) => [...prev, ...lines]);
+    for (const line of lines) {
+      await typeText(line); // Ensures sequential typing!
+      await new Promise((res) => setTimeout(res, typingLineDelay));
+    }
   };
 
   return (
