@@ -1,15 +1,17 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useCalendarStore, calendarInterval } from "@/store/useCalendarStore";
-import { useGameStore } from "@/store/gameStore"; // Get the state type from your store
-type GameState = ReturnType<typeof useGameStore.getState>;
-type GameContentItem = typeof gameContent[number];
+type GameContentItem = (typeof gameContent)[number];
+import Tutorial from "./ui/tutorial";
 
-import { useCodeGenerationMechanics } from "@/hooks/useCodeGenerationMechanics";
+// import { useCodeGenerationMechanics } from "@/hooks/useCodeGenerationMechanics";
 import { useGameEffects } from "@/hooks/useGameEffects";
 import gameContent from "@/data/Bazaar_log_game_content.json";
 
 export default function PreInternet() {
+  // First, enter tutorial
+  const [freePlayMode, setFreePlayMode] = useState(false);
+
   const [terminalLines, setTerminalLines] = useState<string[]>([]);
   const [userInput, setUserInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -20,99 +22,17 @@ export default function PreInternet() {
   const typingLineDelay = 200;
 
   const { currentYear, nextYear } = useCalendarStore();
-  const [bootYear] = useState(currentYear);
+  // const [bootYear] = useState(currentYear);
   const [calendarMode, setCalendarMode] = useState(false);
-  const [dashboardMode, setDashboardMode] = useState(false);
-
-  const {
-    name,
-    role,
-    personal_influence,
-    information_transmission_speed,
-    number_of_users,
-    next_tool_numerator,
-    next_tool_denominator,
-    number_of_tools,
-    value_generated,
-  } = useGameStore();
-  const prevDashboardState = useRef<GameState>({} as GameState);
-  const { writeCode } = useCodeGenerationMechanics();
 
   const softLine = "--------------------------------------------";
   const hardLine = "────────────────────────────────────────────";
 
-  const showDashboardUpdates = () => {
-    const currentState = useGameStore.getState(); // get latest values
-
-    const diffs: string[] = [];
-
-    // Helper: Compare each key and add to diffs if different
-    const compareAndPush = (key: keyof GameState, label: string) => {
-      const prevValue = prevDashboardState.current[key];
-      const currentValue = currentState[key];
-
-      if (prevValue !== currentValue) {
-        diffs.push(`${label.padEnd(28)}: ${currentValue}`);
-      }
-    };
-
-    // PERSONAL INFORMATION SECTION
-    compareAndPush("name", "Name");
-    compareAndPush("role", "Role");
-    compareAndPush("personal_influence", "Personal Influence");
-    // ENVIRONMENT SECTION
-    compareAndPush(
-      "information_transmission_speed",
-      "Information Transfer Speed"
-    );
-    compareAndPush("number_of_users", "Number of Users");
-
-    // WORKING PROGRESS SECTION
-    // WORKING PROGRESS SECTION (special case for numerator/denominator)
-    const prevNumerator = prevDashboardState.current.next_tool_numerator;
-    const prevDenominator = prevDashboardState.current.next_tool_denominator;
-    const currentNumerator = currentState.next_tool_numerator;
-    const currentDenominator = currentState.next_tool_denominator;
-
-    const numeratorChanged = prevNumerator !== currentNumerator;
-    const denominatorChanged = prevDenominator !== currentDenominator;
-
-    if (numeratorChanged) {
-      diffs.push(
-        `Progress to Next Tool   : ${currentNumerator} / ${currentDenominator}`
-      );
-    } else if (denominatorChanged) {
-      // Show denominator if it changed and numerator didn't
-      diffs.push(
-        `Progress to Next Tool   : ${currentNumerator} / ${currentDenominator}`
-      );
-    }
-    compareAndPush("number_of_tools", "Number of Tools");
-
-    // IMPACT AND VALUE SECTION
-    compareAndPush("value_generated", "Value Generated");
-
-    // Update previous dashboard snapshot
-    prevDashboardState.current = { ...currentState };
-
-    // Update previous state for next comparison
-    prevDashboardState.current = { ...currentState };
-
-    if (diffs.length === 0) {
-      diffs.push("No changes detected.");
-    }
-
-    setTerminalLines((prev) => [
-      ...prev,
-      `[Dashboard Update]`,
-      ...diffs,
-      `${softLine}`,
-    ]);
-  };
-
   useGameEffects(); // Runs all effect logic
 
-  const [currentContentList, setCurrentContentList] = useState<GameContentItem[]>([]);
+  const [currentContentList, setCurrentContentList] = useState<
+    GameContentItem[]
+  >([]);
 
   useEffect(() => {
     const startYear = currentYear - (calendarInterval - 1);
@@ -121,8 +41,9 @@ export default function PreInternet() {
     });
     filteredContent.sort((a, b) => a.year - b.year);
     setCurrentContentList(filteredContent);
-  },[currentYear]);
+  }, [currentYear]);
 
+  // Typing line animation
   const typeText = async (
     text: string,
     speed: number = typingSpeed
@@ -184,17 +105,182 @@ export default function PreInternet() {
     }
   };
 
-  const handleUserInput = async () => {
-    const input = userInput.trim().toLowerCase();
-    if (isTyping) return;
-    setUserInput("");
-    setInputDisplay("");
-    setIsTyping(true);
-    // await typeLine(`> ${input}`);
+  // Initial welcome message when the component mounts
+  const bootedRef = useRef(false);
+  const [tutorialActive, setTutorialActive] = useState(true);
+  useEffect(() => {
+    if (bootedRef.current) return; // Already booted, skip
+    bootedRef.current = true; // Mark as booted
+    const bootSequence = async () => {
+      setIsTyping(true);
+      const bootLines = [
+        "[Booting Bazaar.log v0.1]",
+        "[Initializing Memory Check... OK]",
+        "[Loading Modules... OK]",
+        "[Establishing Network Connection... OK]",
+        "",
+        "Now is the year 1970. You are a university lab researcher working on network technology. Recently, your lab developed a local area network using ARPANET technology and would like to test it.",
+        `${softLine}`,
+        "** Tutorial **: To get started, let's go to your notebook to see your to-do list. Type [NOTEBOOK] in the console and then press [Enter].",
+        "",
+      ];
+
+      await typeLinesWithCharacters(bootLines, typingSpeed);
+
+      setIsTyping(false);
+      setTutorialActive(true);
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    };
+
+    bootSequence();
+  }, []);
+
+  const handleCommand = async (input: string) => {
+    let responseLines: string[] = [];
+
+    if (input === "help") {
+      responseLines = [
+        "",
+        "GAME NAME",
+        "    Bazaar.log",
+        "",
+        "SHORT DESCRIPTION",
+        "    Bazaar.log is a browser-based game to introduce the past, present, and future of the Internet and the open-source ecosystem.",
+        "",
+        "LONG DESCRIPTION",
+        "    Bazaar.log is a browser-based game to introduce the past, present, and future of the Internet and the open-source ecosystem. In this game, you are a developer working at a university's computer lab.",
+        "    There are two things you can do in Bazaar.log: 1) explore the history of the Internet and the open-source ecosystem, and 2) work on your open-source career, starting from a developer. You will be making some decisions along the way to help progress the game story.",
+        "    The game has 5 functions: notebook, news, local area network, calendar, and workstation:",
+        "    Notebook: read your To-dos of the year.",
+        "    News: read news of the year about technology and more.",
+        "    Local Area Network (LAN): browse online community discussions about news, communications among your colleages at lab, and more.",
+        "    Calendar: By turning the calendar, you can drive the game forward or backward in time.",
+        "    Workstation: place to develop your tools and build your open-source community. Write code, publish tools, and view real-time statistics of your open-source career.",
+        "",
+      ];
+      responseLines.push(`${hardLine}`);
+    } else if (input === "list") {
+      responseLines = [
+        "",
+        "AVAILABLE COMMANDS",
+        "    news          View the latest news articles",
+        "    workstation   Develop tools at your free time, build your community for code sharing",
+        "    notebook      View TODO list",
+        "    calendar      View the yearly calendar",
+        "    lan           Check Local Area Network messages",
+        "    list          List all available commands",
+        "    help          Get detailed information about Bazaar.log",
+        "",
+      ];
+      responseLines.push(`${hardLine}`);
+    } else if (input === "calendar") {
+      setCalendarMode(true);
+      responseLines = [
+        "[Loading...]",
+        "[Calendar]",
+        `Current Year: ${currentYear}`,
+        "Actions:",
+        "- [N] Move forward 5 years",
+        "- [Q] Exit Calendar Mode",
+      ];
+    } else if (input === "notebook") {
+      responseLines = [
+        "[Loading...]",
+        "[Notebook]",
+        `To-do's (${currentYear - (calendarInterval - 1)} - ${currentYear}) :`,
+      ];
+      if (currentContentList.length === 0) {
+        responseLines.push("You didn't record any to-dos in the past 5 years.");
+      } else {
+        currentContentList.forEach((item) => {
+          if (item.notebook !== undefined) {
+            responseLines.push(
+              `${softLine}`,
+              `Year        : ${item.year}`,
+              "\n"
+            );
+            item.notebook.forEach((note) => {
+              responseLines.push(`- ${note}`);
+            });
+            responseLines.push("\n");
+          }
+        });
+      }
+      responseLines.push("[Exiting Notebook]", `${hardLine}`);
+    } else if (input === "news") {
+      responseLines = [
+        "[Loading...]",
+        "[News]",
+        `News from ${currentYear - (calendarInterval - 1)} to ${currentYear}:`,
+      ];
+      if (currentContentList.length === 0) {
+        responseLines.push("No news available for the past 5 year.");
+      } else {
+        currentContentList.forEach((item) => {
+          if (item.news !== undefined) {
+            responseLines.push(
+              `${softLine}`,
+              `Year        : ${item.year}`,
+              "\n"
+            );
+            item.news.forEach((news) => {
+              responseLines.push(
+                `Headline    : ${news.headline}`,
+                `Summary     : ${news.summary}`,
+                "\n"
+              );
+            });
+          }
+        });
+      }
+      responseLines.push("[Exiting News]", `${hardLine}`);
+    } else if (input === "lan") {
+      responseLines = [
+        "[Loading...]",
+        "[Local Area Network]",
+        `Local Area Network communications from ${
+          currentYear - (calendarInterval - 1)
+        } to ${currentYear}:`,
+      ];
+      if (currentContentList.length === 0) {
+        responseLines.push("No LAN communication for the past 5 year.");
+      } else {
+        currentContentList.forEach((item) => {
+          if (item.lan_posts !== undefined) {
+            responseLines.push(
+              `${softLine}`,
+              `Year        : ${item.year}`,
+              "\n"
+            );
+            item.lan_posts.forEach((post) => {
+              responseLines.push(
+                `Title       : ${post.title}`,
+                `Author      : ${post.author}`,
+                `Content     : ${post.content}`,
+                "\n"
+              );
+            });
+          }
+        });
+      }
+      responseLines.push("[Exiting LAN]", `${hardLine}`);
+    } else if (input === "workstation") {
+      responseLines = [
+        "Workstation under construction. Expected year to complete: 1990.",
+      ];
+      responseLines.push(`${hardLine}`);
+    }else {
+      responseLines = [
+        `Unknown command: "${input}"`,
+        `Type 'help' to get detailed information.`,
+      ];
+    }    
 
     if (calendarMode) {
       // Calendar navigation logic
-      await typeLine(`${input}`);
+      await typeLine(`> ${input}`);
       if (input === "n") {
         nextYear();
         setTimeout(() => {
@@ -220,202 +306,42 @@ export default function PreInternet() {
       setInputDisplay("");
       setIsTyping(false);
       return; // Don't run normal command handling
-    } else if (dashboardMode) {
-      await typeLine(`${input}`);
-      if (input === "q") {
-        exitDashboardMode();
-      } else if (input === "") {
-        setTerminalLines((prev) => [
-          ...prev,
-          `${softLine}`,
-          "[Dashboard]",
-          "Invalid empty input",
-          "Actions:",
-          `- Enter anything and press [Enter] to commit a line of code to your next tool`,
-          `- [Q] Exit Dashboard Mode`,
-        ]);
-      } else {
-        writeCode(1);
-        showDashboardUpdates();
-      }
-      // Reset input after handling command
-      setUserInput("");
-      setInputDisplay("");
-      setIsTyping(false);
-      return; // Don't run normal command handling
     } else {
       await typeLine(`> ${input}`);
     }
 
-    let responseLines: string[] = [];
+    await typeLinesWithCharacters(responseLines, typingSpeed);
+  };
 
-    if (input === "help") {
-      responseLines = [
-        "",
-        "GAME NAME",
-        "    Bazaar.log",
-        "",
-        "SHORT DESCRIPTION",
-        "    Bazaar.log is a browser-based game to introduce the past, present, and future of the Internet and the open-source ecosystem.",
-        "",
-        "LONG DESCRIPTION",
-        "    Bazaar.log is a browser-based game to introduce the past, present, and future of the Internet and the open-source ecosystem. In this game, you are a developer working at a university's computer lab.",
-        "    There are two things you can do in Bazaar.log: 1) explore the history of the Internet and the open-source ecosystem, and 2) work on your open-source career, starting from a developer. You will be making some decisions along the way to help progress the game story.",
-        "    You have 5 functions to play with: news, dashboard, notebook, local area network, and calendar:",
-        "    News: read news of the year about technology and more.",
-        "    Dashboard: place to develop and view your open-source career. Write code, publish software, and view statistics available about your career.",
-        "    Notebook: read your To-dos of the year.",
-        "    Local Area Network (LAN): browse online community discussions about news, communications among your colleages at lab, and more.",
-        "    Calendar: By turning the calendar, you can drive the game forward or backward in time.",
-        "",
-      ];
-    } else if (input === "list") {
-      responseLines = [
-        "",
-        "AVAILABLE COMMANDS",
-        "    news        View the latest news articles",
-        "    dashboard   Display work progress dashboard",
-        "    notebook    View TODO list",
-        "    calendar    View the yearly calendar",
-        "    lan         Check Local Area Network messages",
-        "    list        List all available commands",
-        "    help        Get detailed information about Bazaar.log",
-        "",
-      ];
-    } else if (input === "calendar") {
-      setCalendarMode(true);
-      responseLines = [
-        "[Loading...]",
-        "[Calendar]",
-        `Current Year: ${currentYear}`,
-        "Actions:",
-        "- [N] Move forward 5 years",
-        "- [Q] Exit Calendar Mode",
-      ];
-    } else if (input === "notebook") {
-      responseLines = [
-        "[Loading...]",
-        "[Notebook]",
-        `To-do's (${currentYear - (calendarInterval - 1)} - ${currentYear}) :`
-      ];
-      if (currentContentList.length === 0) {
-        responseLines.push(
-          "You didn't record any to-dos in the past 5 years.",
-        )
-      } else {
-        currentContentList.forEach((item) => {
-          responseLines.push(
-            `${softLine}`,
-            `Year        : ${item.year}`,
-            "\n"
-          );
-          item.notebook.forEach((note) => {
-            responseLines.push(`- ${note}`);
-          });
-          responseLines.push("\n");
-        });
+  const tutorial = Tutorial({
+    onComplete: () => setFreePlayMode(true),
+    typeLine,
+    handleCommand,
+  });
+  
+
+  const handleUserInput = async () => {
+    const input = userInput.trim().toLowerCase();
+    if (isTyping) return;
+    setUserInput("");
+    setInputDisplay("");
+    setIsTyping(true);
+
+    // Handle tutorial before entering free play
+    if (tutorialActive && !freePlayMode) {
+      // await typeLine(`> ${input}`);
+      await tutorial.handleTutorialInput(input);
+      if (tutorial.tutorialCompleted) {
+        // Tutorial is completed, enter free play
+        setTutorialActive(false);
+        setFreePlayMode(true);
       }
-      responseLines.push(
-        "[Exiting Notebook]", 
-        `${hardLine}`
-      )
-    } else if (input === "dashboard") {
-      setDashboardMode(true);
-      prevDashboardState.current = useGameStore.getState(); // Capture baseline
-      responseLines = [
-        "[Loading...]",
-        "[Dashboard - Open-Source Career Status Report]",
-        `${softLine}`,
-        "Personal Information",
-        `Name                    : ${name}`,
-        `Role                    : ${role}`,
-        `Personal Influence      : ${personal_influence}`,
-        `${softLine}`,
-
-        "Environment",
-        `Year                    : ${currentYear}`,
-        `Information Transfer Speed : ${information_transmission_speed}`,
-        `Number of Users         : ${number_of_users}`,
-        `${softLine}`,
-
-        "Working Progress",
-        `Progress to Next Tool   : ${next_tool_numerator} / ${next_tool_denominator}`,
-        `Number of Tools         : ${number_of_tools}`,
-        `${softLine}`,
-
-        "Impact and Value",
-        `Value Generated         : ${value_generated}`,
-        `${softLine}`,
-
-        "Enter anything and press [Enter] to commit a line of code to your next tool.",
-        "Exit dashboard [Q]: ",
-      ];
-    } else if (input === "news") {
-      responseLines = [
-        "[Loading...]",
-        "[News]",
-        `News from ${currentYear - (calendarInterval - 1)} to ${currentYear}:`
-      ];
-      if (currentContentList.length === 0) {
-        responseLines.push("No news available for the past 5 year.");
-      } else {
-        currentContentList.forEach((item) => {
-          responseLines.push(
-            `${softLine}`,
-            `Year        : ${item.year}`,
-            "\n"
-          );
-          item.news.forEach((news) => {
-            responseLines.push(
-            `Headline    : ${news.headline}`,
-            `Summary     : ${news.summary}`,
-            "\n"
-            );
-          })
-        });
-      }
-      responseLines.push(
-        "[Exiting News]", 
-        `${hardLine}`
-      )
-    } else if (input === "lan") {
-      responseLines = [
-        "[Loading...]",
-        "[Local Area Network]",
-        `Local Area Network communications from ${currentYear - (calendarInterval - 1)} to ${currentYear}:`
-      ];
-      if (currentContentList.length === 0) {
-        responseLines.push("No LAN communication for the past 5 year.");
-      } else {
-        currentContentList.forEach((item) => {
-          responseLines.push(
-            `${softLine}`,
-            `Year        : ${item.year}`,
-            "\n"
-          );
-          item.lan_posts.forEach((post) => {
-            responseLines.push(
-            `Title       : ${post.title}`,
-            `Author      : ${post.author}`,
-            `Content     : ${post.content}`,
-            "\n"
-            );
-          })
-        });
-      }
-      responseLines.push(
-        "[Exiting LAN]", 
-        `${hardLine}`
-      )
-    } else {
-      responseLines = [
-        `Unknown command: "${input}"`,
-        `Type 'help' to get detailed information.`,
-      ];
+      setIsTyping(false);
+      return;
     }
 
-    await typeLinesWithCharacters(responseLines, typingSpeed);
-
+    // await typeLinesWithCharacters(responseLines, typingSpeed);
+    await handleCommand(input);
     setIsTyping(false);
 
     setTimeout(() => {
@@ -434,16 +360,7 @@ export default function PreInternet() {
 
   const exitCalendarMode = () => {
     setCalendarMode(false);
-    setTerminalLines((prev) => [
-      ...prev, 
-      "[Exiting Calendar]", 
-      `${hardLine}`
-    ]);
-  };
-
-  const exitDashboardMode = () => {
-    setDashboardMode(false);
-    setTerminalLines((prev) => [...prev, "[Exiting Dashboard]", `${hardLine}`]);
+    setTerminalLines((prev) => [...prev, "[Exiting Calendar]", `${hardLine}`]);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -451,46 +368,6 @@ export default function PreInternet() {
     setUserInput(upperInput);
     setInputDisplay(upperInput);
   };
-
-  // Initial welcome message when the component mounts
-  const bootedRef = useRef(false);
-  useEffect(() => {
-    if (bootedRef.current) return; // Already booted, skip
-    bootedRef.current = true; // Mark as booted
-    const bootSequence = async () => {
-      setIsTyping(true);
-      const bootLines = [
-        "[Booting Bazaar.log v0.1]",
-        "[Initializing Memory Check... OK]",
-        "[Loading Modules... OK]",
-        "[Establishing Network Connection... OK]",
-        "",
-        "Welcome to the Bazaar.log. Current year: " + bootYear + ".",
-        `${softLine}`,
-        "Available Commands:",
-        "    news        View the latest news articles",
-        "    dashboard   Display work progress dashboard",
-        "    notebook    View TODO list",
-        "    calendar    View the yearly calendar",
-        "    lan         Check Local Area Network messages",
-        "    list        List all available commands",
-        "    help        Get detailed information about Bazaar.log",
-        "",
-        "Type 'list' to see all commands or 'help' for game details.",
-        `${hardLine}`,
-        "",
-      ];
-
-      await typeLinesWithCharacters(bootLines, typingSpeed);
-
-      setIsTyping(false);
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 100);
-    };
-
-    bootSequence();
-  }, []);
 
   // Function: auto-scroll to bottom of text
   useEffect(() => {
@@ -508,8 +385,8 @@ export default function PreInternet() {
       `Current Year: ${year}`,
       "Check out the latest news, local area network communications, and notebook in the past 5 years.",
       "Actions:",
-        "- [N] Move forward 5 years",
-        "- [Q] Exit Calendar Mode",
+      "- [N] Move forward 5 years",
+      "- [Q] Exit Calendar Mode",
     ];
 
     setTerminalLines((prev) => [...prev, ...lines]);
