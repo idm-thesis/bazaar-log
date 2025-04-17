@@ -29,13 +29,13 @@ export default function PreInternet() {
   const listResponse = [
     "",
     "AVAILABLE COMMANDS",
-    "    calendar      View the yearly calendar",
-    "    news          View the latest news articles",
+    "    calendar      Display the annual calendar (View the current year, and advance to future years)",
+    "    news          Access the latest news articles",
     "    workstation   Develop tools at your free time, build your community for code sharing",
-    "    notebook      View TODO list",
-    "    lan           Check Local Area Network messages",
+    "    notebook      View your personal TODO list",
+    "    lan           Access the Local Area Network messages",
     "    list          List all available commands",
-    "    help          Get detailed information about Bazaar.log",
+    "    help          Access detailed system information and usage instructions.",
     "",
   ];
 
@@ -138,7 +138,6 @@ export default function PreInternet() {
 
   // Initial welcome message when the component mounts
   const bootedRef = useRef(false);
-  // const [tutorialActive, setTutorialActive] = useState(true);
   useEffect(() => {
     if (bootedRef.current) return; // Already booted, skip
     bootedRef.current = true; // Mark as booted

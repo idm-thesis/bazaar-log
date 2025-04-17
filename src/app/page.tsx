@@ -13,11 +13,11 @@ export default function Home() {
   }
   const {currentYear} = useCalendarStore();
   // Testing
-  // return (
-  //   <div className="min-h-screen" style={{background: '#555555'}}>
-  //     <Web2000 />
-  //   </div>
-  // );
+  return (
+    <div className="min-h-screen" style={{background: '#555555'}}>
+      <Web2000 />
+    </div>
+  );
   if (isInRange(currentYear, 1970, 1991)) {
     return (<div id="monitor" className="min-h-screen" style={{background: '#000'}}>
       <PreInternet />

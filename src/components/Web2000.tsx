@@ -1,33 +1,58 @@
 "use client";
-import { useEffect } from "react";
-// import Script from "next/script";
+import { useGameEffects } from "@/hooks/useGameEffects";
+import { useState, useEffect } from "react";
+import CalendarWindow from "./windows/calendar";
+import DashboardWindow from "./windows/dashboard";
+import NewsWindow from "./windows/news";
+import NotebookWindow from "./windows/notebook";
+import LANWindow from "./windows/lan";
 
 export default function Web2000() {
   useEffect(() => {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "https://unpkg.com/xp.css";
-    document.head.appendChild(link);
+    setIsClient(true);
 
-    // Clean up on unmount to remove XP.css when leaving the page
-    return () => {
-      document.head.removeChild(link);
-    };
+    if (typeof window !== "undefined") {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://unpkg.com/xp.css";
+      document.head.appendChild(link);
+
+      return () => {
+        document.head.removeChild(link);
+      };
+    }
   }, []);
 
-  return (
-    <div className="window" style={{ width: 300 }}>
-      <div className="title-bar">
-        <div className="title-bar-text">Notepad</div>
-        <div className="title-bar-controls">
-          <button aria-label="Minimize"></button>
-          <button aria-label="Maximize"></button>
-          <button aria-label="Close"></button>
+  useGameEffects(); // Runs all effect logic
+
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => setIsClient(true), []);
+
+  const eraStr = "2000s";
+
+  return isClient ? (
+    <div className="grid grid-cols-6 gap-4">
+      <div
+        className="absolute top-4 right-4 justify-items-center border border-black"
+        style={{ background: "#D9D9D9", color: "#000", fontFamily: "Ohlfs" }}
+      >
+        <div className="border border-black w-full">
+          <DashboardWindow era={eraStr} />
+        </div>
+
+        <div className="border border-black w-full">
+          <NewsWindow era={eraStr} />
+        </div>
+        <div className="border border-black w-full">
+          <NotebookWindow era={eraStr} />
+        </div>
+        <div className="border border-black w-full">
+          <LANWindow era={eraStr} />
+        </div>
+        <div className="border border-black w-full">
+          <CalendarWindow era={eraStr} />
         </div>
       </div>
-      <div className="window-body">
-        <p>Hello World!</p>
-      </div>
     </div>
-  );
+  ) : null;
 }
