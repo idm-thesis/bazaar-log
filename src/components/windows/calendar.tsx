@@ -1,9 +1,10 @@
 "use client";
 import WinBox from "@/components/WinBox";
-import { useCalendarStore } from "@/store/useCalendarStore";
+// import { useCalendarStore } from "@/store/useCalendarStore";
+import { useGameStore } from "@/store/gameStore";
 
 export default function CalendarWindow({era}: {era: string}) {
-  const { currentYear, nextYear } = useCalendarStore();
+  const { currentYear, nextYear } = useGameStore();
   return (
     <WinBox id="calendar" title="Calendar" width="600px" height="400px" era={era}>
       <div className="p-4 grid grid-cols-1 justify-center">

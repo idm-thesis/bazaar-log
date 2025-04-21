@@ -15,7 +15,7 @@ export default function Home() {
   // Testing
   return (
     <div className="min-h-screen" style={{background: '#555555'}}>
-      <Web2000 />
+      <Web1990 />
     </div>
   );
   if (isInRange(currentYear, 1970, 1991)) {

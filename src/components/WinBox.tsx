@@ -9,6 +9,8 @@ import React, {
 } from "react";
 import { createPortal } from "react-dom";
 import loadEraStyles from "@/hooks/useCurrentWinboxStyle";
+import Image from "next/image";
+import IconsURLJSON from "@/data/icons.json";
 
 declare global {
   interface Window {
@@ -55,9 +57,11 @@ interface WinBoxProps {
   style?: CSSProperties;
   className?: string;
   era?: string;
+  noClose?: boolean;
 }
 
 export default function Window({
+  id = "ID",
   title = "My Window",
   width = "800px",
   height = "600px",
@@ -66,6 +70,7 @@ export default function Window({
   children,
   className = "",
   era = "",
+  noClose = false,
 }: WinBoxProps) {
   const [isOpen, setIsOpen] = useState(false);
   const winboxRef = useRef<WinBoxInstance | null>(null);
@@ -78,16 +83,26 @@ export default function Window({
       script.src =
         "https://cdn.jsdelivr.net/npm/winbox@0.2.82/dist/winbox.bundle.min.js";
       script.async = true;
-      script.onload = () => {console.log("WinBox script loaded.");};
+      script.onload = () => {
+        console.log("WinBox script loaded.");
+      };
       document.body.appendChild(script);
     }
   }, []);
 
-  useEffect(()=>{
-    if(era) {
+  useEffect(() => {
+    if (era) {
       loadEraStyles(era);
     }
   }, [era]);
+
+  const getIconURL = () => {
+    const eraObj = IconsURLJSON.find((item) => item.era === era);
+    if (eraObj) {
+      const iconURL = eraObj.icons[id as keyof typeof eraObj.icons];
+      return iconURL;
+    }
+  };
 
   const openWindow = () => {
     if (!window.WinBox) {
@@ -112,21 +127,24 @@ export default function Window({
       onclose: () => {
         setIsOpen(false);
       },
+      noClose,
     });
   };
+
+  const iconURL = getIconURL();
 
   return (
     <div className={`${className}`}>
       <button
         onClick={openWindow}
         disabled={isOpen}
-        className={`p-2 w-full justify-self-end ${
-          isOpen
-            ? "text-gray-400 cursor-not-allowed"
-            : "text-black hover:text-gray-400"
-        }`}
+        className="winboxButton"
       >
-        {title}
+        {iconURL ? (
+          <Image src={iconURL} alt="" width={50} height={50} />
+        ) : (
+          <p>{title}</p>
+        )}
       </button>
       {contentRef.current && createPortal(children, contentRef.current)}
     </div>

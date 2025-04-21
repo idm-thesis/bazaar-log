@@ -2,7 +2,7 @@
 import { useGameEffects } from "@/hooks/useGameEffects";
 import { useState, useEffect } from "react";
 import CalendarWindow from "./windows/calendar";
-import DashboardWindow from "./windows/dashboard";
+import DashboardWindow from "./windows/workstation";
 import NewsWindow from "./windows/news";
 import NotebookWindow from "./windows/notebook";
 import LANWindow from "./windows/lan";

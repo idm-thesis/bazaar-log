@@ -52,7 +52,7 @@ export default function DashboardWindow({ era }: { era: string }) {
         return typeof value === "number" ? value.toLocaleString() : "";
       };
     return (
-        <WinBox id="dashboard" title="Dashboard" width="800px" height="600px" era={era}>
+        <WinBox id="workstation" title="Workstation" width="800px" height="600px" era={era}>
           <div className="p-4">
             <div
               className={`flex items-center justify-center col-span-2 min-h-full`}

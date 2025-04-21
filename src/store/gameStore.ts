@@ -7,7 +7,6 @@ type Decision = {
   choices: { label: string; effect: () => void }[];
 };
 
-
 interface GameState {
   // Personal Information
   name: string;
@@ -73,75 +72,153 @@ interface GameState {
   setNumberOfOrganizations: (count: number) => void;
 
   // Decisions
-  decisions: Decision[],
+  decisions: Decision[];
   setDecisions: (update: (prev: Decision[]) => Decision[]) => void;
+
+  // Content-based Decisions
+  contentDecisions: Record<string, string>;
+  setContentDecisions: (id: string, value: string) => void;
+  currentStage: string;
+  resetGame: () => void;
+
+  // Year
+  currentYear: number;
+  nextYear: () => void;
+  setYear: (year: number) => void;
 }
 
-export const useGameStore = create<GameState>((set) => ({
+export const startingYear = 1970; // Starting year in the game,
+export const minYear = 1970;
+export const maxYear = 2025;
+export const calendarInterval = 5;
+
+const initialState = {
   // Personal Information
   name: "Macaroni",
   role: "Coding Enthusiast",
-  setRole: (newRole: string) => set({role: newRole}),
   show_personal_influence: false,
   personal_influence: 0,
-  setShowPersonalInfluence: (visible: boolean) => set({ show_personal_influence: visible }),
-  setPersonalInfluence: (count: number) => set({ personal_influence: count }),
 
   // Environment
   era: "Pre-Internet",
-  setEra: (newEra: string) => set({ era: newEra }),
   information_transmission_speed: 1,
-  setInformationTransmissionSpeed: (count: number) => set({ information_transmission_speed: count }),
 
   show_number_of_users: false,
-  setShowNumberOfUsers: (visible: boolean) => set({ show_number_of_users: visible }),
   number_of_users: 0,
-  setNumberOfUsers: (count: number) => set({ number_of_users: count }),
 
   show_number_of_collaborators: false,
-  setShowNumberOfCollaborators: (visible: boolean) => set({ show_number_of_collaborators: visible }),
   number_of_collaborators: 0,
-  setNumberOfCollaborators: (count: number) => set({ number_of_collaborators: count }),
 
   show_number_of_contributors: false,
-  setShowNumberOfContributors: (visible: boolean) => set({ show_number_of_contributors: visible }),
   number_of_contributors: 0,
-  setNumberOfContributors: (count: number) => set({ number_of_contributors: count }),
 
   // Contribution
   show_next_tool: true,
-  setShowNextTool: (visible: boolean) => set({ show_next_tool: visible }),
   next_tool_numerator: 0,
-  setNextToolNumerator: (count: number) => set({ next_tool_numerator: count }),
   next_tool_denominator: 10,
-  setNextToolDenominator: (count: number) => set({ next_tool_denominator: count }),
 
   show_number_of_tools: true,
-  setShowNumberOfTools: (visible: boolean) => set({ show_number_of_tools: visible }),
   number_of_tools: 0,
-  setNumberOfTools: (count: number) => set({ number_of_tools: count }),
 
   show_value_generated: false,
-  setShowValueGenerated: (visible: boolean) => set({ show_value_generated: visible }),
   value_generated: 0,
-  setValueGenerated: (count: number) => set({ value_generated: count }),
 
   show_tool_productivity: false,
-  setShowToolProductivity: (visible: boolean) => set({ show_tool_productivity: visible }),
   tool_productivity: 0,
-  setToolProductivity: (count: number) => set({ tool_productivity: count }),
 
   show_value_generation_speed: false,
-  setShowValueGenerationSpeed: (visible: boolean) => set({ show_value_generation_speed: visible }),
   value_generation_speed: 0,
-  setValueGenerationSpeed: (count: number) => set({ value_generation_speed: count }),
 
   show_number_of_organizations: false,
-  setShowNumberOfOrganizations: (visible: boolean) => set({ show_number_of_organizations: visible }),
   number_of_organizations: 0,
-  setNumberOfOrganizations: (count: number) => set({ number_of_organizations: count }),
 
   // Decisions
   decisions: [],
-  setDecisions: (update) => set((state) => ({ decisions: update(state.decisions) })),
+
+  // Content-based Decisions
+  contentDecisions: {},
+  currentStage: "1970s",
+
+  // Year
+  currentYear: 1970,
+};
+
+export const useGameStore = create<GameState>((set) => ({
+  ...initialState,
+  // Personal Information
+  setRole: (newRole: string) => set({ role: newRole }),
+  setShowPersonalInfluence: (visible: boolean) =>
+    set({ show_personal_influence: visible }),
+  setPersonalInfluence: (count: number) => set({ personal_influence: count }),
+
+  // Environment
+  setEra: (newEra: string) => set({ era: newEra }),
+  setInformationTransmissionSpeed: (count: number) =>
+    set({ information_transmission_speed: count }),
+  setShowNumberOfUsers: (visible: boolean) =>
+    set({ show_number_of_users: visible }),
+  setNumberOfUsers: (count: number) => set({ number_of_users: count }),
+  setShowNumberOfCollaborators: (visible: boolean) =>
+    set({ show_number_of_collaborators: visible }),
+  setNumberOfCollaborators: (count: number) =>
+    set({ number_of_collaborators: count }),
+
+  setShowNumberOfContributors: (visible: boolean) =>
+    set({ show_number_of_contributors: visible }),
+  setNumberOfContributors: (count: number) =>
+    set({ number_of_contributors: count }),
+
+  // Contribution
+  setShowNextTool: (visible: boolean) => set({ show_next_tool: visible }),
+  setNextToolNumerator: (count: number) => set({ next_tool_numerator: count }),
+  setNextToolDenominator: (count: number) =>
+    set({ next_tool_denominator: count }),
+
+  setShowNumberOfTools: (visible: boolean) =>
+    set({ show_number_of_tools: visible }),
+  setNumberOfTools: (count: number) => set({ number_of_tools: count }),
+
+  setShowValueGenerated: (visible: boolean) =>
+    set({ show_value_generated: visible }),
+  setValueGenerated: (count: number) => set({ value_generated: count }),
+
+  setShowToolProductivity: (visible: boolean) =>
+    set({ show_tool_productivity: visible }),
+  setToolProductivity: (count: number) => set({ tool_productivity: count }),
+
+  setShowValueGenerationSpeed: (visible: boolean) =>
+    set({ show_value_generation_speed: visible }),
+  setValueGenerationSpeed: (count: number) =>
+    set({ value_generation_speed: count }),
+
+  setShowNumberOfOrganizations: (visible: boolean) =>
+    set({ show_number_of_organizations: visible }),
+  setNumberOfOrganizations: (count: number) =>
+    set({ number_of_organizations: count }),
+
+  // Decisions
+  setDecisions: (update) =>
+    set((state) => ({ decisions: update(state.decisions) })),
+
+  // Content-based Decisions
+  setContentDecisions: (id: string, value: string) =>
+    set((state) => ({
+      contentDecisions: { ...state.contentDecisions, [id]: value },
+    })),
+
+  // Year
+  nextYear: () =>
+    set((state) => ({
+      currentYear:
+        state.currentYear < maxYear
+          ? state.currentYear + calendarInterval
+          : state.currentYear,
+    })),
+
+  setYear: (year) =>
+    set(() => ({
+      currentYear: year >= minYear && year <= maxYear ? year : startingYear,
+    })),
+  // Reset function
+  resetGame: () => set(() => ({ ...initialState })),
 }));

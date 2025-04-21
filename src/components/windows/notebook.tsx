@@ -1,12 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 import WinBox from "@/components/WinBox";
-import { useCalendarStore, calendarInterval } from "@/store/useCalendarStore";
+// import { useCalendarStore, calendarInterval } from "@/store/useCalendarStore";
+import { useGameStore, calendarInterval } from "@/store/gameStore";
 import gameContent from "@/data/Bazaar_log_game_content.json";
 type GameContentItem = (typeof gameContent)[number];
 
 export default function NewsWindow({ era }: { era: string }) {
-  const { currentYear } = useCalendarStore();
+  const { currentYear } = useGameStore();
   const [currentContentList, setCurrentContentList] = useState<
     GameContentItem[]
   >([]);

@@ -1,0 +1,22 @@
+[
+    {
+        "era": "1990s",
+        "icons": {
+            "news": "/icons/1990s/news.png",
+            "notebook": "/icons/1990s/notebook.png",
+            "calendar": "/icons/1990s/calendar.png",
+            "lan": "/icons/1990s/local_area_network.png",
+            "workstation": "/icons/1990s/workstation.png"
+        }
+    },
+    {
+        "era": "2000s",
+        "icons": {
+            "news": "",
+            "notebook": "",
+            "calendar": "",
+            "lan": "",
+            "workstation": ""
+        }
+    }
+]

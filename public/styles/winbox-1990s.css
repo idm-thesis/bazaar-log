@@ -1,3 +1,4 @@
+/* Browser Look */
 .winbox {
   background: black;
   border-radius: 0 0 0 0;
@@ -6,8 +7,29 @@
   min-width: 400px;
   min-height: 400px;
 }
+
+.wb-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: nowrap;
+  font-family: "Ohlfs";
+}
+
+.wb-drag {
+  background: #6c6c6c;
+  padding: 3px 5px 3px 3px;
+  border-top: 1px solid #BBBBBB;
+  border-left: 1px solid #BBBBBB;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+  margin: 2px;
+}
+
 /* Body */
 .wb-body {
+  margin: 2px;
   color: #000;
   background: #fff;
 }
@@ -25,15 +47,6 @@ button {
 .wb-n {
   position: relative;
 }
-
-.wb-title {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  white-space: nowrap;
-}
-
 
 /* Scrollbar */
 .wb-body::-webkit-scrollbar {
@@ -53,9 +66,49 @@ button {
   background: transparent;
 }
 
-/* Buttons */
-.wb-min {
-  background-color: grey;
-  border-style: solid;
-  border-color: #000 5px;
+/* Browser buttons */
+.wb-close {
+  background-image: url(../icons/1990s/1990s-close.svg);
+  &:hover {
+    background-image: url(../icons/1990s/1990s-close-hover.svg);
+  }
+  &:not(:disabled):active {
+    background-image: url(../icons/1990s/1990s-close-active.svg);
+  }
+  background-size: 24px auto;
+  background-position-x: calc(50%);
+  background-position-y: calc(50%);
+}
+
+.wb-max {
+  background-image: url(../icons/1990s/1990s-maximize.svg);
+  &:hover {
+    background-image: url(../icons/1990s/1990s-maximize.svg);
+  }
+  &:not(:disabled):active {
+    background-image: url(../icons/1990s/1990s-maximize.svg);
+  }
+  background-size: 24px auto;
+  background-position-x: calc(50% + 2px);
+  background-position-y: calc(50% + 2px);
+}
+
+/* Button to open window */
+.winboxButton {
+  background-color: #bbb;      /* ✅ use `background-color`, not `background` with a string */
+  padding: 0.5rem;             /* equivalent to Tailwind's p-2 */
+  width: 100%;                 /* equivalent to w-full */
+  justify-self: end;
+  border: none;
+  transition: background-color 0.2s ease;
+}
+
+.winboxButton:hover {
+  background-color: #6c6c6c;
+  cursor: pointer;
+}
+
+.winboxButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }

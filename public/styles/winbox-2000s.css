@@ -46,7 +46,7 @@
   }
   background-size: 24px auto;
   background-position-x: calc(50% + 2px);
-    background-position-y: calc(50% + 2px);
+  background-position-y: calc(50% + 2px);
 }
 
 .wb-max {
@@ -59,7 +59,7 @@
   }
   background-size: 24px auto;
   background-position-x: center;
-    background-position-y: calc(50% + 2px);
+  background-position-y: calc(50% + 2px);
 }
 
 .wb-close {
@@ -72,7 +72,7 @@
   }
   background-size: 24px auto;
   background-position-x: calc(50% - 2px);
-    background-position-y: calc(50% + 2px);
+  background-position-y: calc(50% + 2px);
 }
 
 .wb-full {
