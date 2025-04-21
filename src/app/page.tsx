@@ -1,7 +1,8 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useCalendarStore } from "@/store/useCalendarStore";
+// import { useCalendarStore } from "@/store/useCalendarStore";
 // import { useState } from "react";
+import { useGameStore } from "@/store/gameStore";
 
 const Web1990 = dynamic(() => import("@/components/Web1990"), { ssr: false });
 const PreInternet = dynamic(() => import("@/components/PreInternet"), {ssr: false});
@@ -11,13 +12,13 @@ export default function Home() {
   function isInRange(value: number, min: number, max: number): boolean {
     return value >= min && value < max;
   }
-  const {currentYear} = useCalendarStore();
+  const {currentYear} = useGameStore();
   // Testing
-  return (
-    <div className="min-h-screen" style={{background: '#555555'}}>
-      <Web1990 />
-    </div>
-  );
+  // return (
+  //   <div className="min-h-screen" style={{background: '#555555'}}>
+  //     <Web1990 />
+  //   </div>
+  // );
   if (isInRange(currentYear, 1970, 1991)) {
     return (<div id="monitor" className="min-h-screen" style={{background: '#000'}}>
       <PreInternet />

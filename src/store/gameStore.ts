@@ -85,6 +85,7 @@ interface GameState {
   currentYear: number;
   nextYear: () => void;
   setYear: (year: number) => void;
+  calendarInterval: number;
 }
 
 export const startingYear = 1970; // Starting year in the game,
@@ -141,6 +142,7 @@ const initialState = {
 
   // Year
   currentYear: 1970,
+  calendarInterval: 5,
 };
 
 export const useGameStore = create<GameState>((set) => ({

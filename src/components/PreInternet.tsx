@@ -1,7 +1,27 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { useCalendarStore, calendarInterval } from "@/store/useCalendarStore";
-type GameContentItem = (typeof gameContent)[number];
+// import { useCalendarStore, calendarInterval } from "@/store/useCalendarStore";
+import { useGameStore } from "@/store/gameStore";
+import contentDecisions from "@/data/contentDecisions.json";
+interface NewsItem {
+  headline: string;
+  summary: string;
+  decisionTrigger?: string; // optional
+}
+interface LANItem {
+  title: string;
+  author: string;
+  content: string; // optional
+}
+
+interface GameContentItem {
+  year: number;
+  news?: NewsItem[];
+  notebook?: string[];
+  calendar?: string;
+  lan_posts?: LANItem[];
+  workstation?: string;
+}
 import Tutorial from "./ui/tutorial";
 
 // import { useCodeGenerationMechanics } from "@/hooks/useCodeGenerationMechanics";
@@ -20,8 +40,12 @@ export default function PreInternet() {
   const typingSpeed = 10;
   const typingLineDelay = 200;
 
-  const { currentYear, nextYear } = useCalendarStore();
+  const { currentYear, nextYear, calendarInterval } = useGameStore();
+  const resetGame = useGameStore((state) => state.resetGame);
   const [calendarMode, setCalendarMode] = useState(false);
+
+  // Decision Module
+  const [pendingDecision, setPendingDecision] = useState<string | null>(null);
 
   const softLine = "--------------------------------------------";
   const hardLine = "────────────────────────────────────────────";
@@ -57,7 +81,7 @@ export default function PreInternet() {
     "    Calendar: By turning the calendar, you can drive the game forward or backward in time.",
     "    Workstation: place to develop your tools and build your open-source community. Write code, publish tools, and view real-time statistics of your open-source career.",
     "",
-  ]
+  ];
 
   useGameEffects(); // Runs all effect logic
 
@@ -158,8 +182,11 @@ export default function PreInternet() {
       await typeLinesWithCharacters(bootLines, typingSpeed);
 
       setIsTyping(false);
-      // setTutorialActive(true);
-      setFreePlayMode(false);
+
+      // Testing: disable tutorial
+      setFreePlayMode(true);
+
+      // setFreePlayMode(false);
       setTimeout(() => {
         inputRef.current?.focus();
       }, 100);
@@ -212,10 +239,7 @@ export default function PreInternet() {
       }
       responseLines.push("[Exiting Notebook]", `${hardLine}`);
     } else if (input === "news") {
-      responseLines = [
-        "[Loading...]",
-        "[News]",
-      ];
+      responseLines = ["[Loading...]", "[News]"];
       if (currentContentList.length === 0) {
         responseLines.push("No news available for the past 5 year.");
       } else {
@@ -232,6 +256,21 @@ export default function PreInternet() {
                 `Summary     : ${news.summary}`,
                 "\n"
               );
+
+              if (news.decisionTrigger) {
+                const currentDecision = contentDecisions.find(
+                  (decision) => decision.id === news.decisionTrigger
+                );
+                responseLines.push(
+                  "[Decision]",
+                  `${currentDecision?.context}`,
+                  "",
+                  `(1) ${currentDecision?.["choice-end"]}`,
+                  `(2) ${currentDecision?.["choice-success"]}`,
+                  "Type 1 or 2 to decide:"
+                );
+                setPendingDecision(news.decisionTrigger);
+              }
             });
           }
         });
@@ -284,10 +323,10 @@ export default function PreInternet() {
         nextYear();
         await new Promise<void>((resolve) => {
           setTimeout(async () => {
-            const updatedYear = useCalendarStore.getState().currentYear;
+            const updatedYear = useGameStore.getState().currentYear;
             await updateCalendarDisplay(updatedYear);
             resolve();
-          }, 0)
+          }, 0);
         });
       } else if (input === "q") {
         exitCalendarMode();
@@ -338,6 +377,44 @@ export default function PreInternet() {
       await tutorial.handleTutorialInput(input);
       setIsTyping(false);
       return;
+    }
+    if (pendingDecision) {
+      const currentDecision = contentDecisions.find(
+        (decision) => decision.id === pendingDecision
+      );
+
+      if (input === "1" || input === "2") {
+        setPendingDecision(null);
+        if (input === "1") {
+          await typeLinesWithCharacters([
+            "",
+            `[Outcome: ${currentDecision?.["choice-end-title"]}]`,
+            `${currentDecision?.["choice-end-outcome"]}`,
+            "",
+            "THE END",
+            hardLine,
+          ]);
+          resetGame();
+          // Optional: disable further gameplay if it’s a real ending
+          // setFreePlayMode(false);
+        } else {
+          await typeLinesWithCharacters([
+            "",
+            `[Outcome: ${currentDecision?.["choice-success-title"]}]`,
+            `${currentDecision?.["choice-success-outcome"]}`,
+            "",
+            "You may now continue exploring the network.",
+            hardLine,
+          ]);
+        }
+
+        setIsTyping(false);
+        return; // Don't run normal command handling after decision
+      } else {
+        await typeLine(`Invalid input: "${input}". Type 1 or 2.`);
+        setIsTyping(false);
+        return;
+      }
     }
 
     // await typeLinesWithCharacters(responseLines, typingSpeed);

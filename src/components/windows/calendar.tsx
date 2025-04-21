@@ -1,6 +1,5 @@
 "use client";
 import WinBox from "@/components/WinBox";
-// import { useCalendarStore } from "@/store/useCalendarStore";
 import { useGameStore } from "@/store/gameStore";
 
 export default function CalendarWindow({era}: {era: string}) {
