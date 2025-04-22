@@ -11,6 +11,7 @@ import { createPortal } from "react-dom";
 import loadEraStyles from "@/hooks/useCurrentWinboxStyle";
 import Image from "next/image";
 import IconsURLJSON from "@/data/icons.json";
+import { useWinBoxStore } from "@/store/useWinBoxStore";
 
 declare global {
   interface Window {
@@ -128,6 +129,10 @@ export default function Window({
         setIsOpen(false);
       },
       noClose,
+    });
+    useWinBoxStore.getState().registerBox({
+      id,
+      close: () => winboxRef.current?.close(),
     });
   };
 

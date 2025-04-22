@@ -28,7 +28,6 @@
             "Check out calendar, plan for the next five years. (command: [CALENDAR])"
         ]
     },
-
     {
         "year": 1971,
         "news": [
@@ -571,6 +570,27 @@
                 "title": ".NET - Microsoft’s Web Future?",
                 "author": "dave",
                 "content": "Read through the PDC slides. If MS pulls this off, they might dominate web services too."
+            }
+        ]
+    },
+    {
+        "year": 2001,
+        "news": [
+            {
+                "headline": "Microsoft CEO Calls Linux 'a Cancer'",
+                "summary": "In a controversial statement, Microsoft CEO Steve Ballmer compared Linux to cancer, claiming that its open-source license 'infects' all software it touches. The comment has sparked outrage in the open-source community and intensified debates over software freedom.",
+                "decisionTrigger": "linux-cancer"
+                
+            }
+        ],
+        "notebook": [
+            "Read news about Microsoft CEO's comment on Linux (command: [NEWS])."
+        ],
+        "lan_post": [
+            {
+                "title": "Ballmer's Comment is Outrageous",
+                "author": "openlab99",
+                "content": "Did anyone see what Ballmer said? Comparing Linux to a *cancer*? That’s not just offensive, it completely misunderstands what the GPL stands for. This will only make us more determined to push forward with free software."
             }
         ]
     },

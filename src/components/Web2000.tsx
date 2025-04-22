@@ -6,6 +6,8 @@ import DashboardWindow from "./windows/workstation";
 import NewsWindow from "./windows/news";
 import NotebookWindow from "./windows/notebook";
 import LANWindow from "./windows/lan";
+import { useWinBoxStore } from "@/store/useWinBoxStore";
+
 
 export default function Web2000() {
   useEffect(() => {
@@ -27,6 +29,10 @@ export default function Web2000() {
 
   const [isClient, setIsClient] = useState(false);
   useEffect(() => setIsClient(true), []);
+  
+  useEffect(() => {
+    useWinBoxStore.getState().clearAllBoxes();
+  }, []);
 
   const eraStr = "2000s";
 

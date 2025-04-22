@@ -6,13 +6,16 @@ import DashboardWindow from "./windows/workstation";
 import NewsWindow from "./windows/news";
 import NotebookWindow from "./windows/notebook";
 import LANWindow from "./windows/lan";
+import { useWinBoxStore } from "@/store/useWinBoxStore";
 
 export default function Web1990() {
   useGameEffects(); // Runs all effect logic
 
   const [isClient, setIsClient] = useState(false);
   useEffect(() => setIsClient(true), []);
-
+  useEffect(() => {
+      useWinBoxStore.getState().clearAllBoxes();
+    }, []);
   const eraStr = "1990s";
 
   return isClient ? (

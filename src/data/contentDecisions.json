@@ -9,5 +9,16 @@
         "choice-end-outcome": "Your lab continued with proprietary UNIX. Eventually, you couldn’t bear the financial burden and had to shut down. ☹️",
         "choice-success-title": "Code Sharing for Good",
         "choice-success-outcome": "Your lab initiated a collaboration with other institutions on operating system development. You share code with each other, and the community is growing."
-    }
+    },
+    {
+        "id": "linux-cancer",
+        "title": "Defend Open Source or Stay Neutral?",
+        "context": "Microsoft CEO Steve Ballmer has made a controversial statement, calling Linux a 'cancer' due to its viral open-source license. The remark has stirred strong reactions across the software community. As a developer and community member, you feel the weight of this moment. \nHow will you respond?",
+        "choice-end": "Stay silent and continue using proprietary tools.",
+        "choice-success": "Join the free software movement and advocate for Linux.",
+        "choice-end-title": "Silence in the Storm",
+        "choice-end-outcome": "You chose to stay out of the conflict. While the storm passed, your team gradually fell behind as open tools gained traction in other labs. Momentum was lost.",
+        "choice-success-title": "A Voice for the Free",
+        "choice-success-outcome": "You spoke out, joined the open-source movement, and hosted local meetups on software freedom. Your lab adopted Linux and became a regional hub for open-source innovation."
+      }      
 ]

@@ -2,7 +2,18 @@
 import { useEffect, useRef, useState } from "react";
 // import { useCalendarStore, calendarInterval } from "@/store/useCalendarStore";
 import { useGameStore } from "@/store/gameStore";
-import contentDecisions from "@/data/contentDecisions.json";
+import rawContentDecisions from "@/data/contentDecisions.json";
+interface ContentDecision {
+  id: string;
+  context: string;
+  ["choice-end"]: string;
+  ["choice-success"]: string;
+  ["choice-end-title"]?: string;
+  ["choice-end-outcome"]?: string;
+  ["choice-success-title"]?: string;
+  ["choice-success-outcome"]?: string;
+}
+const contentDecisions = rawContentDecisions as unknown as ContentDecision[];
 interface NewsItem {
   headline: string;
   summary: string;
@@ -23,12 +34,14 @@ interface GameContentItem {
   workstation?: string;
 }
 import Tutorial from "./ui/tutorial";
-
-// import { useCodeGenerationMechanics } from "@/hooks/useCodeGenerationMechanics";
 import { useGameEffects } from "@/hooks/useGameEffects";
 import gameContent from "@/data/Bazaar_log_game_content.json";
+import { useWinBoxStore } from "@/store/useWinBoxStore";
 
 export default function PreInternet() {
+  useEffect(() => {
+    useWinBoxStore.getState().clearAllBoxes();
+  }, []);
   const [freePlayMode, setFreePlayMode] = useState(false);
 
   const [terminalLines, setTerminalLines] = useState<string[]>([]);
@@ -184,7 +197,7 @@ export default function PreInternet() {
       setIsTyping(false);
 
       // Testing: disable tutorial
-      setFreePlayMode(true);
+      setFreePlayMode(false);
 
       // setFreePlayMode(false);
       setTimeout(() => {
@@ -240,6 +253,10 @@ export default function PreInternet() {
       responseLines.push("[Exiting Notebook]", `${hardLine}`);
     } else if (input === "news") {
       responseLines = ["[Loading...]", "[News]"];
+
+      let currentDecision: ContentDecision | null = null;
+      let finalDecisionTrigger: string | null = null;
+
       if (currentContentList.length === 0) {
         responseLines.push("No news available for the past 5 year.");
       } else {
@@ -250,6 +267,7 @@ export default function PreInternet() {
               `Year        : ${item.year}`,
               "\n"
             );
+
             item.news.forEach((news) => {
               responseLines.push(
                 `Headline    : ${news.headline}`,
@@ -258,24 +276,32 @@ export default function PreInternet() {
               );
 
               if (news.decisionTrigger) {
-                const currentDecision = contentDecisions.find(
-                  (decision) => decision.id === news.decisionTrigger
+                const found: ContentDecision | undefined = contentDecisions.find(
+                  (d) => d.id === news.decisionTrigger
                 );
-                responseLines.push(
-                  "[Decision]",
-                  `${currentDecision?.context}`,
-                  "",
-                  `(1) ${currentDecision?.["choice-end"]}`,
-                  `(2) ${currentDecision?.["choice-success"]}`,
-                  "Type 1 or 2 to decide:"
-                );
-                setPendingDecision(news.decisionTrigger);
+                if (found) {
+                  currentDecision = found;
+                  finalDecisionTrigger = news.decisionTrigger;
+                }
               }
             });
           }
         });
       }
+
       responseLines.push("[Exiting News]", `${hardLine}`);
+
+      if (currentDecision && finalDecisionTrigger) {
+        responseLines.push(
+          "[Decision]",
+          `${currentDecision["context"]}`,
+          "",
+          `(1) ${currentDecision["choice-end"]}`,
+          `(2) ${currentDecision["choice-success"]}`,
+          "Type 1 or 2 to decide:"
+        );
+        setPendingDecision(finalDecisionTrigger);
+      }
     } else if (input === "lan") {
       responseLines = [
         "[Loading...]",
