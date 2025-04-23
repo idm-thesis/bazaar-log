@@ -197,8 +197,8 @@ export default function PreInternet() {
       setIsTyping(false);
 
       // Testing: disable tutorial
-      setFreePlayMode(true);
-      // setFreePlayMode(false);
+      // setFreePlayMode(true);
+      setFreePlayMode(false);
 
       // setFreePlayMode(false);
       setTimeout(() => {
