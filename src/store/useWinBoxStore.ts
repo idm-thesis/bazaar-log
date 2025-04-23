@@ -17,7 +17,15 @@ export const useWinBoxStore = create<WinBoxState>((set, get) => ({
     boxes: [...state.boxes, box]
   })),
   clearAllBoxes: () => {
-    get().boxes.forEach((box) => box.close());
+    get().boxes.forEach((box) => {
+      try {
+        if (box && typeof box.close === "function") {
+          box.close();
+        }
+      } catch (err) {
+        console.warn(`Failed to close box: ${box.id}`, err);
+      }
+    });
     set({ boxes: [] });
   }
 }));

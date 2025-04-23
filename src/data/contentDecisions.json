@@ -6,7 +6,7 @@
         "choice-end": "Continue paying for UNIX",
         "choice-success": "Start to program an operating system from scratch.",
         "choice-end-title": "The World of Proprietary",
-        "choice-end-outcome": "Your lab continued with proprietary UNIX. Eventually, you couldn’t bear the financial burden and had to shut down. ☹️",
+        "choice-end-outcome": "Your lab continued with proprietary UNIX. Eventually, you couldn’t bear the financial burden and had to shut down.",
         "choice-success-title": "Code Sharing for Good",
         "choice-success-outcome": "Your lab initiated a collaboration with other institutions on operating system development. You share code with each other, and the community is growing."
     },
