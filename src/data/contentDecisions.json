@@ -2,7 +2,7 @@
     {
         "id": "bill-gates-letter",
         "title": "Pay to License, or Build to Liberate?",
-        "context": "Bill Gates urges hobbyists to pay for software. Currently, your lab use UNIX, a proprietary operating system.However, as you are expanding your research scope, you worry about the financial burden of paying for an increasing number of proprietary software. \nWhat will you do next?",
+        "context": "Bill Gates urges hobbyists to pay for software. Currently, your lab use UNIX, a proprietary operating system. However, as you are expanding your research scope, you worry about the financial burden of paying for an increasing number of proprietary software. \nWhat will you do next?",
         "choice-end": "Continue paying for UNIX",
         "choice-success": "Start to program an operating system from scratch.",
         "choice-end-title": "The World of Proprietary",

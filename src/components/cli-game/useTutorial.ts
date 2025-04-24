@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 interface TutorialProps {
   onComplete: () => void;
@@ -7,8 +7,9 @@ interface TutorialProps {
   handleCommand: (input: string) => Promise<void>;
 }
 
-const Tutorial = ({ onComplete, typeLine, handleCommand }: TutorialProps) => {
+export const useTutorial = ({ onComplete, typeLine, handleCommand }: TutorialProps) => {
   const [tutorialStep, setTutorialStep] = useState(0);
+  const startedRef = useRef(false);
 
   const tutorialSteps = [
     "To get started, let's go to your notebook to see what to do next. Type [NOTEBOOK] in the console and then press [Enter].",
@@ -19,6 +20,13 @@ const Tutorial = ({ onComplete, typeLine, handleCommand }: TutorialProps) => {
   ];
 
   const expectedInputs = ["notebook", "news", "lan", "calendar", "n"];
+
+  const startTutorial = async () => {
+    if (!startedRef.current) {
+      startedRef.current = true;
+      await typeLine("** Tutorial **: " + tutorialSteps[0]);
+    }
+  }
 
   const handleTutorialInput = async (input: string) => {
     if (input === expectedInputs[tutorialStep]) {
@@ -32,12 +40,10 @@ const Tutorial = ({ onComplete, typeLine, handleCommand }: TutorialProps) => {
       }
     } else {
       await typeLine(
-        `> ${input}\n** Tutorial **: Invalid command. Try again:\n${tutorialSteps[tutorialStep]}`
+        `> ${input}\n** Tutorial **: Invalid command. Try again:\n** Tutorial **: ${tutorialSteps[tutorialStep]}`
       );
     }
   };
 
-  return { handleTutorialInput };
+  return { handleTutorialInput, startTutorial };
 };
-
-export default Tutorial;

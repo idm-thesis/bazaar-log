@@ -1,5 +1,6 @@
 "use client";
 import { create } from "zustand";
+export type GamePhase = "boot" | "tutorial" | "freeplay" | "restart";
 
 type Decision = {
   id: string;
@@ -86,6 +87,16 @@ interface GameState {
   nextYear: () => void;
   setYear: (year: number) => void;
   calendarInterval: number;
+
+  // Reset state
+  freePlayMode: boolean;
+  setFreePlayMode: (mode: boolean) => void;
+  booted: boolean;
+  setBooted: (value: boolean) => void;
+
+  // CLI game phase
+  gamePhase: GamePhase;
+  setGamePhase: (phase: GamePhase) => void;
 }
 
 export const startingYear = 1970; // Starting year in the game,
@@ -143,6 +154,10 @@ const initialState = {
   // Year
   currentYear: 1970,
   calendarInterval: 5,
+
+  freePlayMode: false,
+  booted: false,
+  gamePhase: "boot" as GamePhase,
 };
 
 export const useGameStore = create<GameState>((set) => ({
@@ -221,6 +236,11 @@ export const useGameStore = create<GameState>((set) => ({
     set(() => ({
       currentYear: year >= minYear && year <= maxYear ? year : startingYear,
     })),
+
+  setFreePlayMode: (mode: boolean) => set({ freePlayMode: mode }),
+  setBooted: (value) => set({ booted: value }),
+
+  setGamePhase: (phase) => set({ gamePhase: phase }),
   // Reset function
   resetGame: () => set(() => ({ ...initialState })),
 }));

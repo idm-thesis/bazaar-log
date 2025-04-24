@@ -1,48 +1,25 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-// import { useCalendarStore, calendarInterval } from "@/store/useCalendarStore";
 import { useGameStore } from "@/store/gameStore";
+import { useTutorial } from "./cli-game/useTutorial";
 import rawContentDecisions from "@/data/contentDecisions.json";
-interface ContentDecision {
-  id: string;
-  context: string;
-  ["choice-end"]: string;
-  ["choice-success"]: string;
-  ["choice-end-title"]?: string;
-  ["choice-end-outcome"]?: string;
-  ["choice-success-title"]?: string;
-  ["choice-success-outcome"]?: string;
-}
+import {
+  GameContentItem,
+  ContentDecision,
+} from "@/components/cli-game/dataTypes";
 const contentDecisions = rawContentDecisions as unknown as ContentDecision[];
-interface NewsItem {
-  headline: string;
-  summary: string;
-  decisionTrigger?: string; // optional
-}
-interface LANItem {
-  title: string;
-  author: string;
-  content: string; // optional
-}
 
-interface GameContentItem {
-  year: number;
-  news?: NewsItem[];
-  notebook?: string[];
-  calendar?: string;
-  lan_posts?: LANItem[];
-  workstation?: string;
-}
-import Tutorial from "./ui/tutorial";
 import { useGameEffects } from "@/hooks/useGameEffects";
 import gameContent from "@/data/Bazaar_log_game_content.json";
 import { useWinBoxStore } from "@/store/useWinBoxStore";
+
+import { createTyping } from "./cli-game/useTyping";
+import { useCommandHandler } from "./cli-game/useCommandHandler";
 
 export default function PreInternet() {
   useEffect(() => {
     useWinBoxStore.getState().clearAllBoxes();
   }, []);
-  const [freePlayMode, setFreePlayMode] = useState(false);
 
   const [terminalLines, setTerminalLines] = useState<string[]>([]);
   const [userInput, setUserInput] = useState("");
@@ -53,50 +30,22 @@ export default function PreInternet() {
   const typingSpeed = 10;
   const typingLineDelay = 200;
 
-  const { currentYear, nextYear, calendarInterval } = useGameStore();
+  const { currentYear, nextYear, calendarInterval, gamePhase, setGamePhase } =
+    useGameStore();
   const resetGame = useGameStore((state) => state.resetGame);
   const [calendarMode, setCalendarMode] = useState(false);
 
   // Decision Module
   const [pendingDecision, setPendingDecision] = useState<string | null>(null);
 
-  const softLine = "--------------------------------------------";
-  const hardLine = "────────────────────────────────────────────";
-
-  const listResponse = [
-    "",
-    "AVAILABLE COMMANDS",
-    "    calendar      Display the annual calendar (View the current year, and advance to future years)",
-    "    news          Access the latest news articles",
-    "    workstation   Develop tools at your free time, build your community for code sharing",
-    "    notebook      View your personal TODO list",
-    "    lan           Access the Local Area Network messages",
-    "    list          List all available commands",
-    "    help          Access detailed system information and usage instructions.",
-    "",
-  ];
-
-  const helpResponse = [
-    "",
-    "GAME NAME",
-    "    Bazaar.log",
-    "",
-    "SHORT DESCRIPTION",
-    "    Bazaar.log is a browser-based game to introduce the past, present, and future of the Internet and the open-source ecosystem.",
-    "",
-    "LONG DESCRIPTION",
-    "    Bazaar.log is a browser-based game to introduce the past, present, and future of the Internet and the open-source ecosystem. In this game, you are a developer working at a university's computer lab.",
-    "    There are two things you can do in Bazaar.log: 1) explore the history of the Internet and the open-source ecosystem, and 2) work on your open-source career, starting from a developer. You will be making some decisions along the way to help progress the game story.",
-    "    The game has 5 functions: notebook, news, local area network, calendar, and workstation:",
-    "    Notebook: read your To-dos of the year.",
-    "    News: read news of the year about technology and more.",
-    "    Local Area Network (LAN): browse online community discussions about news, communications among your colleages at lab, and more.",
-    "    Calendar: By turning the calendar, you can drive the game forward or backward in time.",
-    "    Workstation: place to develop your tools and build your open-source community. Write code, publish tools, and view real-time statistics of your open-source career.",
-    "",
-  ];
-
   useGameEffects(); // Runs all effect logic
+
+  const { typeText, typeLine, typeLinesWithCharacters } = createTyping(
+    setTerminalLines,
+    textRef,
+    typingSpeed,
+    typingLineDelay
+  );
 
   const [currentContentList, setCurrentContentList] = useState<
     GameContentItem[]
@@ -111,74 +60,50 @@ export default function PreInternet() {
     setCurrentContentList(filteredContent);
   }, [currentYear]);
 
-  // Typing line animation
-  const typeText = async (
-    text: string,
-    speed: number = typingSpeed
-  ): Promise<void> => {
-    return new Promise(async (resolve) => {
-      let index = 0;
+  const [inputDisplay, setInputDisplay] = useState("");
+  const { handleCommand, handleInputChange, softLine, hardLine } =
+    useCommandHandler({
+      currentContentList,
+      contentDecisions,
+      currentYear,
+      calendarInterval,
+      calendarMode,
+      pendingDecision,
+      typingSpeed,
+      typingLineDelay,
 
-      // Step 1: Add the new line and wait for it to be committed
-      await new Promise((lineResolve) => {
-        setTerminalLines((prevLines) => {
-          lineResolve(null);
-          return [...prevLines, text.charAt(0)];
-        });
-      });
+      setPendingDecision,
+      setCalendarMode,
+      setTerminalLines,
 
-      // Step 2: Start typing the characters
-      const type = () => {
-        setTerminalLines((prevLines) => {
-          const newLines = [...prevLines];
-          const currentLineIndex = newLines.length - 1;
+      typeLine,
+      typeText,
+      typeLinesWithCharacters,
 
-          newLines[currentLineIndex] += text.charAt(index);
-          return newLines;
-        });
+      nextYear,
 
-        if (textRef.current) {
-          textRef.current.scrollTop = textRef.current.scrollHeight;
-        }
-
-        index++;
-
-        if (index < text.length) {
-          setTimeout(type, speed);
-        } else {
-          resolve();
-        }
-      };
-
-      // Start typing
-      type();
+      setIsTyping,
+      setInputDisplay,
+      setUserInput,
     });
-  };
 
-  const typeLine = async (line: string, delay: number = 500): Promise<void> => {
-    return new Promise((resolve) => {
-      setTerminalLines((prevLines) => [...prevLines, line]);
-      setTimeout(() => resolve(), delay);
-    });
-  };
+  const { handleTutorialInput, startTutorial } = useTutorial({
+    onComplete: async () => {
+      await typeLine(
+        `** Tutorial **: Tutorial completed! Now you may want to exit the calendar mode to explore news, LAN communications, and notebook content updated to 1975. And remember, you can always check the list of available commands by entering [LIST].\n** Tutorial **: Tutorial Completed.\n${softLine}`
+      );
+      setGamePhase("freeplay");
+    },
+    typeLine,
+    handleCommand,
+  });
 
-  const typeLinesWithCharacters = async (
-    lines: string[],
-    speed: number = typingSpeed,
-    lineDelay: number = typingLineDelay
-  ) => {
-    for (const line of lines) {
-      await typeText(line, speed);
-      await new Promise((resolve) => setTimeout(resolve, lineDelay));
-    }
-  };
 
-  // Initial welcome message when the component mounts
-  const bootedRef = useRef(false);
+  // Game Phase 1: Booting
+  const bootStartedRef = useRef(false);
   useEffect(() => {
-    if (bootedRef.current) return; // Already booted, skip
-    bootedRef.current = true; // Mark as booted
     const bootSequence = async () => {
+      console.log("✅ Running boot sequence");
       setIsTyping(true);
       const bootLines = [
         "[Booting Bazaar.log v0.1]",
@@ -188,210 +113,30 @@ export default function PreInternet() {
         "",
         "Now is the year 1970. You are a university lab researcher working on network technology. Recently, your lab developed a local area network using ARPANET technology and would like to test it.",
         `${softLine}`,
-        "** Tutorial **: To get started, let's go to your notebook to see your to-do list. Type [NOTEBOOK] in the console and then press [Enter].",
+        "Would you like to go though the game tutorial?",
+        "Please type [YES] or [NO].",
         "",
       ];
 
       await typeLinesWithCharacters(bootLines, typingSpeed);
-
       setIsTyping(false);
+      inputRef.current?.focus();
 
-      // Testing: disable tutorial
-      // setFreePlayMode(true);
-      setFreePlayMode(false);
+      // Move this inside the sequence
+      setGamePhase("tutorial");
 
-      // setFreePlayMode(false);
       setTimeout(() => {
         inputRef.current?.focus();
       }, 100);
     };
 
-    bootSequence();
-  }, []);
-
-  const handleCommand = async (input: string) => {
-    let responseLines: string[] = [];
-
-    if (input === "help") {
-      responseLines = helpResponse;
-      responseLines.push(`${hardLine}`);
-    } else if (input === "list") {
-      responseLines = listResponse;
-      responseLines.push(`${hardLine}`);
-    } else if (input === "calendar") {
-      setCalendarMode(true);
-      responseLines = [
-        "[Loading...]",
-        "[Calendar]",
-        `Current Year: ${currentYear}`,
-        "Actions:",
-        "- [N] Move forward 5 years",
-        "- [Q] Exit Calendar Mode",
-      ];
-    } else if (input === "notebook") {
-      responseLines = [
-        "[Loading...]",
-        "[Notebook]",
-        `To-do's (${currentYear - (calendarInterval - 1)} - ${currentYear}) :`,
-      ];
-      if (currentContentList.length === 0) {
-        responseLines.push("You didn't record any to-dos in the past 5 years.");
-      } else {
-        currentContentList.forEach((item) => {
-          if (item.notebook !== undefined) {
-            responseLines.push(
-              `${softLine}`,
-              `Year        : ${item.year}`,
-              "\n"
-            );
-            item.notebook.forEach((note) => {
-              responseLines.push(`- ${note}`);
-            });
-            responseLines.push("\n");
-          }
-        });
-      }
-      responseLines.push("[Exiting Notebook]", `${hardLine}`);
-    } else if (input === "news") {
-      responseLines = ["[Loading...]", "[News]"];
-
-      let currentDecision: ContentDecision | null = null;
-      let finalDecisionTrigger: string | null = null;
-
-      if (currentContentList.length === 0) {
-        responseLines.push("No news available for the past 5 year.");
-      } else {
-        currentContentList.forEach((item) => {
-          if (item.news !== undefined) {
-            responseLines.push(
-              `${softLine}`,
-              `Year        : ${item.year}`,
-              "\n"
-            );
-
-            item.news.forEach((news) => {
-              responseLines.push(
-                `Headline    : ${news.headline}`,
-                `Summary     : ${news.summary}`,
-                "\n"
-              );
-
-              if (news.decisionTrigger) {
-                const found: ContentDecision | undefined = contentDecisions.find(
-                  (d) => d.id === news.decisionTrigger
-                );
-                if (found) {
-                  currentDecision = found;
-                  finalDecisionTrigger = news.decisionTrigger;
-                }
-              }
-            });
-          }
-        });
-      }
-
-      responseLines.push("[Exiting News]", `${hardLine}`);
-
-      if (currentDecision && finalDecisionTrigger) {
-        responseLines.push(
-          "[Decision]",
-          `${currentDecision["context"]}`,
-          "",
-          `(1) ${currentDecision["choice-end"]}`,
-          `(2) ${currentDecision["choice-success"]}`,
-          "Type 1 or 2 to decide:"
-        );
-        setPendingDecision(finalDecisionTrigger);
-      }
-    } else if (input === "lan") {
-      responseLines = [
-        "[Loading...]",
-        "[Local Area Network]",
-        "Local Area Network communications",
-      ];
-      if (currentContentList.length === 0) {
-        responseLines.push("No LAN communication for the past 5 year.");
-      } else {
-        currentContentList.forEach((item) => {
-          if (item.lan_posts !== undefined) {
-            responseLines.push(
-              `${softLine}`,
-              `Year        : ${item.year}`,
-              "\n"
-            );
-            item.lan_posts.forEach((post) => {
-              responseLines.push(
-                `Title       : ${post.title}`,
-                `Author      : ${post.author}`,
-                `Content     : ${post.content}`,
-                "\n"
-              );
-            });
-          }
-        });
-      }
-      responseLines.push("[Exiting LAN]", `${hardLine}`);
-    } else if (input === "workstation") {
-      responseLines = [
-        "Workstation under construction. Expected year to complete: 1990.",
-      ];
-      responseLines.push(`${hardLine}`);
-    } else {
-      responseLines = [
-        `Unknown command: "${input}"`,
-        `Type 'help' to get detailed information.`,
-      ];
+    if (gamePhase === "boot" && !bootStartedRef.current) {
+      bootStartedRef.current = true;
+      void bootSequence();
     }
+  }, [gamePhase]);
 
-    if (calendarMode) {
-      // Calendar navigation logic
-      await typeLine(`> ${input}`);
-      if (input === "n") {
-        nextYear();
-        await new Promise<void>((resolve) => {
-          setTimeout(async () => {
-            const updatedYear = useGameStore.getState().currentYear;
-            await updateCalendarDisplay(updatedYear);
-            resolve();
-          }, 0);
-        });
-      } else if (input === "q") {
-        exitCalendarMode();
-      } else {
-        setTerminalLines((prev) => [
-          ...prev,
-          `${softLine}`,
-          "[Calendar]",
-          `Invalid input: "${input}"`,
-          `Current Year: ${currentYear}`,
-          "Actions:",
-          "- [N] Move forward 5 years",
-          "- [Q] Exit Calendar",
-        ]);
-      }
-      // Reset input after handling command
-      setUserInput("");
-      setInputDisplay("");
-      setIsTyping(false);
-      return; // Don't run normal command handling
-    } else {
-      await typeLine(`> ${input}`);
-    }
-
-    await typeLinesWithCharacters(responseLines, typingSpeed);
-  };
-
-  const tutorial = Tutorial({
-    onComplete: async () => {
-      await typeLine(
-        "** Tutorial **: Tutorial completed! Now you may want to exit the calendar mode to explore news, LAN communications, and notebook content updated to 1975. And remember, you can always check list of avaiable command by entering [LIST]."
-      );
-      setFreePlayMode(true);
-    },
-    typeLine,
-    handleCommand,
-  });
-
+  const tutorialStartedRef = useRef(false);
   const handleUserInput = async () => {
     const input = userInput.trim().toLowerCase();
     if (isTyping) return;
@@ -399,53 +144,82 @@ export default function PreInternet() {
     setInputDisplay("");
     setIsTyping(true);
 
-    // Handle tutorial before entering free play
-    if (!freePlayMode) {
-      await tutorial.handleTutorialInput(input);
-      setIsTyping(false);
-      return;
-    }
-    if (pendingDecision) {
-      const currentDecision = contentDecisions.find(
-        (decision) => decision.id === pendingDecision
-      );
-
-      if (input === "1" || input === "2") {
-        setPendingDecision(null);
-        if (input === "1") {
-          await typeLinesWithCharacters([
-            "",
-            `[Outcome: ${currentDecision?.["choice-end-title"]}]`,
-            `${currentDecision?.["choice-end-outcome"]}`,
-            "",
-            "THE END",
-            hardLine,
-          ]);
-          resetGame();
-          // Optional: disable further gameplay if it’s a real ending
-          // setFreePlayMode(false);
+    switch (gamePhase) {
+      case "boot":
+        console.warn("Unexpected input during boot phase:", input);
+        break;
+      case "tutorial":
+        if (!tutorialStartedRef.current) {
+          if (input === "yes") {
+            tutorialStartedRef.current = true;
+            await startTutorial();
+          } else if (input === "no") {
+            setGamePhase("freeplay");
+            await typeLine(
+              "You may now explore freely. Type [HELP] or [LIST] for available commands."
+            );
+            await typeLine(hardLine);
+          } else {
+            await typeLine("Please type [YES] or [NO].");
+          }
         } else {
-          await typeLinesWithCharacters([
-            "",
-            `[Outcome: ${currentDecision?.["choice-success-title"]}]`,
-            `${currentDecision?.["choice-success-outcome"]}`,
-            "",
-            "You may now continue exploring the network.",
-            hardLine,
-          ]);
+          await handleTutorialInput(input);
         }
+        
+        break;
+      case "freeplay":
+        if (pendingDecision) {
+          const currentDecision = contentDecisions.find(
+            (decision) => decision.id === pendingDecision
+          );
 
+          if (input === "1" || input === "2") {
+            setPendingDecision(null);
+            if (input === "1") {
+              await typeLinesWithCharacters([
+                "",
+                `${input}`,
+                `[Outcome: ${currentDecision?.["choice-end-title"]}]`,
+                `${currentDecision?.["choice-end-outcome"]}`,
+                "",
+                "THE END",
+                hardLine,
+                "Press [Enter] to restart...",
+              ]);
+              setGamePhase("restart");
+            } else {
+              await typeLinesWithCharacters([
+                "",
+                `${input}`,
+                `[Outcome: ${currentDecision?.["choice-success-title"]}]`,
+                `${currentDecision?.["choice-success-outcome"]}`,
+                "",
+                "You may now continue exploring the network.",
+                hardLine,
+              ]);
+            }
+          } else {
+            await typeLine(`Invalid input: "${input}". Type 1 or 2.`);
+          }
+        } else {
+          await handleCommand(input);
+        }
+        break;
+      case "restart":
+        setTerminalLines([]);
         setIsTyping(false);
-        return; // Don't run normal command handling after decision
-      } else {
-        await typeLine(`Invalid input: "${input}". Type 1 or 2.`);
-        setIsTyping(false);
+        bootStartedRef.current = false;
+        setTimeout(() => {
+          setGamePhase("boot");
+          resetGame();
+          inputRef.current?.focus();
+        }, 10);
         return;
-      }
+      default:
+        console.warn("Unknown game phase: ", gamePhase);
+        break;
     }
-
-    // await typeLinesWithCharacters(responseLines, typingSpeed);
-    await handleCommand(input);
+    // Handle pending decision
     setIsTyping(false);
 
     setTimeout(() => {
@@ -460,45 +234,12 @@ export default function PreInternet() {
     }
   };
 
-  const [inputDisplay, setInputDisplay] = useState("");
-
-  const exitCalendarMode = () => {
-    setCalendarMode(false);
-    setTerminalLines((prev) => [...prev, "[Exiting Calendar]", `${hardLine}`]);
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const upperInput = e.target.value.toUpperCase();
-    setUserInput(upperInput);
-    setInputDisplay(upperInput);
-  };
-
   // Function: auto-scroll to bottom of text
   useEffect(() => {
     if (textRef.current) {
       textRef.current.scrollTop = textRef.current.scrollHeight;
     }
   }, [terminalLines]);
-
-  // Function: update calendar year
-  const updateCalendarDisplay = async (year: number) => {
-    const lines = [
-      `${softLine}`,
-      "[Calendar]",
-      "Success! Year advanced by 5 years.",
-      `Current Year: ${year}`,
-      "Check out the latest news, local area network communications, and notebook in the past 5 years.",
-      "Actions:",
-      "- [N] Move forward 5 years",
-      "- [Q] Exit Calendar Mode",
-    ];
-
-    // setTerminalLines((prev) => [...prev, ...lines]);
-    for (const line of lines) {
-      await typeText(line); // Ensures sequential typing!
-      await new Promise((res) => setTimeout(res, typingLineDelay));
-    }
-  };
 
   return (
     <div
