@@ -1,5 +1,5 @@
 "use client";
-import WinBox from "@/components/WinBox";
+import WinBox from "@/components/windows/WinBox";
 import { useGameStore } from "@/store/gameStore";
 import { useCodeGenerationMechanics } from "@/hooks/useCodeGenerationMechanics";
 import { Progress } from "@/components/ui/progress";

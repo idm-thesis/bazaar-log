@@ -16,6 +16,8 @@ import { useWinBoxStore } from "@/store/useWinBoxStore";
 import { createTyping } from "./cli-game/useTyping";
 import { useCommandHandler } from "./cli-game/useCommandHandler";
 
+export const typingSpeed = 10;
+export const typingLineDelay = 200;
 export default function PreInternet() {
   useEffect(() => {
     useWinBoxStore.getState().clearAllBoxes();
@@ -27,8 +29,6 @@ export default function PreInternet() {
 
   const textRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const typingSpeed = 10;
-  const typingLineDelay = 200;
 
   const { currentYear, nextYear, calendarInterval, gamePhase, setGamePhase } =
     useGameStore();
@@ -118,7 +118,7 @@ export default function PreInternet() {
         "",
       ];
 
-      await typeLinesWithCharacters(bootLines, typingSpeed);
+      await typeLinesWithCharacters(bootLines, typingSpeed, typingLineDelay, true);
       setIsTyping(false);
       inputRef.current?.focus();
 
@@ -185,7 +185,7 @@ export default function PreInternet() {
                 "THE END",
                 hardLine,
                 "Press [Enter] to restart...",
-              ]);
+              ], typingSpeed, typingLineDelay, true);
               setGamePhase("restart");
             } else {
               await typeLinesWithCharacters([
@@ -196,7 +196,7 @@ export default function PreInternet() {
                 "",
                 "You may now continue exploring the network.",
                 hardLine,
-              ]);
+              ], typingSpeed, typingLineDelay, true);
             }
           } else {
             await typeLine(`Invalid input: "${input}". Type 1 or 2.`);

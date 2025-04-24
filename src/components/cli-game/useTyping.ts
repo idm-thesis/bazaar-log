@@ -60,8 +60,10 @@ export const createTyping = (
   const typeLinesWithCharacters = async (
     lines: string[],
     speed: number = typingSpeed,
-    lineDelay: number = typingLineDelay
+    lineDelay: number = typingLineDelay,
+    append: boolean = true,
   ) => {
+    if (!append) setTerminalLines([]);
     for (const line of lines) {
       await typeText(line, speed);
       await new Promise((resolve) => setTimeout(resolve, lineDelay));

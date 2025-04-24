@@ -20,7 +20,7 @@ interface CommandHandlerProps {
 
   typeLine: (line: string) => Promise<void>;
   typeText: (text: string) => Promise<void>;
-  typeLinesWithCharacters: (lines: string[], speed: number, lineDelay: number) => Promise<void>;
+  typeLinesWithCharacters: (lines: string[], speed: number, lineDelay: number, append: boolean) => Promise<void>;
 
   nextYear: () => void;
 
@@ -289,7 +289,7 @@ export const useCommandHandler = ({
       await typeLine(`> ${input}`);
     }
 
-    await typeLinesWithCharacters(responseLines, typingSpeed, typingLineDelay);
+    await typeLinesWithCharacters(responseLines, typingSpeed, typingLineDelay, true);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

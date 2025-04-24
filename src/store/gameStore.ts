@@ -1,6 +1,7 @@
 "use client";
 import { create } from "zustand";
 export type GamePhase = "boot" | "tutorial" | "freeplay" | "restart";
+export type GameStage = "preInternet" | "web1990" | "blueScreen" | "web2000" | "web2010" | "web2020";
 
 type Decision = {
   id: string;
@@ -79,7 +80,6 @@ interface GameState {
   // Content-based Decisions
   contentDecisions: Record<string, string>;
   setContentDecisions: (id: string, value: string) => void;
-  currentStage: string;
   resetGame: () => void;
 
   // Year
@@ -88,15 +88,15 @@ interface GameState {
   setYear: (year: number) => void;
   calendarInterval: number;
 
-  // Reset state
-  freePlayMode: boolean;
-  setFreePlayMode: (mode: boolean) => void;
-  booted: boolean;
-  setBooted: (value: boolean) => void;
-
   // CLI game phase
   gamePhase: GamePhase;
   setGamePhase: (phase: GamePhase) => void;
+
+  // Game stage
+  gameStage: GameStage;
+  setGameStage: (stage: GameStage) => void;
+  blueScreenCompleted: boolean;
+  setBlueScreenCompleted: (value: boolean) => void;
 }
 
 export const startingYear = 1970; // Starting year in the game,
@@ -149,15 +149,16 @@ const initialState = {
 
   // Content-based Decisions
   contentDecisions: {},
-  currentStage: "1970s",
 
   // Year
   currentYear: 1970,
   calendarInterval: 5,
 
-  freePlayMode: false,
-  booted: false,
   gamePhase: "boot" as GamePhase,
+
+  gameStage: "preInternet" as GameStage,
+  
+  blueScreenCompleted: false,
 };
 
 export const useGameStore = create<GameState>((set) => ({
@@ -237,10 +238,9 @@ export const useGameStore = create<GameState>((set) => ({
       currentYear: year >= minYear && year <= maxYear ? year : startingYear,
     })),
 
-  setFreePlayMode: (mode: boolean) => set({ freePlayMode: mode }),
-  setBooted: (value) => set({ booted: value }),
-
   setGamePhase: (phase) => set({ gamePhase: phase }),
+  setGameStage: (stage) => set({gameStage: stage}),
+  setBlueScreenCompleted: (value) => set({blueScreenCompleted: value}),
   // Reset function
   resetGame: () => set(() => ({ ...initialState })),
 }));
