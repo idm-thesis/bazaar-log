@@ -18,5 +18,15 @@
             "lan": "/icons/2000s/lan.ico",
             "workstation": "/icons/2000s/workstation.ico"
         }
+    },
+    {
+        "era": "2010s",
+        "icons": {
+            "news": "/icons/2010s/news.png",
+            "notebook": "/icons/2010s/notebook.png",
+            "calendar": "/icons/2010s/calendar.png",
+            "lan": "/icons/2010s/lan.png",
+            "workstation": "/icons/2010s/workstation.png"
+        }
     }
 ]

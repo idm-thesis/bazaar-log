@@ -2,7 +2,7 @@
 import { useGameEffects } from "@/hooks/useGameEffects";
 import { useState, useEffect } from "react";
 import CalendarWindow from "./windows/calendar";
-import Workstation from "./windows/workstation";
+import WorkstationWindow from "./windows/workstation";
 import NewsWindow from "./windows/news";
 import NotebookWindow from "./windows/notebook";
 import LANWindow from "./windows/lan";
@@ -57,7 +57,7 @@ export default function Web2000() {
           <b className="text-white text-shadow-md text-wrap">Calendar</b>
         </div>
         <div className="justify-items-center mb-4" style={{width: 50}}>
-          <Workstation era={eraStr} />
+          <WorkstationWindow era={eraStr} />
           <b className="text-white text-shadow-md text-wrap">Workstation</b>
         </div>
       </div>

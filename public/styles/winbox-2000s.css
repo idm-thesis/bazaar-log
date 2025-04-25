@@ -49,30 +49,50 @@
   background-position-y: calc(50% + 2px);
 }
 
+.wb-min,
+.wb-max,
+.wb-close {
+  width: 24px;
+  height: 24px;
+  background-size: 24px auto;
+  background-position-x: calc(50% + 2px);
+  background-position-y: calc(50% + 2px);
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-left: 2px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.wb-min {
+  background-image: url(../icons/minimize.svg);
+}
+.wb-min:hover {
+  background-image: url(../icons/minimize-hover.svg);
+}
+.wb-min:active:not(:disabled) {
+  background-image: url(../icons/minimize-active.svg);
+}
+
 .wb-max {
   background-image: url(../icons/maximize.svg);
-  &:hover {
-    background-image: url(../icons/maximize-hover.svg);
-  }
-  &:not(:disabled):active {
-    background-image: url(../icons/maximize-active.svg);
-  }
-  background-size: 24px auto;
-  background-position-x: center;
-  background-position-y: calc(50% + 2px);
+}
+.wb-max:hover {
+  background-image: url(../icons/maximize-hover.svg);
+}
+.wb-max:active:not(:disabled) {
+  background-image: url(../icons/maximize-active.svg);
 }
 
 .wb-close {
   background-image: url(../icons/close.svg);
-  &:hover {
-    background-image: url(../icons/close-hover.svg);
-  }
-  &:not(:disabled):active {
-    background-image: url(../icons/close-active.svg);
-  }
-  background-size: 24px auto;
-  background-position-x: calc(50% - 2px);
-  background-position-y: calc(50% + 2px);
+}
+.wb-close:hover {
+  background-image: url(../icons/close-hover.svg);
+}
+.wb-close:active:not(:disabled) {
+  background-image: url(../icons/close-active.svg);
 }
 
 .wb-full {

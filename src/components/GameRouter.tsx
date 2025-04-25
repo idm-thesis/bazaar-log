@@ -72,7 +72,7 @@ export default function GameRouter() {
   // Testing
   return (
     <div className="min-h-screen" id="web2000">
-      <Web2000 />
+      <Web2010 />
     </div>
   );
   switch (gameStage) {
