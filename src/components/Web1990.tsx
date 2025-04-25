@@ -19,37 +19,37 @@ export default function Web1990() {
   const eraStr = "1990s";
 
   return isClient ? (
-    <div className="grid grid-cols-6 gap-4">
+    <div className="relative h-screen">
       <div
-        className="absolute top-4 right-4 justify-items-center border-4 border-black"
+        className="absolute top-4 right-4"
         style={{ background: "#000", color: "#000", fontFamily: "Ohlfs" }}
       >
         <div
-          className="border-2 border-t-white border-l-white w-full mb-1"
+          className="justify-items-center border-2 border-t-white border-l-white m-1 flex justify-center"
           style={{ borderRightColor: "#6B6B6B", borderBottomColor: "#6B6B6B" }}
         >
           <NotebookWindow era={eraStr} />
         </div>
         <div
-          className="border-2 border-t-white border-l-white w-full mb-1"
+          className="justify-items-center border-2 border-t-white border-l-white m-1 flex justify-center"
           style={{ borderRightColor: "#6B6B6B", borderBottomColor: "#6B6B6B" }}
         >
           <NewsWindow era={eraStr} />
         </div>
         <div
-          className="border-2 border-t-white border-l-white w-full mb-1"
+          className="justify-items-center border-2 border-t-white border-l-white m-1 flex justify-center"
           style={{ borderRightColor: "#6B6B6B", borderBottomColor: "#6B6B6B" }}
         >
           <LANWindow era={eraStr} />
         </div>
         <div
-          className="border-2 border-t-white border-l-white w-full"
+          className="justify-items-center border-2 border-t-white border-l-white m-1 flex justify-center"
           style={{ borderRightColor: "#6B6B6B", borderBottomColor: "#6B6B6B" }}
         >
           <CalendarWindow era={eraStr} />
         </div>
         <div
-          className="border-2 border-t-white border-l-white w-full mb-1"
+          className="justify-items-center border-2 border-t-white border-l-white m-1 flex justify-center"
           style={{ borderRightColor: "#6B6B6B", borderBottomColor: "#6B6B6B" }}
         >
           <Workstation era={eraStr} />

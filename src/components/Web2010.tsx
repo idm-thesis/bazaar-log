@@ -8,7 +8,7 @@ import NotebookWindow from "./windows/notebook";
 import LANWindow from "./windows/lan";
 import { useWinBoxStore } from "@/store/useWinBoxStore";
 
-export default function Web2000() {
+export default function Web2010() {
   useEffect(() => {
     setIsClient(true);
 

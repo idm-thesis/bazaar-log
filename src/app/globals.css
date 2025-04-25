@@ -36,6 +36,14 @@
 }
 
 @font-face {
+  font-family: "Segoe-UI-Variable";
+  src: url("/fonts/Segoe-UI-Variable-Static-Display.woff2") format("woff2"),
+  url("/fonts/Segoe-UI-Variable-Static-Display.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
   font-family: "Inconsolata", serif;
   src: url("/fonts/Inconsolata-Regular.woff2") format("woff2"),
   url("/fonts/Inconsolata-Regular.woff") format("woff");
@@ -183,7 +191,9 @@
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
-
+#web1990 {
+  background: #555555;
+}
 #bsod {
   font-family: "Lucida", Geneva, Verdana, sans-serif;
   background-color: #01007f;
@@ -224,7 +234,12 @@
     rgba(0, 61, 215, 1) 100%
   );
 }
-
+#web2010 {
+  background-image: url("/imgs/xp-bg.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 #bar2010 {
   position: absolute;
   left: 0;
@@ -237,4 +252,30 @@
   color: #000;
   font-weight: 600;
   box-shadow: inset 0 0 0 1px #fffd;
+}
+
+#web2020 {
+  background-image: url("/imgs/2020-bg.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-family:'Segoe-UI-Variable', Tahoma, Geneva, Verdana, sans-serif;
+}
+#web2020 button {
+  background: transparent;
+  border-radius: 2px;
+}
+#web2020 button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transition: background 0.1s linear;
+}
+#bar2020 {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 35px;
+  background: #000408;
+  padding: 6px;
+  color: #fff;
+  font-weight: 600;
 }

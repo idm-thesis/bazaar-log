@@ -28,5 +28,15 @@
             "lan": "/icons/2010s/lan.png",
             "workstation": "/icons/2010s/workstation.png"
         }
+    },
+    {
+        "era": "2020s",
+        "icons": {
+            "news": "/icons/2020s/news.png",
+            "notebook": "/icons/2020s/notebook.png",
+            "calendar": "/icons/2020s/calendar.png",
+            "lan": "/icons/2020s/lan.ico",
+            "workstation": "/icons/2020s/workstation.ico"
+        }
     }
 ]

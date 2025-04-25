@@ -2,34 +2,18 @@
 import { useGameEffects } from "@/hooks/useGameEffects";
 import { useState, useEffect } from "react";
 import CalendarWindow from "./windows/calendar";
-import DashboardWindow from "./windows/workstation";
+import Workstation from "./windows/workstation";
 import NewsWindow from "./windows/news";
 import NotebookWindow from "./windows/notebook";
 import LANWindow from "./windows/lan";
 import { useWinBoxStore } from "@/store/useWinBoxStore";
 
-
 export default function Web2020() {
-  useEffect(() => {
-    setIsClient(true);
-
-    if (typeof window !== "undefined") {
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = "https://unpkg.com/xp.css";
-      document.head.appendChild(link);
-
-      return () => {
-        document.head.removeChild(link);
-      };
-    }
-  }, []);
-
   useGameEffects(); // Runs all effect logic
 
   const [isClient, setIsClient] = useState(false);
   useEffect(() => setIsClient(true), []);
-  
+
   useEffect(() => {
     useWinBoxStore.getState().clearAllBoxes();
   }, []);
@@ -37,28 +21,32 @@ export default function Web2020() {
   const eraStr = "2020s";
 
   return isClient ? (
-    <div className="grid grid-cols-6 gap-4">
+    <div className="relative h-screen">
       <div
-        className="absolute top-4 right-4 justify-items-center border border-black"
-        style={{ background: "#D9D9D9", color: "#000", fontFamily: "Ohlfs" }}
+        className="absolute top-4 left-6"
       >
-        <div className="border border-black w-full">
-          <DashboardWindow era={eraStr} />
-        </div>
-
-        <div className="border border-black w-full">
-          <NewsWindow era={eraStr} />
-        </div>
-        <div className="border border-black w-full">
+        <div className="justify-items-center mb-4" style={{width: 50}}>
           <NotebookWindow era={eraStr} />
+          <b className="text-white text-xs text-wrap">Notebook</b>
         </div>
-        <div className="border border-black w-full">
+        <div className="justify-items-center mb-4" style={{width: 50}}>
+          <NewsWindow era={eraStr} />
+          <b className="text-white text-xs text-wrap">News</b>
+        </div>
+        <div className="justify-items-center mb-4" style={{width: 50}}>
           <LANWindow era={eraStr} />
+          <b className="block w-full text-white text-xs text-center break-words">Local Area Network</b>
         </div>
-        <div className="border border-black w-full">
+        <div className="justify-items-center mb-4" style={{width: 50}}>
           <CalendarWindow era={eraStr} />
+          <b className="text-white text-xs text-wrap">Calendar</b>
+        </div>
+        <div className="justify-items-center mb-4" style={{width: 50}}>
+          <Workstation era={eraStr} />
+          <b className="text-white text-xs text-wrap">Workstation</b>
         </div>
       </div>
+      <div id="bar2020"></div>
     </div>
   ) : null;
 }

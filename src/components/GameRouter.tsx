@@ -71,9 +71,9 @@ export default function GameRouter() {
 
   // Testing
   return (
-    <div className="min-h-screen" id="web2000">
-      <Web2010 />
-    </div>
+    <div className="min-h-screen" id="web1990">
+          <Web1990 />
+        </div>
   );
   switch (gameStage) {
     case "preInternet":
@@ -88,7 +88,7 @@ export default function GameRouter() {
       );
     case "web1990":
       return (
-        <div className="min-h-screen" style={{ background: "#555555" }}>
+        <div className="min-h-screen" id="web1990">
           <Web1990 />
         </div>
       );
@@ -100,19 +100,19 @@ export default function GameRouter() {
       );
     case "web2000":
       return (
-        <div className="min-h-screen" style={{ background: "#555555" }}>
+        <div className="min-h-screen" id="web2000">
           <Web2000 />
         </div>
       );
     case "web2010":
       return (
-        <div className="min-h-screen" style={{ background: "#555555" }}>
+        <div className="min-h-screen" id="web2010">
           <Web2010 />
         </div>
       );
     case "web2020":
       return (
-        <div className="min-h-screen" style={{ background: "#555555" }}>
+        <div className="min-h-screen" id="web2020">
           <Web2020 />
         </div>
       );

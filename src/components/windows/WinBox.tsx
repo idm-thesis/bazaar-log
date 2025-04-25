@@ -143,10 +143,12 @@ export default function Window({
       <button
         onClick={openWindow}
         disabled={isOpen}
-        className="winboxButton w-16 h-16"
+        className="winboxButton aspect-square min-w-[4rem] max-w-[5rem] m-auto flex items-center justify-center overflow-hidden"
       >
         {iconURL ? (
-          <Image src={iconURL} alt="" width={50} height={50} />
+          <div className="relative w-full h-full">
+            <Image src={iconURL} alt="" fill className="object-contain"/>
+          </div>
         ) : (
           <p>{title}</p>
         )}
