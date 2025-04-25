@@ -143,7 +143,7 @@ export default function Window({
       <button
         onClick={openWindow}
         disabled={isOpen}
-        className="winboxButton"
+        className="winboxButton w-16 h-16"
       >
         {iconURL ? (
           <Image src={iconURL} alt="" width={50} height={50} />

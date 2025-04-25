@@ -12,11 +12,11 @@
     {
         "era": "2000s",
         "icons": {
-            "news": "",
-            "notebook": "",
-            "calendar": "",
-            "lan": "",
-            "workstation": ""
+            "news": "/icons/2000s/news.ico",
+            "notebook": "/icons/2000s/notepad.png",
+            "calendar": "/icons/2000s/Calendar_2006.webp",
+            "lan": "/icons/2000s/lan.ico",
+            "workstation": "/icons/2000s/workstation.ico"
         }
     }
 ]
