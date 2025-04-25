@@ -70,11 +70,15 @@ export default function GameRouter() {
   if (!mounted) return null;
 
   // Testing
-  return (
-    <div className="min-h-screen" id="web1990">
-          <Web1990 />
-        </div>
-  );
+  // return (
+  //   <div
+  //     id="monitor"
+  //     className="min-h-screen"
+  //     style={{ background: "#000" }}
+  //   >
+  //     <PreInternet />
+  //   </div>
+  // );
   switch (gameStage) {
     case "preInternet":
       return (

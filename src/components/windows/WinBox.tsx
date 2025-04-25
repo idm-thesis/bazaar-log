@@ -129,6 +129,8 @@ export default function Window({
         setIsOpen(false);
       },
       noClose,
+      noMin: era === "1990s",
+      noMax: era === "1990s",
     });
     useWinBoxStore.getState().registerBox({
       id,
@@ -147,7 +149,7 @@ export default function Window({
       >
         {iconURL ? (
           <div className="relative w-full h-full">
-            <Image src={iconURL} alt="" fill className="object-contain"/>
+            <Image src={iconURL} alt="" fill className="object-contain" />
           </div>
         ) : (
           <p>{title}</p>
