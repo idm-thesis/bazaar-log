@@ -61,7 +61,7 @@ export default function Web2000() {
           <b className="text-white text-shadow-md text-wrap">Workstation</b>
         </div>
       </div>
-      <div id="bar2000"></div>
+      <div id="bar2010"></div>
     </div>
   ) : null;
 }
