@@ -36,27 +36,24 @@
   text-shadow: 1px 1px #0f1089;
 }
 
-.wb-min {
-  background-image: url(../icons/minimize.svg);
-  &:hover {
-    background-image: url(../icons/minimize-hover.svg);
-  }
-  &:not(:disabled):active {
-    background-image: url(../icons/minimize-active.svg);
-  }
-  background-size: 24px auto;
-  background-position-x: calc(50% + 2px);
-  background-position-y: calc(50% + 2px);
+.wb-control {
+  margin-right: 6px;
+  display: flex;
+  align-items: center;     /* <-- This vertically centers items */
+  gap: 4px;                /* Optional: spacing between buttons */
+  height: 100%;
 }
-
+.wb-control span {
+  display: inline-block;
+}
 .wb-min,
 .wb-max,
 .wb-close {
   width: 24px;
   height: 24px;
   background-size: 24px auto;
-  background-position-x: calc(50% + 2px);
-  background-position-y: calc(50% + 2px);
+  /* background-position-x: calc(50% + 2px);
+  background-position-y: calc(50% + 2px); */
   background-repeat: no-repeat;
   background-position: center;
   margin-left: 2px;

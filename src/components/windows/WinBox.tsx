@@ -35,6 +35,7 @@ declare global {
       noMin?: boolean;
       noMax?: boolean;
       noClose?: boolean;
+      class?: string[];
       onclose?: () => boolean | void;
       onresize?: (width: number, height: number) => void;
       onmove?: (x: number, y: number) => void;
@@ -56,9 +57,12 @@ interface WinBoxProps {
   children?: ReactNode;
   content?: ReactNode;
   style?: CSSProperties;
+  class?: string[];
   className?: string;
   era?: string;
   noClose?: boolean;
+  noMin?: boolean;
+  noMax?: boolean;
 }
 
 export default function Window({
@@ -72,6 +76,8 @@ export default function Window({
   className = "",
   era = "",
   noClose = false,
+  noMin = false,
+  noMax = false,
 }: WinBoxProps) {
   const [isOpen, setIsOpen] = useState(false);
   const winboxRef = useRef<WinBoxInstance | null>(null);
@@ -118,19 +124,26 @@ export default function Window({
       contentRef.current = document.createElement("div");
     }
 
+    let classList: string[] = [];
+    if (era === "1990s") {
+      classList = ["no-full", "no-max", "no-min"];
+    } else if (era === "2000s" || "2010s" || "2020s") {
+      classList = ["no-full"];
+    }
     winboxRef.current = new window.WinBox({
       title,
       width,
       height,
       x,
       y,
+      class: classList,
       mount: contentRef.current, // Mounts React content inside WinBox
       onclose: () => {
         setIsOpen(false);
       },
       noClose,
-      noMin: era === "1990s",
-      noMax: era === "1990s",
+      noMin,
+      noMax,
     });
     useWinBoxStore.getState().registerBox({
       id,

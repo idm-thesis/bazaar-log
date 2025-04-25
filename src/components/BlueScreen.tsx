@@ -61,7 +61,7 @@ export default function BlueScreen() {
     "OPEN SOURCE DOESN’T PANIC.",
     "OPEN SOURCE REWRITES THE SYSTEM.",
     "",
-    "PRESS [ENTER] TO INSTALL LINUX...",
+    "PRESS [ENTER] TO CONTINUE...",
   ];
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export default function BlueScreen() {
       const installLinux = async () => {
         setIsTypingDone(false);
         await typeLinesWithCharacters(linuxInstallLines, 10, 200, true);
-        await new Promise((res) => setTimeout(res, 5000));
+        await new Promise((res) => setTimeout(res, 3000));
         await typeLinesWithCharacters(solvingY2K, 10, 200, true);
         setIsTypingDone(true);
         inputRef.current?.focus();
