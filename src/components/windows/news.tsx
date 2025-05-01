@@ -5,27 +5,20 @@ import WinBox from "@/components/windows/WinBox";
 import gameContent from "@/data/Bazaar_log_game_content.json";
 import DecisionModal from "../ui/contentDecision";
 import { useGameStore, calendarInterval } from "@/store/gameStore";
-interface NewsItem {
-  headline: string;
-  summary: string;
-  decisionTrigger?: string; // optional
-}
-
-interface GameContentItem {
-  year: number;
-  news?: NewsItem[];
-  notebook?: string[];
-  calendar?: string;
-  lan?: string[];
-  workstation?: string;
-}
+import { GameContentItem } from "../cli-game/dataTypes";
 
 export default function NewsWindow({ era }: { era: string }) {
   const currentYear = useGameStore().currentYear;
   const [currentContentList, setCurrentContentList] = useState<
     GameContentItem[]
   >([]);
-  const decisions = useGameStore((state) => state.contentDecisions);
+  const { decisionStatusList, markDecisionAsMade } = useGameStore();
+  const isPending = (id?: string): boolean => {
+    if (!id) return false;
+    const d = decisionStatusList.find((d) => d.id === id);
+    return d ? !d.hasDecided : false;
+  };
+
   useEffect(() => {
     const startYear = currentYear - (calendarInterval - 1);
     const filteredContent = gameContent.filter((item) => {
@@ -50,14 +43,14 @@ export default function NewsWindow({ era }: { era: string }) {
                 <h3>{newsObj.headline}</h3>
                 <p>{newsObj.summary}</p>
                 {newsObj.decisionTrigger &&
-                  !decisions[newsObj.decisionTrigger] && (
+                  isPending(newsObj.decisionTrigger) && (
                     <button
                       onClick={() => {
                         setCurrentTriggerId(newsObj.decisionTrigger!);
                         setShowDecision(true);
                       }}
                     >
-                      Decide Your Response
+                      Pending Decision
                     </button>
                   )}
               </div>
@@ -70,6 +63,7 @@ export default function NewsWindow({ era }: { era: string }) {
             triggerId={currentTriggerId}
             onClose={() => {
               setShowDecision(false);
+              if (currentTriggerId) markDecisionAsMade(currentTriggerId);
               setCurrentTriggerId(null);
             }}
           />

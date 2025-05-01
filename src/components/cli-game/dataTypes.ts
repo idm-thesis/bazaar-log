@@ -22,6 +22,7 @@ export interface ContentDecision {
     title: string;
     author: string;
     content: string; // post content
+    decisionTrigger?: string;
   }
   
   // Content shown for each year

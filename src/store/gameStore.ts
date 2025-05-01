@@ -1,7 +1,19 @@
 "use client";
 import { create } from "zustand";
 export type GamePhase = "boot" | "tutorial" | "freeplay" | "restart";
-export type GameStage = "preInternet" | "web1990" | "blueScreen" | "web2000" | "web2010" | "web2020" | "future";
+export type GameStage =
+  | "preInternet"
+  | "web1990"
+  | "blueScreen"
+  | "web2000"
+  | "web2010"
+  | "web2020"
+  | "future";
+export type ContentDecisionStatus = {
+  id: string;
+  year: number;
+  hasDecided: boolean;
+};
 
 type Decision = {
   id: string;
@@ -81,6 +93,13 @@ interface GameState {
   contentDecisions: Record<string, string>;
   setContentDecisions: (id: string, value: string) => void;
   resetGame: () => void;
+  contentDecisionPending: boolean;
+  setContentDecisionPending: (value: boolean) => void;
+  decisionStatusList: ContentDecisionStatus[];
+  setDecisionStatusList: (update: ContentDecisionStatus[]) => void;
+  markDecisionAsMade: (id: string) => void;
+  hasInitializedDecisionStatusList: boolean;
+  setHasInitializedDecisionStatusList: (val: boolean) => void;
 
   // Year
   currentYear: number;
@@ -149,7 +168,9 @@ const initialState = {
 
   // Content-based Decisions
   contentDecisions: {},
-
+  contentDecisionPending: false,
+  decisionStatusList: [],
+  hasInitializedDecisionStatusList: false,
   // Year
   currentYear: startingYear,
   calendarInterval: calendarInterval,
@@ -157,7 +178,7 @@ const initialState = {
   gamePhase: "boot" as GamePhase,
 
   gameStage: "preInternet" as GameStage,
-  
+
   blueScreenCompleted: false,
 };
 
@@ -224,6 +245,19 @@ export const useGameStore = create<GameState>((set, get) => ({
       contentDecisions: { ...state.contentDecisions, [id]: value },
     })),
 
+  setContentDecisionPending: (value: boolean) =>
+    set({ contentDecisionPending: value }),
+  setDecisionStatusList: (update) => set({ decisionStatusList: update }),
+
+  markDecisionAsMade: (id) =>
+    set((state) => ({
+      decisionStatusList: state.decisionStatusList.map((d) =>
+        d.id === id ? { ...d, hasDecided: true } : d
+      ),
+    })),
+  setHasInitializedDecisionStatusList: (val) =>
+    set({ hasInitializedDecisionStatusList: val }),
+
   // Year
   nextYear: () => {
     const state = get();
@@ -236,7 +270,6 @@ export const useGameStore = create<GameState>((set, get) => ({
     }
     set({ currentYear: next });
   },
-  
 
   setYear: (year) => {
     const newYear = year >= minYear && year <= maxYear ? year : startingYear;
@@ -244,8 +277,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   setGamePhase: (phase) => set({ gamePhase: phase }),
-  setGameStage: (stage) => set({gameStage: stage}),
-  setBlueScreenCompleted: (value) => set({blueScreenCompleted: value}),
+  setGameStage: (stage) => set({ gameStage: stage }),
+  setBlueScreenCompleted: (value) => set({ blueScreenCompleted: value }),
   // Reset function
   resetGame: () => set(() => ({ ...initialState })),
 }));

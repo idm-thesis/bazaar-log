@@ -2,6 +2,16 @@
 import { useGameStore } from "@/store/gameStore";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import rawContentDecisions from "@/data/contentDecisions.json"; // adjust path
+import gameContent from "@/data/Bazaar_log_game_content.json";
+import { LANItem, NewsItem } from "./cli-game/dataTypes";
+
+// interface LanPost {
+//   title: string;
+//   author: string;
+//   content: string;
+//   decisionTrigger?: string;
+// }
 
 const PreInternet = dynamic(() => import("@/components/PreInternet"), {
   ssr: false,
@@ -30,6 +40,9 @@ export default function GameRouter() {
     setGameStage,
     gamePhase,
     blueScreenCompleted,
+    setDecisionStatusList,
+    hasInitializedDecisionStatusList,
+    setHasInitializedDecisionStatusList,
   } = useGameStore();
   const [mounted, setMounted] = useState(false);
 
@@ -37,6 +50,7 @@ export default function GameRouter() {
     setMounted(true); // prevent mismatch by rendering only after mount
   }, []);
 
+  // Set Game Stage
   useEffect(() => {
     if (["boot", "restart"].includes(gamePhase)) return;
     if (isInRange(currentYear, 1970, 1990) && gameStage !== "preInternet") {
@@ -57,7 +71,11 @@ export default function GameRouter() {
       setGameStage("web2000");
     } else if (isInRange(currentYear, 2010, 2020) && gameStage !== "web2010") {
       setGameStage("web2010");
-    } else if (isInRange(currentYear, 2020, 2026) && gameStage !== "web2020" && gameStage !== "future") {
+    } else if (
+      isInRange(currentYear, 2020, 2026) &&
+      gameStage !== "web2020" &&
+      gameStage !== "future"
+    ) {
       setGameStage("web2020");
     }
     console.log(
@@ -68,14 +86,36 @@ export default function GameRouter() {
     );
   }, [currentYear, gameStage, gamePhase]);
 
-  if (!mounted) return null;
+  function findYearByDecisionId(id: string): number {
+    for (const item of gameContent) {
+      if (item.news?.some((n: NewsItem) => n.decisionTrigger === id))
+        return item.year;
+      if (item.lan_posts?.some((l: LANItem) => l.decisionTrigger === id))
+        return item.year;
+    }
+    return -1; // or throw an error
+  }
+  useEffect(() => {
+    if (hasInitializedDecisionStatusList) return;
+  
+    const list = rawContentDecisions.map((d) => ({
+      id: d.id,
+      year: findYearByDecisionId(d.id),
+      hasDecided: false,
+    }));
+    setDecisionStatusList(list);
+    setHasInitializedDecisionStatusList(true);
+  }, [hasInitializedDecisionStatusList]);
 
+  
+  if (!mounted) return null;
   // Testing
   // return (
   //   <div className="min-h-screen" id="future">
   //     <Future />
   //   </div>
   // );
+  
   switch (gameStage) {
     case "preInternet":
       return (
