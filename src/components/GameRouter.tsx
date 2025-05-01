@@ -13,6 +13,7 @@ const BlueScreen = dynamic(() => import("@/components/BlueScreen"), {
 const Web2000 = dynamic(() => import("@/components/Web2000"), { ssr: false });
 const Web2010 = dynamic(() => import("@/components/Web2010"), { ssr: false });
 const Web2020 = dynamic(() => import("@/components/Web2020"), { ssr: false });
+const Future = dynamic(() => import("@/components/Future"), { ssr: false });
 
 export default function GameRouter() {
   useEffect(() => {
@@ -56,7 +57,7 @@ export default function GameRouter() {
       setGameStage("web2000");
     } else if (isInRange(currentYear, 2010, 2020) && gameStage !== "web2010") {
       setGameStage("web2010");
-    } else if (isInRange(currentYear, 2020, 2026) && gameStage !== "web2020") {
+    } else if (isInRange(currentYear, 2020, 2026) && gameStage !== "web2020" && gameStage !== "future") {
       setGameStage("web2020");
     }
     console.log(
@@ -71,8 +72,8 @@ export default function GameRouter() {
 
   // Testing
   // return (
-  //   <div className="min-h-screen" id="web1990">
-  //     <Web1990 />
+  //   <div className="min-h-screen" id="future">
+  //     <Future />
   //   </div>
   // );
   switch (gameStage) {
@@ -114,6 +115,12 @@ export default function GameRouter() {
       return (
         <div className="min-h-screen" id="web2020">
           <Web2020 />
+        </div>
+      );
+    case "future":
+      return (
+        <div className="min-h-screen" id="future">
+          <Future />
         </div>
       );
     default:

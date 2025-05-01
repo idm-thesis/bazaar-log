@@ -1,7 +1,7 @@
 "use client";
 import { create } from "zustand";
 export type GamePhase = "boot" | "tutorial" | "freeplay" | "restart";
-export type GameStage = "preInternet" | "web1990" | "blueScreen" | "web2000" | "web2010" | "web2020";
+export type GameStage = "preInternet" | "web1990" | "blueScreen" | "web2000" | "web2010" | "web2020" | "future";
 
 type Decision = {
   id: string;
@@ -151,8 +151,8 @@ const initialState = {
   contentDecisions: {},
 
   // Year
-  currentYear: 1970,
-  calendarInterval: 5,
+  currentYear: startingYear,
+  calendarInterval: calendarInterval,
 
   gamePhase: "boot" as GamePhase,
 
@@ -161,7 +161,7 @@ const initialState = {
   blueScreenCompleted: false,
 };
 
-export const useGameStore = create<GameState>((set) => ({
+export const useGameStore = create<GameState>((set, get) => ({
   ...initialState,
   // Personal Information
   setRole: (newRole: string) => set({ role: newRole }),
@@ -225,18 +225,23 @@ export const useGameStore = create<GameState>((set) => ({
     })),
 
   // Year
-  nextYear: () =>
-    set((state) => ({
-      currentYear:
-        state.currentYear < maxYear
-          ? state.currentYear + calendarInterval
-          : state.currentYear,
-    })),
+  nextYear: () => {
+    const state = get();
+    const next = state.currentYear + state.calendarInterval;
+    if (next > maxYear) {
+      if (state.gameStage !== "future") {
+        set({ gameStage: "future" });
+      }
+      return;
+    }
+    set({ currentYear: next });
+  },
+  
 
-  setYear: (year) =>
-    set(() => ({
-      currentYear: year >= minYear && year <= maxYear ? year : startingYear,
-    })),
+  setYear: (year) => {
+    const newYear = year >= minYear && year <= maxYear ? year : startingYear;
+    set({ currentYear: newYear });
+  },
 
   setGamePhase: (phase) => set({ gamePhase: phase }),
   setGameStage: (stage) => set({gameStage: stage}),

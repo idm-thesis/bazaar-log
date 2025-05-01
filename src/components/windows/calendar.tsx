@@ -1,9 +1,16 @@
 "use client";
 import WinBox from "@/components/windows/WinBox";
-import { useGameStore } from "@/store/gameStore";
+import { maxYear, useGameStore } from "@/store/gameStore";
 
 export default function CalendarWindow({era}: {era: string}) {
-  const { currentYear, nextYear } = useGameStore();
+  const { currentYear, nextYear, calendarInterval, setGameStage } = useGameStore();
+  const nextYearAction = () => {
+    if (currentYear + calendarInterval <= maxYear) {
+      nextYear();
+    } else {
+      setGameStage('future');
+    }
+  }
   return (
     <WinBox id="calendar" title="Calendar" width="600px" height="400px" era={era}>
       <div className="p-4 grid grid-cols-1 justify-center">
@@ -21,7 +28,7 @@ export default function CalendarWindow({era}: {era: string}) {
         </h2>
         <div className="flex justify-center mt-4">
           <button
-            onClick={nextYear}
+            onClick={nextYearAction}
             className="p-2 bg-gray-300 hover:bg-gray-400"
           >
             Next Year

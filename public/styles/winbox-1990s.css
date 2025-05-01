@@ -95,9 +95,9 @@ button {
 
 /* Button to open window */
 .winboxButton {
-  background-color: #bbb;      /* ✅ use `background-color`, not `background` with a string */
-  padding: 0.5rem;             /* equivalent to Tailwind's p-2 */
-  width: 100%;                 /* equivalent to w-full */
+  background-color: #bbb;
+  padding: 0.5rem;
+  width: 100%;
   justify-self: end;
   border: none;
   transition: background-color 0.2s ease;

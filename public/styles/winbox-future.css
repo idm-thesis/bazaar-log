@@ -1,0 +1,51 @@
+/* className="bg-gray-100 hover:scale-105 hover:shadow-lg transition transform rounded-lg p-4 cursor-pointer" */
+.winbox {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  box-shadow: none;
+  font-family: "Open Sans";
+  backdrop-filter: blur(20px);
+  min-width: 400px;
+  min-height: 400px;
+}
+@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
+  .winbox {
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+}
+
+.wb-body {
+  margin: 30px;
+  color: #000;
+  background: transparent;
+}
+
+.winboxButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  height: 6rem;
+min-width: 8rem;
+
+  background-color: #d1d5db;
+  border-radius: 0.5rem;
+  color: #000;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.winboxButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.winboxButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
