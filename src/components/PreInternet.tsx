@@ -98,6 +98,32 @@ export default function PreInternet() {
     handleCommand,
   });
 
+  // Add audio
+  const typingAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  const [audioLoaded, setAudioLoaded] = useState(false);
+
+  useEffect(() => {
+    const audio = new Audio("/audio/keyboard-typing-sound-effect.mp3");
+    audio.loop = true;
+    audio.volume = 0.2;
+    audio.addEventListener("canplaythrough", () => {
+      typingAudioRef.current = audio;
+      setAudioLoaded(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    const audio = typingAudioRef.current;
+    if (!audio) return;
+
+    if (isTyping) {
+      audio.currentTime = 0;
+      audio.play().catch((e) => console.warn("Typing sound play failed:", e));
+    } else {
+      audio.pause();
+    }
+  }, [isTyping]);
 
   // Game Phase 1: Booting
   const bootStartedRef = useRef(false);
@@ -118,7 +144,12 @@ export default function PreInternet() {
         "",
       ];
 
-      await typeLinesWithCharacters(bootLines, typingSpeed, typingLineDelay, true);
+      await typeLinesWithCharacters(
+        bootLines,
+        typingSpeed,
+        typingLineDelay,
+        true
+      );
       setIsTyping(false);
       inputRef.current?.focus();
 
@@ -130,11 +161,11 @@ export default function PreInternet() {
       }, 100);
     };
 
-    if (gamePhase === "boot" && !bootStartedRef.current) {
+    if (gamePhase === "boot" && !bootStartedRef.current && audioLoaded) {
       bootStartedRef.current = true;
       void bootSequence();
     }
-  }, [gamePhase]);
+  }, [gamePhase, audioLoaded]);
 
   const tutorialStartedRef = useRef(false);
   const handleUserInput = async () => {
@@ -165,7 +196,7 @@ export default function PreInternet() {
         } else {
           await handleTutorialInput(input);
         }
-        
+
         break;
       case "freeplay":
         if (pendingDecision) {
@@ -176,33 +207,42 @@ export default function PreInternet() {
           if (input === "1" || input === "2") {
             setPendingDecision(null);
             if (input === "1") {
-              await typeLinesWithCharacters([
-                "",
-                `${input}`,
-                `[Outcome: ${currentDecision?.["choice-end-title"]}]`,
-                `${currentDecision?.["choice-end-outcome"]}`,
-                "",
-                "THE END",
-                hardLine,
-                "Press [Enter] to restart...",
-              ], typingSpeed, typingLineDelay, true);
+              await typeLinesWithCharacters(
+                [
+                  "",
+                  `${input}`,
+                  `[Outcome: ${currentDecision?.["choice-end-title"]}]`,
+                  `${currentDecision?.["choice-end-outcome"]}`,
+                  "",
+                  "THE END",
+                  hardLine,
+                  "Press [Enter] to restart...",
+                ],
+                typingSpeed,
+                typingLineDelay,
+                true
+              );
               setGamePhase("restart");
             } else {
-              await typeLinesWithCharacters([
-                "",
-                `${input}`,
-                `[Outcome: ${currentDecision?.["choice-success-title"]}]`,
-                `${currentDecision?.["choice-success-outcome"]}`,
-                "",
-                "You may now continue exploring the network.",
-                hardLine,
-              ], typingSpeed, typingLineDelay, true);
+              await typeLinesWithCharacters(
+                [
+                  "",
+                  `${input}`,
+                  `[Outcome: ${currentDecision?.["choice-success-title"]}]`,
+                  `${currentDecision?.["choice-success-outcome"]}`,
+                  "",
+                  "You may now continue exploring the network.",
+                  hardLine,
+                ],
+                typingSpeed,
+                typingLineDelay,
+                true
+              );
             }
             if (pendingDecision) {
               useGameStore.getState().markDecisionAsMade(pendingDecision); // ✅ NEW
             }
-          }
-           else {
+          } else {
             await typeLine(`Invalid input: "${input}". Type 1 or 2.`);
           }
         } else {
