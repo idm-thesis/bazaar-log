@@ -6,13 +6,6 @@ import rawContentDecisions from "@/data/contentDecisions.json"; // adjust path
 import gameContent from "@/data/Bazaar_log_game_content.json";
 import { LANItem, NewsItem } from "./cli-game/dataTypes";
 
-// interface LanPost {
-//   title: string;
-//   author: string;
-//   content: string;
-//   decisionTrigger?: string;
-// }
-
 const PreInternet = dynamic(() => import("@/components/PreInternet"), {
   ssr: false,
 });
@@ -103,8 +96,11 @@ export default function GameRouter() {
       year: findYearByDecisionId(d.id),
       hasDecided: false,
     }));
+  
     setDecisionStatusList(list);
     setHasInitializedDecisionStatusList(true);
+    
+    console.log("[Decision Init]", list);
   }, [hasInitializedDecisionStatusList]);
 
   

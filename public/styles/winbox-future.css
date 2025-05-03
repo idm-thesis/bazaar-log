@@ -15,6 +15,13 @@
   }
 }
 
+.wb-drag {
+  color: #000;
+}
+.wb-min, .wb-max, .wb-close {
+  color: #000;
+}
+
 .wb-body {
   margin: 30px;
   color: #000;

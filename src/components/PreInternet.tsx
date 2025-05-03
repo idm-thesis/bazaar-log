@@ -19,6 +19,7 @@ import { useCommandHandler } from "./cli-game/useCommandHandler";
 export const typingSpeed = 10;
 export const typingLineDelay = 200;
 export default function PreInternet() {
+  // Clear all winboxes if any
   useEffect(() => {
     useWinBoxStore.getState().clearAllBoxes();
   }, []);
@@ -68,7 +69,6 @@ export default function PreInternet() {
       currentYear,
       calendarInterval,
       calendarMode,
-      pendingDecision,
       typingSpeed,
       typingLineDelay,
 
@@ -198,7 +198,11 @@ export default function PreInternet() {
                 hardLine,
               ], typingSpeed, typingLineDelay, true);
             }
-          } else {
+            if (pendingDecision) {
+              useGameStore.getState().markDecisionAsMade(pendingDecision); // ✅ NEW
+            }
+          }
+           else {
             await typeLine(`Invalid input: "${input}". Type 1 or 2.`);
           }
         } else {

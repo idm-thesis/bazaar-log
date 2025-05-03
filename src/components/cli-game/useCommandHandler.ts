@@ -3,6 +3,7 @@ import {
   ContentDecision,
 } from "@/components/cli-game/dataTypes";
 import { useGameStore } from "@/store/gameStore";
+import { hasPendingDecisions } from "../blockForDecision/blockForDecision";
 
 interface CommandHandlerProps {
   currentContentList: GameContentItem[];
@@ -10,7 +11,6 @@ interface CommandHandlerProps {
   currentYear: number;
   calendarInterval: number;
   calendarMode: boolean;
-  pendingDecision: string | null;
   typingSpeed: number;
   typingLineDelay: number;
 
@@ -20,7 +20,12 @@ interface CommandHandlerProps {
 
   typeLine: (line: string) => Promise<void>;
   typeText: (text: string) => Promise<void>;
-  typeLinesWithCharacters: (lines: string[], speed: number, lineDelay: number, append: boolean) => Promise<void>;
+  typeLinesWithCharacters: (
+    lines: string[],
+    speed: number,
+    lineDelay: number,
+    append: boolean
+  ) => Promise<void>;
 
   nextYear: () => void;
 
@@ -35,7 +40,6 @@ export const useCommandHandler = ({
   currentYear,
   calendarInterval,
   calendarMode,
-  pendingDecision,
   typingSpeed,
   typingLineDelay,
 
@@ -53,6 +57,7 @@ export const useCommandHandler = ({
   setInputDisplay,
   setUserInput,
 }: CommandHandlerProps) => {
+  const { decisionStatusList } = useGameStore();
   const softLine = "--------------------------------------------";
   const hardLine = "────────────────────────────────────────────";
 
@@ -125,14 +130,38 @@ export const useCommandHandler = ({
       responseLines.push(`${hardLine}`);
     } else if (input === "calendar") {
       setCalendarMode(true);
-      responseLines = [
-        "[Loading...]",
-        "[Calendar]",
-        `Current Year: ${currentYear}`,
-        "Actions:",
-        "- [N] Move forward 5 years",
-        "- [Q] Exit Calendar Mode",
-      ];
+      if (
+        hasPendingDecisions(currentYear, decisionStatusList, calendarInterval)
+      ) {
+        await typeLine("> calendar");
+        await typeLinesWithCharacters(
+          [
+            "[Loading...]",
+            "[Calendar]",
+            `Current Year: ${currentYear}`,
+            "There are pending decisions to make in this era. Go to [news] or [lan] to learn more.",
+            "[Exiting Calendar]",
+            hardLine,
+          ],
+          typingSpeed,
+          typingLineDelay,
+          true
+        );
+        setCalendarMode(false);
+        setUserInput("");
+        setInputDisplay("");
+        setIsTyping(false);
+        return; // prevent further execution
+      } else {
+        responseLines = [
+          "[Loading...]",
+          "[Calendar]",
+          `Current Year: ${currentYear}`,
+          "Actions:",
+          "- [N] Move forward 5 years",
+          "- [Q] Exit Calendar Mode",
+        ];
+      }
     } else if (input === "notebook") {
       responseLines = [
         "[Loading...]",
@@ -182,11 +211,18 @@ export const useCommandHandler = ({
               );
 
               if (news.decisionTrigger) {
-                const found: ContentDecision | undefined =
-                  contentDecisions.find((d) => d.id === news.decisionTrigger);
-                if (found) {
-                  currentDecision = found;
-                  finalDecisionTrigger = news.decisionTrigger;
+                const alreadyDecided = decisionStatusList.find(
+                  (d) => d.id === news.decisionTrigger
+                )?.hasDecided;
+
+                if (!alreadyDecided) {
+                  const found = contentDecisions.find(
+                    (d) => d.id === news.decisionTrigger
+                  );
+                  if (found) {
+                    currentDecision = found;
+                    finalDecisionTrigger = news.decisionTrigger;
+                  }
                 }
               }
             });
@@ -251,11 +287,23 @@ export const useCommandHandler = ({
       // Calendar navigation logic
       await typeLine(`> ${input}`);
       if (input === "n") {
-        if (pendingDecision) {
-          setTerminalLines((prev) => [
-            ...prev,
-            "Pending key decision in news. Read the news and make your decision before moving to the future.",
-          ]);
+        const hasBlock = hasPendingDecisions(
+          currentYear,
+          decisionStatusList,
+          calendarInterval
+        );
+        if (hasBlock) {
+          await typeLinesWithCharacters(
+            [
+              "[Calendar]",
+              "Failed to move forward by 5 years. Pending decision(s) in [news] and/or [lan] mode.",
+              `Current Year: ${currentYear}`,
+            ],
+            typingSpeed,
+            typingLineDelay,
+            true
+          );
+          exitCalendarMode();
         } else {
           nextYear();
           await new Promise<void>((resolve) => {
@@ -289,7 +337,12 @@ export const useCommandHandler = ({
       await typeLine(`> ${input}`);
     }
 
-    await typeLinesWithCharacters(responseLines, typingSpeed, typingLineDelay, true);
+    await typeLinesWithCharacters(
+      responseLines,
+      typingSpeed,
+      typingLineDelay,
+      true
+    );
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -297,12 +350,11 @@ export const useCommandHandler = ({
     setUserInput(upperInput);
     setInputDisplay(upperInput);
   };
-  
 
   return {
     handleCommand,
     handleInputChange,
     softLine,
-    hardLine
+    hardLine,
   };
 };
