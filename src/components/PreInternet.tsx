@@ -125,7 +125,17 @@ export default function PreInternet() {
     }
   }, [isTyping]);
 
-  // Game Phase 1: Booting
+  // Game Phase 1: Loading
+  useEffect(() => {
+    if (gamePhase === "loading" && audioLoaded) {
+      const timeout = setTimeout(() => {
+        setGamePhase("boot");
+      }, 500); // or 1000ms if needed
+      return () => clearTimeout(timeout);
+    }
+  }, [gamePhase, audioLoaded]);
+
+  // Game Phase 2: Booting
   const bootStartedRef = useRef(false);
   useEffect(() => {
     const bootSequence = async () => {
@@ -167,7 +177,9 @@ export default function PreInternet() {
     }
   }, [gamePhase, audioLoaded]);
 
+  // Game Phase 3: Tutorial
   const tutorialStartedRef = useRef(false);
+  // Handle user input based on current phase
   const handleUserInput = async () => {
     const input = userInput.trim().toLowerCase();
     if (isTyping) return;
@@ -294,42 +306,54 @@ export default function PreInternet() {
         id="bezel"
         className="relative w-[80vw] h-[60vh] border-[10px] border-transparent"
       >
-        <div className="crt relative w-full h-full bg-transparent text-green-400 text-xl overflow-hidden">
-          <div className="scanline pointer-events-none" />
-
-          {/* Terminal content */}
-          <div className="terminal w-full h-full flex flex-col">
-            {/* Scrollable content */}
-            <div
-              ref={textRef}
-              className="flex-1 overflow-y-auto p-4 space-y-1 hide-scrollbar"
-            >
-              {terminalLines.map((line, index) => (
-                <div key={index} className="whitespace-pre-wrap">
-                  {line}
-                </div>
-              ))}
-            </div>
-
-            {/* Prompt area */}
-            <div className="flex items-center p-4">
-              <span className="mr-2">{">"}</span>
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  value={userInput}
-                  onChange={handleInputChange}
-                  onKeyDown={handleKeyDown}
-                  ref={inputRef}
-                  className="absolute left-0 top-0 w-full opacity-0"
-                  autoFocus
-                />
-                <span className="whitespace-pre">{inputDisplay}</span>
-                <span className="animate-blink">█</span>
+        {gamePhase === "loading" ? (
+          <div className="crt relative w-full h-full bg-transparent text-green-400 text-xl overflow-hidden">
+            <div className="scanline pointer-events-none" />
+            <div className="terminal w-full h-full flex flex-col">
+              <div className="flex-1 overflow-y-auto p-4 space-y-1 hide-scrollbar">
+                LOADING...
               </div>
             </div>
           </div>
-        </div>
+        ) : (
+          // Existing terminal interface
+          <div className="crt relative w-full h-full bg-transparent text-green-400 text-xl overflow-hidden">
+            <div className="scanline pointer-events-none" />
+
+            {/* Terminal content */}
+            <div className="terminal w-full h-full flex flex-col">
+              {/* Scrollable content */}
+              <div
+                ref={textRef}
+                className="flex-1 overflow-y-auto p-4 space-y-1 hide-scrollbar"
+              >
+                {terminalLines.map((line, index) => (
+                  <div key={index} className="whitespace-pre-wrap">
+                    {line}
+                  </div>
+                ))}
+              </div>
+
+              {/* Prompt area */}
+              <div className="flex items-center p-4">
+                <span className="mr-2">{">"}</span>
+                <div className="relative flex-1">
+                  <input
+                    type="text"
+                    value={userInput}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    ref={inputRef}
+                    className="absolute left-0 top-0 w-full opacity-0"
+                    autoFocus
+                  />
+                  <span className="whitespace-pre">{inputDisplay}</span>
+                  <span className="animate-blink">█</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

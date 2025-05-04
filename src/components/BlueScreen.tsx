@@ -52,8 +52,8 @@ export default function BlueScreen() {
   ];
   const solvingY2K = [
     "",
-    "*** STOP: 0x0001F4A9 (OPEN_SOURCE_REBOOT)",
-    "*** SUCCESS: COMMUNITY_PATCH.2K AT ADDRESS 0xCAFEBABE EXECUTED SUCCESSFULLY",
+    "*** STOP: 0x0001F4A9 (OPEN_SOURCE_REBOOT) ***",
+    "*** SUCCESS: COMMUNITY_PATCH.2K AT ADDRESS 0xCAFEBABE EXECUTED SUCCESSFULLY ***",
     "",
     "PATCH LOG:",
     " - 2000: USER INSTALLS LINUX; BUG MYSTERIOUSLY VANISHES",
@@ -109,12 +109,17 @@ export default function BlueScreen() {
         }
       }
     }
-  };  
+  };
+  useEffect(() => {
+    if (textRef.current) {
+      textRef.current.scrollTop = textRef.current.scrollHeight;
+    }
+  }, [terminalLines]);
 
   return isClient ? (
     <div className="text-white text-lg">
       {/* <h1 className="text-9xl">:)</h1> */}
-      <div ref={textRef}>
+      <div ref={textRef} className="hide-scrollbar">
         {terminalLines.map((line, index) => (
           <div key={index} className="whitespace-pre-wrap">
             {line === "" ? "\u00A0" : line}

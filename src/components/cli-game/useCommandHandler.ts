@@ -291,6 +291,7 @@ export const useCommandHandler = ({
           setIsTyping(false);
           nextYear();
           exitCalendarMode();
+          return;
         }
         const hasBlock = hasPendingDecisions(
           currentYear,

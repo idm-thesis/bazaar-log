@@ -1,6 +1,6 @@
 "use client";
 import { create } from "zustand";
-export type GamePhase = "boot" | "tutorial" | "freeplay" | "restart";
+export type GamePhase = "loading" | "boot" | "tutorial" | "freeplay" | "restart";
 export type GameStage =
   | "preInternet"
   | "web1990"
@@ -175,7 +175,7 @@ const initialState = {
   currentYear: startingYear,
   calendarInterval: calendarInterval,
 
-  gamePhase: "boot" as GamePhase,
+  gamePhase: "loading" as GamePhase,
 
   gameStage: "preInternet" as GameStage,
 
