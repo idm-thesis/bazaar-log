@@ -42,13 +42,13 @@ export default function BlueScreen() {
   const linuxInstallLines = [
     "",
     ">> CONNECTING TO OPEN SOURCE MIRROR...",
-    ">> DOWNLOADING community_patch.2k.tar.gz",
+    ">> DOWNLOADING COMMUNITY_PATCH.2K.TAR.GZ...",
     ">> EXTRACTING FILES...",
     ">> UPDATING CLOCK SYSTEM...",
     ">> INSTALL COMPLETE.",
     "",
     ">> RETRY SOLVING Y2K PROBLEM...",
-    ">> REBOOT -T +2000",
+    ">> REBOOT -T +2000...",
   ];
   const solvingY2K = [
     "",

@@ -70,8 +70,8 @@ export default function Window({
   title = "My Window",
   width = "800px",
   height = "600px",
-  x = "center",
-  y = "center",
+  x,
+  y,
   children,
   className = "",
   era = "",
@@ -82,7 +82,18 @@ export default function Window({
   const [isOpen, setIsOpen] = useState(false);
   const winboxRef = useRef<WinBoxInstance | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
-  // const winboxInstances = useRef<WinBoxInstance[]>([]);
+  
+  const fallbackX = typeof window !== "undefined"
+  ? Math.floor(Math.random() * (window.innerWidth - parseInt(String(width))))
+  : 100;
+
+const fallbackY = typeof window !== "undefined"
+  ? Math.floor(Math.random() * (window.innerHeight - parseInt(String(height))))
+  : 100;
+
+const finalX = x ?? fallbackX;
+const finalY = y ?? fallbackY;
+
 
   useEffect(() => {
     if (typeof window !== "undefined" && !window.WinBox) {
@@ -134,8 +145,8 @@ export default function Window({
       title,
       width,
       height,
-      x,
-      y,
+      x: finalX,
+      y: finalY,
       class: classList,
       mount: contentRef.current, // Mounts React content inside WinBox
       onclose: () => {

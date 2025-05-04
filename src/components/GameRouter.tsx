@@ -112,6 +112,11 @@ export default function GameRouter() {
   //     <Future />
   //   </div>
   // );
+  return (
+    <div className="min-h-screen" id="bsod">
+      <BlueScreen />
+    </div>
+  );
   
   switch (gameStage) {
     case "preInternet":
