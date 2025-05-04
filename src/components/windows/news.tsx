@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import WinBox from "@/components/windows/WinBox";
-// import { calendarInterval } from "@/store/useCalendarStore";
 import gameContent from "@/data/Bazaar_log_game_content.json";
 import DecisionModal from "../ui/contentDecision";
 import { useGameStore, calendarInterval } from "@/store/gameStore";
@@ -34,14 +33,19 @@ export default function NewsWindow({ era }: { era: string }) {
   return (
     <WinBox id="news" title="News" width="600px" height="400px" era={era}>
       <div className="window-body">
-        <h2>Open Source Daily</h2>
+        <h2 className="open-source-daily">Open Source Daily</h2>
         {currentContentList.map((item, index) => (
           <div key={index}>
-            {item.news && item.news.length > 0 && <p>{item.year}</p>}
             {item.news?.map((newsObj, idx) => (
               <div key={idx}>
-                <h3>{newsObj.headline}</h3>
-                <p>{newsObj.summary}</p>
+                {newsObj.headlineURL ? (
+                  <h3 className="news-headline"><a href={newsObj.headlineURL} target="_blank">{newsObj.headline}</a></h3>
+                ) : (
+                  <h3 className="news-headline">{newsObj.headline}</h3>
+                )}
+                <p className="news-year">{item.year}</p>
+                {/* {newsObj.featureImgURL?} */}
+                <p className="news-summary">{newsObj.summary}</p>
                 {newsObj.decisionTrigger &&
                   isPending(newsObj.decisionTrigger) && (
                     <button

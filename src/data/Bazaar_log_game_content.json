@@ -435,6 +435,7 @@
         "news": [
             {
                 "headline": "Microsoft Launches Internet Explorer",
+                "headlineURL": "https://www.microsoft.com/en-us/edge/learning-center/how-internet-explorer-once-took-over-the-web?form=MA13I2",
                 "summary": "Microsoft enters the browser market with Internet Explorer, setting the stage for fierce competition in the Browser Wars."
             }
         ],

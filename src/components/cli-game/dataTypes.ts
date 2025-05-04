@@ -13,6 +13,8 @@ export interface ContentDecision {
   // News article shown in the terminal
   export interface NewsItem {
     headline: string;
+    headlineURL?: string;
+    featureImgURL?: string;
     summary: string;
     decisionTrigger?: string; // optional trigger for a game decision
   }

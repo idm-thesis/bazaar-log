@@ -24,10 +24,6 @@
   border-top-right-radius: 7px;
 }
 
-.wb-body {
-  margin: 4px;
-}
-
 .wb-title {
   font-family: "Trebuchet MS";
   /* height: 28px; */
@@ -94,4 +90,20 @@
 
 .wb-full {
   display: none;
+}
+
+/* Winbox Content Style */
+.wb-body {
+  margin: 4px;
+}
+
+.wb-body button {
+  color: #000;
+  font-family: "Tahoma";
+  font-size: large;
+}
+
+.wb-body .open-source-daily {
+  color: green;
+  text-align: center;
 }

@@ -35,7 +35,7 @@ export default function CalendarWindow({era}: {era: string}) {
             onClick={() => (hasPendingDecisions(currentYear, decisionStatusList, calendarInterval) ? blockingForDecision() : nextYearAction())}
             className="p-2 bg-gray-300 hover:bg-gray-400"
           >
-            Next Year
+            5 Years Forward
           </button>
         </div>
       </div>
