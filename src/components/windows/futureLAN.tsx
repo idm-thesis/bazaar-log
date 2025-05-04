@@ -1,9 +1,25 @@
 "use client";
 import WinBox from "@/components/windows/WinBox";
 import { useFutureForumStore } from "@/store/useFutureForumStore";
+import { useEffect } from "react";
+import {supabase} from "@/lib/supabaseClient";
 
 export default function FutureLANWindow({ era }: { era: string }) {
-  const { posts } = useFutureForumStore();
+  const { posts, setPosts } = useFutureForumStore();
+
+  useEffect(() => {
+    const fetchPosts = async() => {
+      const {data, error} = await supabase.from("formSubmission").select("*").order("timestamp", {ascending: false});
+
+      if (error) {
+        console.error("Error fetching posts:", error);
+      } else {
+        setPosts(data);
+      }
+    };
+
+    fetchPosts();
+  }, [setPosts]);
 
   return (
     <WinBox

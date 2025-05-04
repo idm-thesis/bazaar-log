@@ -287,6 +287,11 @@ export const useCommandHandler = ({
       // Calendar navigation logic
       await typeLine(`> ${input}`);
       if (input === "n") {
+        if (currentYear + calendarInterval >= 1990) {
+          setIsTyping(false);
+          nextYear();
+          exitCalendarMode();
+        }
         const hasBlock = hasPendingDecisions(
           currentYear,
           decisionStatusList,

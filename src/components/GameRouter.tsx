@@ -49,6 +49,7 @@ export default function GameRouter() {
     if (isInRange(currentYear, 1970, 1990) && gameStage !== "preInternet") {
       setGameStage("preInternet");
     } else if (isInRange(currentYear, 1990, 2000) && gameStage !== "web1990") {
+      
       setGameStage("web1990");
     } else if (
       currentYear === 2000 &&
