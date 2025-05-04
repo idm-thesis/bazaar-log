@@ -12,6 +12,11 @@ import FutureLANWindow from "./windows/futureLAN";
 import FutureProposalFormWindow from "./windows/futureProposalForm";
 
 export default function Future() {
+
+  // Clear all winboxes if any
+    useEffect(() => {
+      useWinBoxStore.getState().clearAllBoxes();
+    }, []);
   useGameEffects(); // Runs all effect logic
 
   const [isClient, setIsClient] = useState(false);
