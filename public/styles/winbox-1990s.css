@@ -78,6 +78,7 @@ button {
   background-size: 24px auto;
   background-position-x: calc(50%);
   background-position-y: calc(50%);
+  margin-right: 3px;
 }
 
 .wb-max {

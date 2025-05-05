@@ -113,8 +113,8 @@ export default function GameRouter() {
   //   </div>
   // );
   // return (
-  //   <div className="min-h-screen" id="web2000">
-  //     <Web2000 />
+  //   <div className="min-h-screen" id="web1990">
+  //     <Web1990 />
   //   </div>
   // );
   

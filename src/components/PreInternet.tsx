@@ -104,7 +104,7 @@ export default function PreInternet() {
   const [audioLoaded, setAudioLoaded] = useState(false);
 
   useEffect(() => {
-    const audio = new Audio("/audio/keyboard-typing-sound-effect.mp3");
+    const audio = new Audio("/audio/typing.wav");
     audio.loop = true;
     audio.volume = 0.2;
     audio.addEventListener("canplaythrough", () => {
