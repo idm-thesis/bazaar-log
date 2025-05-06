@@ -3,7 +3,6 @@ import { useGameEffects } from "@/hooks/useGameEffects";
 import { useState, useEffect } from "react";
 import { useWinBoxStore } from "@/store/useWinBoxStore";
 import { useGameStore } from "@/store/gameStore";
-// import FutureLANWindow from "./windows/futureLAN";
 import FutureNewsWindow from "./windows/futureNews";
 import futureNewsData from "@/data/futureNews.json";
 import Particles from "@/blocks/Backgrounds/Particles/Particles";

@@ -15,7 +15,7 @@ export interface ContentDecision {
     headline: string;
     headlineURL?: string;
     featureImgURL?: string;
-    summary: string;
+    summary?: string;
     decisionTrigger?: string; // optional trigger for a game decision
   }
   

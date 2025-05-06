@@ -9,7 +9,7 @@ export default function FutureLANWindow({ era }: { era: string }) {
 
   useEffect(() => {
     const fetchPosts = async() => {
-      const {data, error} = await supabase.from("formSubmission").select("*").order("timestamp", {ascending: false});
+      const {data, error} = await supabase.from("formSubmission").select("*").eq("display", true).order("timestamp", {ascending: false});
 
       if (error) {
         console.error("Error fetching posts:", error);

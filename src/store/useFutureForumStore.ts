@@ -6,6 +6,7 @@ export interface Post {
   author: string;
   content: string;
   timestamp: string;
+  display: boolean;
 }
 
 interface FutureForumStore {
