@@ -1,10 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import WinBox from "@/components/windows/WinBox";
-// import gameContent from "@/data/Bazaar_log_game_content.json";
 import DecisionModal from "../ui/contentDecision";
 import { useGameStore, calendarInterval } from "@/store/gameStore";
-// import { GameContentItem } from "../cli-game/dataTypes";
 import { supabase } from "@/lib/supabaseClient";
 import { useNewsStore } from "@/store/useNewsStore";
 // import Image from "next/image";

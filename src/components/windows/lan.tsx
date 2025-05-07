@@ -1,17 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 import WinBox from "@/components/windows/WinBox";
-// import { calendarInterval } from "@/store/useCalendarStore";
-import gameContent from "@/data/Bazaar_log_game_content.json";
 import DecisionModal from "../ui/contentDecision";
 import { useGameStore, calendarInterval } from "@/store/gameStore";
-import { GameContentItem } from "../cli-game/dataTypes";
+import { useLANStore } from "@/store/useLANStore";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function LANWindow({ era }: { era: string }) {
   const currentYear = useGameStore().currentYear;
-  const [currentContentList, setCurrentContentList] = useState<
-    GameContentItem[]
-  >([]);
+  // const [currentContentList, setCurrentContentList] = useState<
+  //   GameContentItem[]
+  // >([]);
   const { decisionStatusList, markDecisionAsMade } = useGameStore();
   const isPending = (id?: string): boolean => {
     if (!id) return false;
@@ -19,14 +18,32 @@ export default function LANWindow({ era }: { era: string }) {
     return d ? !d.hasDecided : false;
   };
 
+  const { lan, setLAN } = useLANStore();
   useEffect(() => {
-    const startYear = currentYear - (calendarInterval - 1);
-    const filteredContent = gameContent.filter((item) => {
-      return item.year >= startYear && item.year <= currentYear;
-    });
-    filteredContent.sort((a, b) => a.year - b.year);
-    setCurrentContentList(filteredContent);
-  }, [currentYear]);
+    const fetchNews = async () => {
+      const { data, error } = await supabase
+        .from("lan_posts")
+        .select("*")
+        .gt("year", currentYear - calendarInterval)
+        .lte("year", currentYear)
+        .order("year", { ascending: true });
+      if (error) {
+        console.error("Error fetching news:", error);
+      } else {
+        setLAN(data);
+      }
+    };
+    fetchNews();
+  }, [setLAN, currentYear]);
+
+  // useEffect(() => {
+  //   const startYear = currentYear - (calendarInterval - 1);
+  //   const filteredContent = gameContent.filter((item) => {
+  //     return item.year >= startYear && item.year <= currentYear;
+  //   });
+  //   filteredContent.sort((a, b) => a.year - b.year);
+  //   setCurrentContentList(filteredContent);
+  // }, [currentYear]);
 
   const [showDecision, setShowDecision] = useState(false);
   const [currentTriggerId, setCurrentTriggerId] = useState<string | null>(null);
@@ -41,29 +58,21 @@ export default function LANWindow({ era }: { era: string }) {
     >
       <div className="window-body">
         <h2>Local Area Network</h2>
-        {currentContentList.map((item, index) => (
+        {lan.map((lanObj, index) => (
           <div key={index}>
-            {item.lan_posts && item.lan_posts.length > 0 && (
-              <h3>{item.year}</h3>
+            <h4>{lanObj.title}</h4>
+            <p>{lanObj.author}</p>
+            <p>{lanObj.content}</p>
+            {lanObj.decisionTrigger && isPending(lanObj.decisionTrigger) && (
+              <button
+                onClick={() => {
+                  setCurrentTriggerId(lanObj.decisionTrigger!);
+                  setShowDecision(true);
+                }}
+              >
+                Pending Decision
+              </button>
             )}
-            {item.lan_posts?.map((lanObj, idx) => (
-              <div key={idx}>
-                <h4>{lanObj.title}</h4>
-                <p>{lanObj.author}</p>
-                <p>{lanObj.content}</p>
-                {lanObj.decisionTrigger &&
-                  isPending(lanObj.decisionTrigger) && (
-                    <button
-                      onClick={() => {
-                        setCurrentTriggerId(lanObj.decisionTrigger!);
-                        setShowDecision(true);
-                      }}
-                    >
-                      Pending Decision
-                    </button>
-                  )}
-              </div>
-            ))}
           </div>
         ))}
         {showDecision && currentTriggerId && (

@@ -107,16 +107,16 @@ export default function GameRouter() {
   
   if (!mounted) return null;
   // Testing
-  return (
-    <div className="min-h-screen" id="future">
-      <Future />
-    </div>
-  );
-  return (
-    <div className="min-h-screen" id="web2000">
-      <Web2000 />
-    </div>
-  );
+  // return (
+  //   <div className="min-h-screen" id="future">
+  //     <Future />
+  //   </div>
+  // );
+  // return (
+  //   <div className="min-h-screen" id="web2000">
+  //     <Web2000 />
+  //   </div>
+  // );
   
   switch (gameStage) {
     case "preInternet":
