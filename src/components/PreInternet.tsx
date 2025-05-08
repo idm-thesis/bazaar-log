@@ -177,7 +177,7 @@ export default function PreInternet() {
   const [audioLoaded, setAudioLoaded] = useState(false);
 
   useEffect(() => {
-    const audio = new Audio("/audio/typing.wav");
+    const audio = new Audio("/audio/User Interface, Data, Computer, Classic, Working, Loading, Processing, Long 02 SND109569.wav");
     audio.loop = true;
     audio.volume = 0.2;
     audio.addEventListener("canplaythrough", () => {
