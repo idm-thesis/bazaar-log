@@ -1,6 +1,7 @@
 /* className="bg-gray-100 hover:scale-105 hover:shadow-lg transition transform rounded-lg p-4 cursor-pointer" */
 .winbox {
-  background: rgba(255, 255, 255, 0.5);
+  /* background: rgba(255, 255, 255, 0.5); */
+  background-color: lightgrey;
   border-radius: 8px;
   box-shadow: none;
   font-family: "Open Sans";

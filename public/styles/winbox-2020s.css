@@ -43,3 +43,8 @@
 .wb-body .local-area-network {
   font-weight: 600;
 }
+
+.wb-body button {
+  background-color: lightgrey;
+  border: #000 solid 2px;
+}
