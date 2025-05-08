@@ -135,6 +135,9 @@ export default function GameRouter() {
     contentDecisionList,
     allNews,
     allLAN,
+    findYearByDecisionId,
+    setDecisionStatusList,
+    setHasInitializedDecisionStatusList
   ]);
   
 
@@ -147,10 +150,25 @@ export default function GameRouter() {
   //   </div>
   // );
   // return (
+  //   <div className="min-h-screen" id="web1990">
+  //     <Web1990 />
+  //   </div>
+  // );
+  // return (
   //   <div className="min-h-screen" id="web2000">
   //     <Web2000 />
   //   </div>
   // );
+  // return (
+  //   <div className="min-h-screen" id="web2010">
+  //     <Web2010 />
+  //   </div>
+  // );
+  return (
+    <div className="min-h-screen" id="web2020">
+      <Web2020 />
+    </div>
+  );
   
   switch (gameStage) {
     case "preInternet":

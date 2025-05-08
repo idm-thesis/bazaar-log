@@ -42,9 +42,9 @@ export default function NewsWindow({ era }: { era: string }) {
   return (
     <WinBox id="news" title="News" width="600px" height="400px" era={era}>
       <div className="window-body">
-        <h2 className="open-source-daily">Open Source Daily</h2>
+        <h2 className="open-source-daily text-center my-4">Open Source Daily</h2>
         {news.map((newsObj, index) => (
-          <div key={index}>
+          <div key={index} className="my-6">
             {newsObj.headlineURL ? (
               <h3 className="news-headline">
                 <a href={newsObj.headlineURL} target="_blank">

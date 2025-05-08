@@ -1,18 +1,45 @@
 .winbox {
-    background: #062498;
-    border: 2px solid #2F2F2F;
-    border-radius: 8px;
-  }
-  
-  .wb-body {
-    color: #000;
-    background: #f1f1f1;
-    font-family:'Segoe-UI-Variable', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  
-  .wb-title {
-    font-size: 16px;
-    text-transform: capitalize;
-    font-weight: 700;
-  }
-  
+  background: #062498;
+  border: 2px solid #2f2f2f;
+  border-radius: 8px;
+}
+
+.wb-body {
+  color: #000;
+  background: #f1f1f1;
+  font-family: "Segoe-UI-Variable", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 8px;
+}
+
+.wb-title {
+  font-size: 16px;
+  text-transform: capitalize;
+  font-weight: 700;
+}
+
+.wb-body p,li {
+  font-size: 16px;
+}
+
+.wb-body .open-source-daily {
+  color: green;
+  font-weight: 600;
+  font-size: large;
+}
+
+.wb-body .news-year, .lan-author {
+  /* font-size: 16px; */
+  color: darkgrey;
+}
+
+.wb-body .news-summary {
+  font-size: 18px;
+}
+
+.wb-body .notebook {
+  font-weight: 600;
+}
+
+.wb-body .local-area-network {
+  font-weight: 600;
+}

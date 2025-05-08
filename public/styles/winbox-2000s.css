@@ -95,6 +95,7 @@
 /* Winbox Content Style */
 .wb-body {
   margin: 4px;
+  justify-content: center;
 }
 
 .wb-body button {
@@ -106,4 +107,18 @@
 .wb-body .open-source-daily {
   color: green;
   text-align: center;
+  font-weight: 600;
+}
+
+.wb-body p,li {
+  font-size: 16px;
+}
+
+.wb-body .news-year, .lan-author {
+  /* font-size: 16px; */
+  color: darkgrey;
+}
+
+.wb-body .news-summary {
+  font-size: 18px;
 }

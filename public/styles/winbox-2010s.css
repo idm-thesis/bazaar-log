@@ -191,3 +191,29 @@ var(--control-background), var(--control-background-close-active);
 .wb-full {
   display: none;
 }
+
+.wb-body p,li {
+  font-size: 16px;
+}
+
+.wb-body .open-source-daily {
+  color: green;
+  font-weight: 600;
+}
+
+.wb-body .news-year, .lan-author {
+  /* font-size: 16px; */
+  color: darkgrey;
+}
+
+.wb-body .news-summary {
+  font-size: 18px;
+}
+
+.wb-body .notebook {
+  font-weight: 600;
+}
+
+.wb-body .local-area-network {
+  font-weight: 600;
+}

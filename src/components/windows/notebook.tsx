@@ -22,11 +22,11 @@ export default function NewsWindow({ era }: { era: string }) {
   return (
     <WinBox id="notebook" title="Notebook" width="600px" height="400px" era={era}>
       <div className="window-body">
-        <h2>Notebook</h2>
+        <h2 className="text-center my-4 notebook">Notebook</h2>
         {currentContentList.map((item, index) => (
-          <div key={index}>
+          <div key={index} className="my-8">
             {item.notebook && (item.notebook.length > 0) && <p>{item.year}</p>}
-            <ul>
+            <ul className="list-disc ml-4">
               {item.notebook?.map((notebookObj, idx) => (
                 <li key={idx}>{notebookObj}</li>
               ))}

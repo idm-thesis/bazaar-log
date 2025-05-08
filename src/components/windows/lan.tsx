@@ -48,12 +48,12 @@ export default function LANWindow({ era }: { era: string }) {
       era={era}
     >
       <div className="window-body">
-        <h2>Local Area Network</h2>
+        <h2 className="text-center my-4 local-area-network">Local Area Network Communication Channel</h2>
         {lan.map((lanObj, index) => (
-          <div key={index}>
+          <div key={index} className="my-8">
             <h4>{lanObj.title}</h4>
-            <p>{lanObj.author}</p>
-            <p>{lanObj.content}</p>
+            <p className="lan-author">Author: {lanObj.author}</p>
+            <p className="lan-comment">{lanObj.content}</p>
             {lanObj.decisionTrigger && isPending(lanObj.decisionTrigger) && (
               <button
                 onClick={() => {
