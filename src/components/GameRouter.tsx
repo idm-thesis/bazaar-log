@@ -164,11 +164,11 @@ export default function GameRouter() {
   //     <Web2010 />
   //   </div>
   // );
-  return (
-    <div className="min-h-screen" id="web2020">
-      <Web2020 />
-    </div>
-  );
+  // return (
+  //   <div className="min-h-screen" id="web2020">
+  //     <Web2020 />
+  //   </div>
+  // );
   
   switch (gameStage) {
     case "preInternet":
