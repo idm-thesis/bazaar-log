@@ -1,13 +1,17 @@
-import {
-  GameContentItem,
-  ContentDecision,
-} from "@/components/cli-game/dataTypes";
+// import { GameContentItem } from "@/components/cli-game/dataTypes";
+import type { News } from "@/store/useNewsStore";
+import type { LAN } from "@/store/useLANStore";
+import type { NotebookEntry } from "@/store/useNotebookStore";
+import type { ContentDecision } from "@/store/useContentDecisionStore";
 import { useGameStore } from "@/store/gameStore";
 import { hasPendingDecisions } from "../blockForDecision/blockForDecision";
 
 interface CommandHandlerProps {
-  currentContentList: GameContentItem[];
-  contentDecisions: ContentDecision[];
+  news: News[];
+  lan: LAN[];
+  notebook: NotebookEntry[];
+  contentDecisionList: ContentDecision[];
+
   currentYear: number;
   calendarInterval: number;
   calendarMode: boolean;
@@ -35,8 +39,11 @@ interface CommandHandlerProps {
 }
 
 export const useCommandHandler = ({
-  currentContentList,
-  contentDecisions,
+  news,
+  lan,
+  notebook,
+  contentDecisionList,
+
   currentYear,
   calendarInterval,
   calendarMode,
@@ -168,23 +175,31 @@ export const useCommandHandler = ({
         "[Notebook]",
         `To-do's (${currentYear - (calendarInterval - 1)} - ${currentYear}) :`,
       ];
-      if (currentContentList.length === 0) {
-        responseLines.push("You didn't record any to-dos in the past 5 years.");
+
+      if (notebook.length === 0) {
+        responseLines.push("Nothing to do in the past 5 years.");
       } else {
-        currentContentList.forEach((item) => {
-          if (item.notebook !== undefined) {
-            responseLines.push(
-              `${softLine}`,
-              `Year        : ${item.year}`,
-              "\n"
-            );
-            item.notebook.forEach((note) => {
+        const notesByYear: Record<number, string[]> = {};
+
+        notebook.forEach((entry) => {
+          if (!notesByYear[entry.year]) {
+            notesByYear[entry.year] = [];
+          }
+          notesByYear[entry.year].push(entry.note); // ✅ 正确取出 note 字段
+        });
+
+        // 可选：按年份排序输出
+        Object.entries(notesByYear)
+          .sort(([a], [b]) => Number(a) - Number(b))
+          .forEach(([year, notes]) => {
+            responseLines.push(`${softLine}`, `Year        : ${year}`, "");
+            notes.forEach((note) => {
               responseLines.push(`- ${note}`);
             });
-            responseLines.push("\n");
-          }
-        });
+            responseLines.push("");
+          });
       }
+
       responseLines.push("[Exiting Notebook]", `${hardLine}`);
     } else if (input === "news") {
       responseLines = ["[Loading...]", "[News]"];
@@ -192,40 +207,32 @@ export const useCommandHandler = ({
       let currentDecision: ContentDecision | null = null;
       let finalDecisionTrigger: string | null = null;
 
-      if (currentContentList.length === 0) {
+      if (news.length === 0) {
         responseLines.push("No news available for the past 5 year.");
       } else {
-        currentContentList.forEach((item) => {
-          if (item.news !== undefined) {
-            responseLines.push(
-              `${softLine}`,
-              `Year        : ${item.year}`,
-              "\n"
-            );
+        news.forEach((newsItem) => {
+          responseLines.push(
+            `${softLine}`,
+            `Year        : ${newsItem.year}`,
+            `Headline    : ${newsItem.headline}`,
+            `Summary     : ${newsItem.summary}`,
+            "\n"
+          );
 
-            item.news.forEach((news) => {
-              responseLines.push(
-                `Headline    : ${news.headline}`,
-                `Summary     : ${news.summary}`,
-                "\n"
+          if (newsItem.decisionTrigger) {
+            const alreadyDecided = decisionStatusList.find(
+              (d) => d.id === newsItem.decisionTrigger
+            )?.hasDecided;
+
+            if (!alreadyDecided) {
+              const found = contentDecisionList.find(
+                (d) => d.decision_id === newsItem.decisionTrigger
               );
-
-              if (news.decisionTrigger) {
-                const alreadyDecided = decisionStatusList.find(
-                  (d) => d.id === news.decisionTrigger
-                )?.hasDecided;
-
-                if (!alreadyDecided) {
-                  const found = contentDecisions.find(
-                    (d) => d.id === news.decisionTrigger
-                  );
-                  if (found) {
-                    currentDecision = found;
-                    finalDecisionTrigger = news.decisionTrigger;
-                  }
-                }
+              if (found) {
+                currentDecision = found;
+                finalDecisionTrigger = newsItem.decisionTrigger;
               }
-            });
+            }
           }
         });
       }
@@ -234,7 +241,7 @@ export const useCommandHandler = ({
 
       if (currentDecision && finalDecisionTrigger) {
         responseLines.push(
-          "**Decision**",
+          `** Decision: ${currentDecision["title"]} **`,
           `${currentDecision["context"]}`,
           "",
           `(1) ${currentDecision["choice-end"]}`,
@@ -249,24 +256,40 @@ export const useCommandHandler = ({
         "[Local Area Network]",
         "Local Area Network communications",
       ];
-      if (currentContentList.length === 0) {
+      if (lan.length === 0) {
         responseLines.push("No LAN communication for the past 5 year.");
       } else {
-        currentContentList.forEach((item) => {
-          if (item.lan_posts !== undefined) {
-            responseLines.push(
-              `${softLine}`,
-              `Year        : ${item.year}`,
-              "\n"
-            );
-            item.lan_posts.forEach((post) => {
-              responseLines.push(
-                `Title       : ${post.title}`,
-                `Author      : ${post.author}`,
-                `Content     : ${post.content}`,
-                "\n"
+        lan.forEach((post) => {
+          responseLines.push(
+            `${softLine}`,
+            `Year        : ${post.year}`,
+            `Title       : ${post.title}`,
+            `Author      : ${post.author}`,
+            `Content     : ${post.content}`,
+            "\n"
+          );
+
+          if (post.decisionTrigger) {
+            const alreadyDecided = decisionStatusList.find(
+              (d) => d.id === post.decisionTrigger
+            )?.hasDecided;
+
+            if (!alreadyDecided) {
+              const found = contentDecisionList.find(
+                (d) => d.decision_id === post.decisionTrigger
               );
-            });
+              if (found) {
+                responseLines.push(
+                  `** Decision: ${found.title} **`,
+                  `${found.context}`,
+                  "",
+                  `(1) ${found["choice-end"]}`,
+                  `(2) ${found["choice-success"]}`,
+                  "Type 1 or 2 to decide:"
+                );
+                setPendingDecision(post.decisionTrigger);
+              }
+            }
           }
         });
       }
@@ -287,12 +310,12 @@ export const useCommandHandler = ({
       // Calendar navigation logic
       await typeLine(`> ${input}`);
       if (input === "n") {
-        if (currentYear + calendarInterval >= 1990) {
-          setIsTyping(false);
-          nextYear();
-          exitCalendarMode();
-          return;
-        }
+        // if (currentYear + calendarInterval >= 1990) {
+        //   setIsTyping(false);
+        //   nextYear();
+        //   exitCalendarMode();
+        //   return;
+        // }
         const hasBlock = hasPendingDecisions(
           currentYear,
           decisionStatusList,
@@ -311,14 +334,21 @@ export const useCommandHandler = ({
           );
           exitCalendarMode();
         } else {
-          nextYear();
-          await new Promise<void>((resolve) => {
-            setTimeout(async () => {
-              const updatedYear = useGameStore.getState().currentYear;
-              await updateCalendarDisplay(updatedYear);
-              resolve();
-            }, 0);
-          });
+          if (currentYear + calendarInterval >= 1990) {
+            setIsTyping(false);
+            nextYear();
+            exitCalendarMode();
+            return;
+          } else {
+            nextYear();
+            await new Promise<void>((resolve) => {
+              setTimeout(async () => {
+                const updatedYear = useGameStore.getState().currentYear;
+                await updateCalendarDisplay(updatedYear);
+                resolve();
+              }, 0);
+            });
+          }
         }
       } else if (input === "q") {
         exitCalendarMode();

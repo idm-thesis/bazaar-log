@@ -1,14 +1,14 @@
 // Shared interface for decision content
-export interface ContentDecision {
-    id: string;
-    context: string;
-    ["choice-end"]: string;
-    ["choice-success"]: string;
-    ["choice-end-title"]?: string;
-    ["choice-end-outcome"]?: string;
-    ["choice-success-title"]?: string;
-    ["choice-success-outcome"]?: string;
-  }
+// export interface ContentDecision {
+//     id: string;
+//     context: string;
+//     ["choice-end"]: string;
+//     ["choice-success"]: string;
+//     ["choice-end-title"]?: string;
+//     ["choice-end-outcome"]?: string;
+//     ["choice-success-title"]?: string;
+//     ["choice-success-outcome"]?: string;
+//   }
   
   // News article shown in the terminal
   export interface NewsItem {

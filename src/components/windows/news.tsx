@@ -36,15 +36,6 @@ export default function NewsWindow({ era }: { era: string }) {
     fetchNews();
   }, [setNews, currentYear]);
 
-  // useEffect(() => {
-  //   const startYear = currentYear - (calendarInterval - 1);
-  //   const filteredContent = gameContent.filter((item) => {
-  //     return item.year >= startYear && item.year <= currentYear;
-  //   });
-  //   filteredContent.sort((a, b) => a.year - b.year);
-  //   setCurrentContentList(filteredContent);
-  // }, [currentYear]);
-
   const [showDecision, setShowDecision] = useState(false);
   const [currentTriggerId, setCurrentTriggerId] = useState<string | null>(null);
 

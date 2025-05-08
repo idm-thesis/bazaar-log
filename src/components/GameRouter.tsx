@@ -2,9 +2,10 @@
 import { useGameStore } from "@/store/gameStore";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import rawContentDecisions from "@/data/contentDecisions.json"; // adjust path
-import gameContent from "@/data/Bazaar_log_game_content.json";
-import { LANItem, NewsItem } from "./cli-game/dataTypes";
+import { useContentDecisionStore } from "@/store/useContentDecisionStore";
+import type { News } from "@/store/useNewsStore";
+import type { LAN } from "@/store/useLANStore";
+import { supabase } from "@/lib/supabaseClient";
 
 const PreInternet = dynamic(() => import("@/components/PreInternet"), {
   ssr: false,
@@ -80,29 +81,62 @@ export default function GameRouter() {
     );
   }, [currentYear, gameStage, gamePhase]);
 
-  function findYearByDecisionId(id: string): number {
-    for (const item of gameContent) {
-      if (item.news?.some((n: NewsItem) => n.decisionTrigger === id))
-        return item.year;
-      if (item.lan_posts?.some((l: LANItem) => l.decisionTrigger === id))
-        return item.year;
-    }
-    return -1; // or throw an error
-  }
+  const [allNews, setAllNews] = useState<News[]>([]);
+  const [allLAN, setAllLAN] = useState<LAN[]>([]);
   useEffect(() => {
-    if (hasInitializedDecisionStatusList) return;
+    const fetchAllContent = async () => {
+      const [newsResult, lanResult] = await Promise.all([
+        supabase.from("news").select("*"),
+        supabase.from("lan_posts").select("*"),
+      ]);
   
-    const list = rawContentDecisions.map((d) => ({
-      id: d.id,
-      year: findYearByDecisionId(d.id),
+      if (newsResult.error) console.error("Failed to fetch news", newsResult.error);
+      if (lanResult.error) console.error("Failed to fetch lan", lanResult.error);
+  
+      setAllNews(newsResult.data || []);
+      setAllLAN(lanResult.data || []);
+    };
+  
+    fetchAllContent();
+  }, []);
+  function findYearByDecisionId(id: string): number {
+    const foundNews = allNews.find((n) => n.decisionTrigger === id);
+    if (foundNews) return foundNews.year;
+  
+    const foundLAN = allLAN.find((l) => l.decisionTrigger === id);
+    if (foundLAN) return foundLAN.year;
+  
+    return -1;
+  }
+  
+
+  const { contentDecisionList } = useContentDecisionStore();
+  useEffect(() => {
+    if (
+      hasInitializedDecisionStatusList ||
+      contentDecisionList.length === 0 ||
+      allNews.length === 0 ||
+      allLAN.length === 0
+    )
+      return;
+  
+    const list = contentDecisionList.map((d) => ({
+      id: d.decision_id ?? "",
+      year: findYearByDecisionId(d.decision_id ?? ""),
       hasDecided: false,
     }));
   
     setDecisionStatusList(list);
     setHasInitializedDecisionStatusList(true);
-    
-    console.log("[Decision Init]", list);
-  }, [hasInitializedDecisionStatusList]);
+  
+    console.log("[✅ Decision Init from Supabase Data]", list);
+  }, [
+    hasInitializedDecisionStatusList,
+    contentDecisionList,
+    allNews,
+    allLAN,
+  ]);
+  
 
   
   if (!mounted) return null;

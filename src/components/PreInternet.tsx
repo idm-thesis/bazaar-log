@@ -2,15 +2,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useGameStore } from "@/store/gameStore";
 import { useTutorial } from "./cli-game/useTutorial";
-import rawContentDecisions from "@/data/contentDecisions.json";
-import {
-  GameContentItem,
-  ContentDecision,
-} from "@/components/cli-game/dataTypes";
-const contentDecisions = rawContentDecisions as unknown as ContentDecision[];
+
+import { supabase } from "@/lib/supabaseClient";
+import { useContentDecisionStore } from "@/store/useContentDecisionStore";
+import { useNewsStore } from "@/store/useNewsStore";
+import { useLANStore } from "@/store/useLANStore";
+import { useNotebookStore } from "@/store/useNotebookStore";
 
 import { useGameEffects } from "@/hooks/useGameEffects";
-import gameContent from "@/data/Bazaar_log_game_content.json";
 import { useWinBoxStore } from "@/store/useWinBoxStore";
 
 import { createTyping } from "./cli-game/useTyping";
@@ -23,6 +22,22 @@ export default function PreInternet() {
   useEffect(() => {
     useWinBoxStore.getState().clearAllBoxes();
   }, []);
+
+  // Get all contentDecisions
+  const {contentDecisionList, setContentDecisionList} = useContentDecisionStore();
+  useEffect(() => {
+      const fetchAllContentDecisions = async () => {
+        const { data, error } = await supabase
+          .from("contentDecisions")
+          .select("*");
+        if (error) {
+          console.error("Error fetching all content decisions:", error);
+        } else {
+          setContentDecisionList(data);
+        }
+      };
+      fetchAllContentDecisions();
+    }, [setContentDecisionList]);
 
   const [terminalLines, setTerminalLines] = useState<string[]>([]);
   const [userInput, setUserInput] = useState("");
@@ -48,24 +63,82 @@ export default function PreInternet() {
     typingLineDelay
   );
 
-  const [currentContentList, setCurrentContentList] = useState<
-    GameContentItem[]
-  >([]);
+  // const [currentContentList, setCurrentContentList] = useState<
+  //   GameContentItem[]
+  // >([]);
 
-  useEffect(() => {
-    const startYear = currentYear - (calendarInterval - 1);
-    const filteredContent = gameContent.filter((item) => {
-      return item.year >= startYear && item.year <= currentYear;
-    });
-    filteredContent.sort((a, b) => a.year - b.year);
-    setCurrentContentList(filteredContent);
-  }, [currentYear]);
+  // Get current news
+  const { news, setNews } = useNewsStore();
+    useEffect(() => {
+      const fetchNews = async () => {
+        const { data, error } = await supabase
+          .from("news")
+          .select("*")
+          .gt("year", currentYear - calendarInterval)
+          .lte("year", currentYear)
+          .order("year", { ascending: true });
+        if (error) {
+          console.error("Error fetching news:", error);
+        } else {
+          setNews(data);
+        }
+      };
+      fetchNews();
+    }, [setNews, currentYear]);
+  
+    // Get current lan
+    const { lan, setLAN } = useLANStore();
+      useEffect(() => {
+        const fetchLAN = async () => {
+          const { data, error } = await supabase
+            .from("lan_posts")
+            .select("*")
+            .gt("year", currentYear - calendarInterval)
+            .lte("year", currentYear)
+            .order("year", { ascending: true });
+          if (error) {
+            console.error("Error fetching lan post:", error);
+          } else {
+            setLAN(data);
+          }
+        };
+        fetchLAN();
+      }, [setLAN, currentYear]);
+
+    // Get current notebook entries
+    const { notebook, setNotebook } = useNotebookStore();
+      useEffect(() => {
+        const fetchNotebook = async () => {
+          const { data, error } = await supabase
+            .from("notebook")
+            .select("*")
+            .gt("year", currentYear - calendarInterval)
+            .lte("year", currentYear)
+            .order("year", { ascending: true });
+          if (error) {
+            console.error("Error fetching notebook:", error);
+          } else {
+            setNotebook(data);
+          }
+        };
+        fetchNotebook();
+      }, [setNotebook, currentYear]);
+  // useEffect(() => {
+  //   const startYear = currentYear - (calendarInterval - 1);
+  //   const filteredContent = gameContent.filter((item) => {
+  //     return item.year >= startYear && item.year <= currentYear;
+  //   });
+  //   filteredContent.sort((a, b) => a.year - b.year);
+  //   setCurrentContentList(filteredContent);
+  // }, [currentYear]);
 
   const [inputDisplay, setInputDisplay] = useState("");
   const { handleCommand, handleInputChange, softLine, hardLine } =
     useCommandHandler({
-      currentContentList,
-      contentDecisions,
+      news,
+      lan,
+      notebook,
+      contentDecisionList,
       currentYear,
       calendarInterval,
       calendarMode,
@@ -212,8 +285,8 @@ export default function PreInternet() {
         break;
       case "freeplay":
         if (pendingDecision) {
-          const currentDecision = contentDecisions.find(
-            (decision) => decision.id === pendingDecision
+          const currentDecision = contentDecisionList.find(
+            (decision) => decision.decision_id === pendingDecision
           );
 
           if (input === "1" || input === "2") {
@@ -226,15 +299,16 @@ export default function PreInternet() {
                   `[Outcome: ${currentDecision?.["choice-end-title"]}]`,
                   `${currentDecision?.["choice-end-outcome"]}`,
                   "",
-                  "THE END",
+                  // "THE END",
+                  "You may now continue exploring the network.",
                   hardLine,
-                  "Press [Enter] to restart...",
+                  // "Press [Enter] to restart...",
                 ],
                 typingSpeed,
                 typingLineDelay,
                 true
               );
-              setGamePhase("restart");
+              // setGamePhase("restart");
             } else {
               await typeLinesWithCharacters(
                 [
