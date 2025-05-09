@@ -7,48 +7,41 @@ export const createTyping = (
   typingLineDelay: number = 200
 ) => {
   // Typing line animation
-  const typeText = async (
-    text: string,
-    speed: number = typingSpeed
-  ): Promise<void> => {
-    return new Promise(async (resolve) => {
-      let index = 0;
+  const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
-      // Step 1: Add the new line and wait for it to be committed
-      await new Promise((lineResolve) => {
-        setTerminalLines((prevLines) => {
-          lineResolve(null);
-          return [...prevLines, text.charAt(0)];
-        });
+const typeText = async (
+  text: string,
+  speed: number = typingSpeed
+): Promise<void> => {
+  return new Promise(async (resolve) => {
+    // 先插入一行空白
+    let currentLine = "";
+    await new Promise((lineResolve) => {
+      setTerminalLines((prevLines) => {
+        lineResolve(null);
+        return [...prevLines, ""];
+      });
+    });
+
+    for (let i = 0; i < text.length; i++) {
+      currentLine += text.charAt(i);
+      setTerminalLines((prevLines) => {
+        const newLines = [...prevLines];
+        newLines[newLines.length - 1] = currentLine;
+        return newLines;
       });
 
-      // Step 2: Start typing the characters
-      const type = () => {
-        setTerminalLines((prevLines) => {
-          const newLines = [...prevLines];
-          const currentLineIndex = newLines.length - 1;
+      if (textRef.current) {
+        textRef.current.scrollTop = textRef.current.scrollHeight;
+      }
 
-          newLines[currentLineIndex] += text.charAt(index);
-          return newLines;
-        });
+      await sleep(speed);
+    }
 
-        if (textRef.current) {
-          textRef.current.scrollTop = textRef.current.scrollHeight;
-        }
+    resolve();
+  });
+};
 
-        index++;
-
-        if (index < text.length) {
-          setTimeout(type, speed);
-        } else {
-          resolve();
-        }
-      };
-
-      // Start typing
-      type();
-    });
-  };
 
   const typeLine = async (line: string, delay: number = 500): Promise<void> => {
     return new Promise((resolve) => {

@@ -249,6 +249,8 @@ export const useCommandHandler = ({
           "Type 1 or 2 to decide:"
         );
         setPendingDecision(finalDecisionTrigger);
+      } else {
+        setPendingDecision(null);
       }
     } else if (input === "lan") {
       responseLines = [

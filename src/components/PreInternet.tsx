@@ -24,20 +24,21 @@ export default function PreInternet() {
   }, []);
 
   // Get all contentDecisions
-  const {contentDecisionList, setContentDecisionList} = useContentDecisionStore();
+  const { contentDecisionList, setContentDecisionList } =
+    useContentDecisionStore();
   useEffect(() => {
-      const fetchAllContentDecisions = async () => {
-        const { data, error } = await supabase
-          .from("contentDecisions")
-          .select("*");
-        if (error) {
-          console.error("Error fetching all content decisions:", error);
-        } else {
-          setContentDecisionList(data);
-        }
-      };
-      fetchAllContentDecisions();
-    }, [setContentDecisionList]);
+    const fetchAllContentDecisions = async () => {
+      const { data, error } = await supabase
+        .from("contentDecisions")
+        .select("*");
+      if (error) {
+        console.error("Error fetching all content decisions:", error);
+      } else {
+        setContentDecisionList(data);
+      }
+    };
+    fetchAllContentDecisions();
+  }, [setContentDecisionList]);
 
   const [terminalLines, setTerminalLines] = useState<string[]>([]);
   const [userInput, setUserInput] = useState("");
@@ -69,60 +70,60 @@ export default function PreInternet() {
 
   // Get current news
   const { news, setNews } = useNewsStore();
-    useEffect(() => {
-      const fetchNews = async () => {
-        const { data, error } = await supabase
-          .from("news")
-          .select("*")
-          .gt("year", currentYear - calendarInterval)
-          .lte("year", currentYear)
-          .order("year", { ascending: true });
-        if (error) {
-          console.error("Error fetching news:", error);
-        } else {
-          setNews(data);
-        }
-      };
-      fetchNews();
-    }, [setNews, currentYear]);
-  
-    // Get current lan
-    const { lan, setLAN } = useLANStore();
-      useEffect(() => {
-        const fetchLAN = async () => {
-          const { data, error } = await supabase
-            .from("lan_posts")
-            .select("*")
-            .gt("year", currentYear - calendarInterval)
-            .lte("year", currentYear)
-            .order("year", { ascending: true });
-          if (error) {
-            console.error("Error fetching lan post:", error);
-          } else {
-            setLAN(data);
-          }
-        };
-        fetchLAN();
-      }, [setLAN, currentYear]);
+  useEffect(() => {
+    const fetchNews = async () => {
+      const { data, error } = await supabase
+        .from("news")
+        .select("*")
+        .gt("year", currentYear - calendarInterval)
+        .lte("year", currentYear)
+        .order("year", { ascending: true });
+      if (error) {
+        console.error("Error fetching news:", error);
+      } else {
+        setNews(data);
+      }
+    };
+    fetchNews();
+  }, [setNews, currentYear]);
 
-    // Get current notebook entries
-    const { notebook, setNotebook } = useNotebookStore();
-      useEffect(() => {
-        const fetchNotebook = async () => {
-          const { data, error } = await supabase
-            .from("notebook")
-            .select("*")
-            .gt("year", currentYear - calendarInterval)
-            .lte("year", currentYear)
-            .order("year", { ascending: true });
-          if (error) {
-            console.error("Error fetching notebook:", error);
-          } else {
-            setNotebook(data);
-          }
-        };
-        fetchNotebook();
-      }, [setNotebook, currentYear]);
+  // Get current lan
+  const { lan, setLAN } = useLANStore();
+  useEffect(() => {
+    const fetchLAN = async () => {
+      const { data, error } = await supabase
+        .from("lan_posts")
+        .select("*")
+        .gt("year", currentYear - calendarInterval)
+        .lte("year", currentYear)
+        .order("year", { ascending: true });
+      if (error) {
+        console.error("Error fetching lan post:", error);
+      } else {
+        setLAN(data);
+      }
+    };
+    fetchLAN();
+  }, [setLAN, currentYear]);
+
+  // Get current notebook entries
+  const { notebook, setNotebook } = useNotebookStore();
+  useEffect(() => {
+    const fetchNotebook = async () => {
+      const { data, error } = await supabase
+        .from("notebook")
+        .select("*")
+        .gt("year", currentYear - calendarInterval)
+        .lte("year", currentYear)
+        .order("year", { ascending: true });
+      if (error) {
+        console.error("Error fetching notebook:", error);
+      } else {
+        setNotebook(data);
+      }
+    };
+    fetchNotebook();
+  }, [setNotebook, currentYear]);
   // useEffect(() => {
   //   const startYear = currentYear - (calendarInterval - 1);
   //   const filteredContent = gameContent.filter((item) => {
@@ -177,7 +178,9 @@ export default function PreInternet() {
   const [audioLoaded, setAudioLoaded] = useState(false);
 
   useEffect(() => {
-    const audio = new Audio("/audio/User Interface, Data, Computer, Classic, Working, Loading, Processing, Long 02 SND109569.wav");
+    const audio = new Audio(
+      "/audio/User Interface, Data, Computer, Classic, Working, Loading, Processing, Long 02 SND109569.wav"
+    );
     audio.loop = true;
     audio.volume = 0.2;
     audio.addEventListener("canplaythrough", () => {
@@ -370,6 +373,11 @@ export default function PreInternet() {
       textRef.current.scrollTop = textRef.current.scrollHeight;
     }
   }, [terminalLines]);
+
+  // Observe pending decision status
+  useEffect(() => {
+    console.log("🟡 pendingDecision updated:", pendingDecision);
+  }, [pendingDecision]);
 
   return (
     <div
